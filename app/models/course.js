@@ -3,17 +3,15 @@ const bluebird = require('bluebird');
 const Schema   = mongoose.Schema;
 mongoose.Promise = bluebird;
 
-var ResourceSchema = new Schema({
-	title: {type: String, required: true},
-	url: String
-});
-
 var ModuleSchema = new Schema({
 	name: {type: String, required: true},
 	description: String,
 	length: {type: Number},
 	type: {type: String},
-	resources: [ResourceSchema],
+	resources: [{
+		title : String,
+		url : String
+	}],
 });
 
 var UnitSchema = new Schema({
@@ -24,10 +22,10 @@ var UnitSchema = new Schema({
 });
 
 var CourseSchema = new Schema({
-		name: {type: String, unique: true, required: true},
-		description: String,
-		order: Number,
-		units: [UnitSchema],
+	name: {type: String, unique: true, required: true},
+	description: String,
+	order: Number,
+	units: [UnitSchema],
 });
 
 module.exports = mongoose.model('Course', CourseSchema);
