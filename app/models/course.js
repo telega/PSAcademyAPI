@@ -7,7 +7,11 @@ var ModuleSchema = new Schema({
 	name: {type: String, required: true},
 	description: String,
 	length: {type: Number},
-	type: {type: String},
+	type: {
+		type: String,
+		enum: ['Quiz', 'Video'],
+		default:'Video'
+	},
 	resources: [{
 		title : String,
 		url : String

@@ -3,6 +3,26 @@ const bluebird = require('bluebird');
 const bcrypt   = require('bcrypt-nodejs');
 mongoose.Promise = bluebird;
 
+var academyProgressSchema = mongoose.Schema({
+	itemId : Number,
+	itemProgress : {
+		type: Number,
+		default: 0
+	},
+	itemCompleted: {
+		type: Boolean,
+		default: false
+	}
+});
+
+var academyBadgesSchema = mongoose.Schema({
+	name: String,
+	value: {
+		type: Boolean,
+		default: false
+	}
+});
+
 var userSchema = mongoose.Schema({
 
 	local			: {
@@ -23,7 +43,9 @@ var userSchema = mongoose.Schema({
 			type: String,
 			enum: ['Member','Admin'],
 			default: 'Member'
-		}
+		},
+		academyProgress: [academyProgressSchema],
+		academyBadges: [academyBadgesSchema]
 	}
 });
 
