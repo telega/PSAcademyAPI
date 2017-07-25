@@ -47,6 +47,15 @@ exports.putCourse = function(req,res){
 	});
 };
 
+exports.deleteCourse = function(req,res){
+	Course.remove({ _id: req.params.course_id }, function(err){
+		if(err){
+			console.log(err);
+		}
+		res.json({message: 'Deleted Course'});
+	});
+};
+
 exports.getCourseUnits = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){

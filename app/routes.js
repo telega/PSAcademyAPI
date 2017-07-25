@@ -11,30 +11,43 @@ module.exports = function(app,passport){
 		next();
 	});
 
+
+	// Course Routes
+
 	router.route('/courses')
-		.post(courseController.postCourse)
-		.get(authController.isAdmin, courseController.getCourses);
+		.get(authController.isLoggedIn, courseController.getCourses)
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
 
 	router.route('/courses/:course_id')
-		.get(courseController.getCourse)
-		.put(courseController.putCourse);
-
+		.get(authController.isLoggedIn, courseController.getCourse)
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
+		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
+		
 	router.route('/courses/:course_id/units')
-		.get(courseController.getCourseUnits)
-		.post(courseController.postCourseUnit);
+		.get(authController.isLoggedIn, courseController.getCourseUnits)
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnit);
 
 	router.route('/courses/:course_id/units/:unit_id')
-		.get(courseController.getCourseUnit)
-		.put(courseController.putCourseUnit);
+		.get(authController.isLoggedIn, courseController.getCourseUnit)
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnit);
 
 	router.route('/courses/:course_id/units/:unit_id/modules')
-		.get(courseController.getCourseUnitModules)
-		.post(courseController.postCourseUnitModule);
+		.get(authController.isLoggedIn, courseController.getCourseUnitModules)
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnitModule);
 
 	router.route('/courses/:course_id/units/:unit_id/modules/:module_id')
-		.get(courseController.getCourseUnitModule)
-		.put(courseController.putCourseUnitModule);
+		.get(authController.isLoggedIn, courseController.getCourseUnitModule)
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule);
 
+	// User Routes
+
+	router.route('/user')
+		.get(authController.isLoggedIn, userController.getUser);
+
+	router.route('/users')
+		.get(authController.isLoggedIn, authController.isAdmin,userController.getUsers);
+
+	// Passport (Auth) Routes
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
 			successRedirect: '/api/courses',
@@ -48,7 +61,7 @@ module.exports = function(app,passport){
 			failureRedirect:'/',
 			failureFlash: true
 
-		}))
+		}));
 
 	router.get('/', function (req,res){
 		res.json({message: 'welcome'});

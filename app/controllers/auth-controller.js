@@ -1,4 +1,4 @@
-const LocalStrategy = require('passport-local').Strategy;
+//const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/user.js');
 
 exports.isLoggedIn = function(req,res,next){
@@ -16,7 +16,7 @@ exports.isAdmin= function(req,res,next) {
 			return next(err);
 		}
 		// If user is found, check role.
-		if (foundUser.role == 'Admin') {
+		if (foundUser.local.role == 'Admin') {
 			return next();
 		}
 		res.redirect('/');

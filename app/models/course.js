@@ -21,6 +21,10 @@ var ModuleSchema = new Schema({
 var UnitSchema = new Schema({
 	name: {type: String, required: true},
 	description: String,
+	published: {
+		type: Boolean,
+		default: false
+	},
 	order: Number,
 	modules: [ModuleSchema],
 });
@@ -28,6 +32,10 @@ var UnitSchema = new Schema({
 var CourseSchema = new Schema({
 	name: {type: String, unique: true, required: true},
 	description: String,
+	published: {
+		type: Boolean,
+		default: false
+	},
 	order: Number,
 	units: [UnitSchema],
 });
