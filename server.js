@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const passport = require('passport');
@@ -18,6 +19,7 @@ mongoose.connect(configDB.url, {
 
 require('./config/passport')(passport);
 
+app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({

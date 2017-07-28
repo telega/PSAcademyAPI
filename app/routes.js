@@ -15,7 +15,7 @@ module.exports = function(app,passport){
 	// Course Routes
 
 	router.route('/courses')
-		.get(authController.isLoggedIn, courseController.getCourses)
+		.get(/*authController.isLoggedIn,*/ courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
 
 	router.route('/courses/:course_id')
