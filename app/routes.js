@@ -1,4 +1,5 @@
 const express = require('express');
+const apiRouter = express.Router();
 const router = express.Router();
 const courseController = require('./controllers/course-controller');
 const userController = require('./controllers/user-controller');
@@ -11,31 +12,30 @@ module.exports = function(app,passport){
 		next();
 	});
 
-
 	// Course Routes
 
-	router.route('/courses')
-		.get(/*authController.isLoggedIn,*/ courseController.getCourses)
+	apiRouter.route('/courses')
+		.get(authController.isAuthenticated,courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
 
-	router.route('/courses/:course_id')
-		.get(authController.isLoggedIn, courseController.getCourse)
+	apiRouter.route('/courses/:course_id')
+		.get(courseController.getCourse)
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
 		
-	router.route('/courses/:course_id/units')
+	apiRouter.route('/courses/:course_id/units')
 		.get(authController.isLoggedIn, courseController.getCourseUnits)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnit);
 
-	router.route('/courses/:course_id/units/:unit_id')
+	apiRouter.route('/courses/:course_id/units/:unit_id')
 		.get(authController.isLoggedIn, courseController.getCourseUnit)
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnit);
 
-	router.route('/courses/:course_id/units/:unit_id/modules')
+	apiRouter.route('/courses/:course_id/units/:unit_id/modules')
 		.get(authController.isLoggedIn, courseController.getCourseUnitModules)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnitModule);
 
-	router.route('/courses/:course_id/units/:unit_id/modules/:module_id')
+	apiRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
 		.get(authController.isLoggedIn, courseController.getCourseUnitModule)
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule);
 
@@ -44,7 +44,7 @@ module.exports = function(app,passport){
 	router.route('/user')
 		.get(authController.isLoggedIn, userController.getUser);
 
-	router.route('/users')
+	apiRouter.route('/users')
 		.get(authController.isLoggedIn, authController.isAdmin,userController.getUsers);
 
 	// Passport (Auth) Routes
@@ -71,6 +71,6 @@ module.exports = function(app,passport){
 	app.get('/',function(req,res){
 		res.send('hello');
 	});
-
-	app.use('/api',router);
+	app.use('/', router);
+	app.use('/api',apiRouter);
 };
