@@ -15,37 +15,39 @@ module.exports = function(app,passport){
 	// Course Routes
 
 	apiRouter.route('/courses')
-		.get(authController.isAuthenticated,courseController.getCourses)
-		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
+		.get( courseController.getCourses)
+		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourse);
 
 	apiRouter.route('/courses/:course_id')
 		.get(courseController.getCourse)
-		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
-		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
+		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourse)
+		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourse);
 		
 	apiRouter.route('/courses/:course_id/units')
-		.get(authController.isLoggedIn, courseController.getCourseUnits)
-		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnit);
+		.get(courseController.getCourseUnits)
+		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourseUnit);
 
 	apiRouter.route('/courses/:course_id/units/:unit_id')
-		.get(authController.isLoggedIn, courseController.getCourseUnit)
-		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnit);
+		.get(courseController.getCourseUnit)
+		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourseUnit)
+		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourseUnit);
 
 	apiRouter.route('/courses/:course_id/units/:unit_id/modules')
-		.get(authController.isLoggedIn, courseController.getCourseUnitModules)
-		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnitModule);
-
+		.get(courseController.getCourseUnitModules)
+		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourseUnitModule);
+	
 	apiRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
-		.get(authController.isLoggedIn, courseController.getCourseUnitModule)
-		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule);
-
+		.get(courseController.getCourseUnitModule)
+		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourseUnitModule)
+		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourseUnitModule);
+	
 	// User Routes
 
 	router.route('/user')
-		.get(authController.isLoggedIn, userController.getUser);
+		.get(authController.isAuthenticated, userController.getUser);
 
 	apiRouter.route('/users')
-		.get(authController.isLoggedIn, authController.isAdmin,userController.getUsers);
+		.get(authController.isAuthenticated, authController.isAdmin, userController.getUsers);
 
 	// Passport (Auth) Routes
 	router.route('/signup')
@@ -60,11 +62,10 @@ module.exports = function(app,passport){
 			successRedirect:'/api/courses',
 			failureRedirect:'/',
 			failureFlash: true
-
 		}));
 
 	router.get('/', function (req,res){
-		res.json({message: 'welcome'});
+		res.json({message: 'PSAcademy API'});
 	});
 
 	// non API route

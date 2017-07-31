@@ -7,8 +7,10 @@ exports.postCourse = function(req,res){
 	course.save(function(err){
 		if(err){
 			console.log(err);
+			res.status(400).json({message: 'Error adding Course'})
+		} else {
+			res.json({message: 'Course Added', data: course});
 		}
-		res.json({message: 'Course Added', data: course});
 	});
 };
 
@@ -115,6 +117,31 @@ exports.putCourseUnit = function(req,res){
 	});
 };
 
+exports.deleteCourseUnit = function(req,res){
+	
+	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+			res.json({error: err});
+		}
+		
+		if(course.units.id(req.params.unit_id) === null){
+		 	console.log('deleteCourseUnit: Unit Not Found');
+			res.json({message: 'deleteCourseUnit: Unit Not Found'});
+		} else {
+			course.units.id(req.params.unit_id).remove();
+
+			course.save(function(err){
+				if(err){
+					console.log(err);
+				}
+
+				res.json({message: 'Unit Deleted'});
+			});
+		}
+	});
+};
+
 exports.postCourseUnitModule = function(req,res){
 	
 	var module = {
@@ -199,6 +226,33 @@ exports.putCourseUnitModule = function(req,res){
 				});
 			} else {
 				res.json({message: 'Cannot Update'});
+			} 
+		}
+	});
+};
+
+exports.deleteCourseUnitModule = function(req,res){
+	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+		}
+		var unit = course.units.id(req.params.unit_id);
+
+		for (var i = 0; i < unit.modules.length; i++){
+			if(unit.modules[i]._id == req.params.module_id){
+				
+				unit.modules.pull({_id: req.params.module_id});
+				
+				course.save(function(err){
+					if(err){
+						console.log(err);
+					}
+
+					res.json({message: 'Deleted Module'});
+				});
+			} else {
+				console.log('putCourseUnit: Cannot Delete Module (Not Found?)');
+				res.json({message: 'putCourseUnit: Cannot Delete Module (Not Found?)'});
 			} 
 		}
 	});

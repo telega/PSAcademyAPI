@@ -21,7 +21,8 @@ exports.isAdmin= function(req,res,next) {
 		if (foundUser.local.role == 'Admin') {
 			return next();
 		}
-		res.redirect('/');
+		console.log('isAdmin: Unauthorized API credentials')
+		res.status(401).json({error: 'Unauthorized API credentials'});
 	});
 };
 

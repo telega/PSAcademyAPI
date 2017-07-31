@@ -38,7 +38,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-
 require('./app/routes')(app, passport);
 
 app.listen(port, function(){
