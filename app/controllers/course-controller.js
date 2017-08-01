@@ -4,10 +4,11 @@ exports.postCourse = function(req,res){
 	var course = new Course();
 	course.name = req.body.name;
 	course.description = req.body.description;
+	course.order = req.body.order;
 	course.save(function(err){
 		if(err){
 			console.log(err);
-			res.status(400).json({message: 'Error adding Course'})
+			res.status(400).json({message: 'Error adding Course'});
 		} else {
 			res.json({message: 'Course Added', data: course});
 		}
@@ -39,6 +40,7 @@ exports.putCourse = function(req,res){
 		}
 		course.name = req.body.name || course.name;
 		course.description = req.body.description || course.description;
+		course.order = req.body.order || course.order;
 
 		course.save(function(err){
 			if(err){
@@ -126,7 +128,7 @@ exports.deleteCourseUnit = function(req,res){
 		}
 		
 		if(course.units.id(req.params.unit_id) === null){
-		 	console.log('deleteCourseUnit: Unit Not Found');
+			console.log('deleteCourseUnit: Unit Not Found');
 			res.json({message: 'deleteCourseUnit: Unit Not Found'});
 		} else {
 			course.units.id(req.params.unit_id).remove();

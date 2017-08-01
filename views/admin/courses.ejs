@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <title>Courses | Admin</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+<strong>id</strong>: <%= user._id %><br>
+                        <strong>email</strong>: <%= user.local.email %><br>
+                        <strong>password</strong>: <%= user.local.password %>
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1>Academy Admin</h1>
+            <h2>Courses </h2>
+            <table width='100%' class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>Course Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </thead>    
+            <tbody>
+            <% courses.forEach(function(course){ %>
+                <tr>
+                    <td><%= course.order %></td>
+                    <td><%= course.name %></td>
+                    <td><% if(course.published==true){ %>
+                            <strong> Published </strong>
+                        <% } else { %>
+                            Draft
+                        <% } %>
+                    </td>
+                    <td><button class = "btn btn-default">Edit</button></td>
+                </tr>
+
+            <% }); %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-12">
+        <h2>Add a New Course</h2>
+            <form id = "addCourse">
+              <div class="form-group">
+                <label for="courseName">Course Name*</label>
+                <input required type="text" class="form-control" id="courseName" placeholder="Name">
+              </div>
+              <div class="form-group">
+                <label for="courseDescription">Course Description</label>
+                <input type="textarea" class="form-control" id="courseDescription" placeholder="Course Description">
+              </div>
+              <div class="form-group">
+                <label for="courseOrder">Order</label>
+                <input type="number" class="form-control" id="courseOrder">
+              </div>
+              <button type="submit" class="btn btn-primary">Add Course</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+/*var user = {
+    _id: <%= user._id %>
+};*/
+
+$(document).ready(function(){
+        $("#addCourse").submit(function(e){
+            e.preventDefault();
+            var data = {}
+            data.name = $("#courseName").val();
+            data.description = $("#courseDescription").val();
+            data.order = $("courseOrder").val()||99;
+
+
+            $.ajax
+({
+  type: "POST",
+  url: "http://localhost:3000/api/courses",
+  dataType: 'json',
+  async: false,
+  //username: 'tallen@patsnap.com',
+  //password: '$2a$08$b0hdQe4OB/8dUfwDspKrAeiBoVAYRvZo/U5MN7b/hlPMr7ViA/cFS',
+  data: data,
+  success: function (){
+    alert('Thanks for your comment!'); 
+  }
+});
+
+
+        })
+    })
+</script>
+</body>
+</html>

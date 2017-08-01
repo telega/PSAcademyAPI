@@ -1,22 +1,20 @@
 const express = require('express');
 const apiRouter = express.Router();
 const router = express.Router();
+const adminRouter = express.Router();
 const courseController = require('./controllers/course-controller');
 const userController = require('./controllers/user-controller');
 const authController = require('./controllers/auth-controller');
+const adminController = require('./controllers/admin-controller');
 
 module.exports = function(app,passport){
-	// API Routes
-	router.use(function(req,res,next){
-		console.log('Request Recieved');
-		next();
-	});
 
 	// Course Routes
 
 	apiRouter.route('/courses')
 		.get( courseController.getCourses)
-		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourse);
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
+		//.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourse);
 
 	apiRouter.route('/courses/:course_id')
 		.get(courseController.getCourse)
@@ -49,6 +47,30 @@ module.exports = function(app,passport){
 	apiRouter.route('/users')
 		.get(authController.isAuthenticated, authController.isAdmin, userController.getUsers);
 
+	apiRouter.route('/users/verify')
+		.get(authController.isAuthenticated, userController.verifyUser);
+
+
+	// admin Routes
+	
+	adminRouter.route('/')
+		.get(function(req,res){
+			res.render('admin/index.ejs');
+		});
+
+	adminRouter.route('/login')
+		.get(function(req,res){
+			res.render('admin/login.ejs',{ message: req.flash('loginMessage')});
+		})
+		.post(passport.authenticate('local-login', {
+			successRedirect:'/admin/courses',
+			failureRedirect:'/admin/login',
+			failureFlash: true
+		}));
+
+	adminRouter.route('/courses')
+		.get(adminController.getCourses);
+	
 	// Passport (Auth) Routes
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
@@ -70,8 +92,10 @@ module.exports = function(app,passport){
 
 	// non API route
 	app.get('/',function(req,res){
-		res.send('hello');
+		res.render('index.ejs');
 	});
+
 	app.use('/', router);
-	app.use('/api',apiRouter);
+	app.use('/api', apiRouter);
+	app.use('/admin', adminRouter);
 };

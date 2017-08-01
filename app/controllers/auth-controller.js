@@ -38,7 +38,7 @@ passport.use(new BasicStrategy(
 				return next(null, false); 
 			}
 			// if the user is found but the password is wrong
-			if (!user.validPassword(password)){
+			if (password !== user.local.password){
 				return next(null, false); 
 			}
 

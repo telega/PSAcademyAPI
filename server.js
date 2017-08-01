@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-//app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 
 app.use(session({
 	secret: 'ilovescotchscotchyscotchscotch',
