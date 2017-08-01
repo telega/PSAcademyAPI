@@ -2,18 +2,16 @@
 <html>
 <head>
     <title>Courses | Admin</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src = "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
-        body        { padding-top:80px; }
+        body        { padding-top:40px; }
     </style>
 </head>
 <body>
 <div class="container">
-<strong>id</strong>: <%= user._id %><br>
-                        <strong>email</strong>: <%= user.local.email %><br>
-                        <strong>password</strong>: <%= user.local.password %>
     <div class = "row">
         <div class = "col-md-12">
             <h1>Academy Admin</h1>
@@ -36,7 +34,7 @@
                             Draft
                         <% } %>
                     </td>
-                    <td><button class = "btn btn-default">Edit</button></td>
+                    <td><button data-course-id = "<%= course._id %>" class = "btn btn-default">Edit</button></td>
                 </tr>
 
             <% }); %>
@@ -65,37 +63,55 @@
         </div>
     </div>
 </div>
+
+<!-- Modals -->
+<div class="modal fade" id="courseAddedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Course Added</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Added a new course to the Academy.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="courseAddedConfirm">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
-/*var user = {
-    _id: <%= user._id %>
-};*/
 
 $(document).ready(function(){
-        $("#addCourse").submit(function(e){
+    $("#addCourse").submit(function(e){
             e.preventDefault();
             var data = {}
             data.name = $("#courseName").val();
             data.description = $("#courseDescription").val();
-            data.order = $("courseOrder").val()||99;
-
-
+            data.order = $("#courseOrder").val()||99;
             $.ajax
-({
-  type: "POST",
-  url: "http://localhost:3000/api/courses",
-  dataType: 'json',
-  async: false,
-  //username: 'tallen@patsnap.com',
-  //password: '$2a$08$b0hdQe4OB/8dUfwDspKrAeiBoVAYRvZo/U5MN7b/hlPMr7ViA/cFS',
-  data: data,
-  success: function (){
-    alert('Thanks for your comment!'); 
-  }
-});
+                ({
+                  type: "POST",
+                  url: "http://localhost:3000/api/courses",
+                  dataType: 'json',
+                  async: true,
+                  data: data,
+                  success: function (){
+                    $('#courseAddedModal').modal('toggle')
+                                      }
+                });
 
-
-        })
     })
+
+    $('#courseAddedConfirm').on('click', function(e){
+            e.preventDefault();
+            location.reload(true);
+    })
+    
+})
 </script>
 </body>
 </html>
