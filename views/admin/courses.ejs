@@ -6,16 +6,48 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src = "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style>
-        body        { padding-top:40px; }
-    </style>
+
 </head>
 <body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/admin"><span class="glyphicon glyphicon-education" aria-hidden="true"></span></a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/admin/courses">Courses</a></li>
+        <li><a href="#">Users</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/admin/logout">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
 <div class="container">
     <div class = "row">
         <div class = "col-md-12">
-            <h1>Academy Admin</h1>
+            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
+        <div>
+    </div>
+    <div class = row>
+        <div class = "col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li class = "active">Courses</li>
+            </ol>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
             <h2>Courses </h2>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
             <table width='100%' class="table table-striped">
             <thead>
                 <th>#</th>
@@ -34,7 +66,10 @@
                             Draft
                         <% } %>
                     </td>
-                    <td><button data-course-id = "<%= course._id %>" class = "btn btn-default">Edit</button></td>
+                    <td>
+                    <a href = "/admin/courses/<%= course._id %>" data-course-id = "<%= course._id %>" class = "btn btn-default">Edit</a>
+                    <button  data-course-id = "<%= course._id %>" data-course-name = "<%= course.name %>" data-toggle="modal" data-target="#courseDeleteModal" class = "btn btn-danger deleteCourse">Delete</button>
+                    </td>
                 </tr>
 
             <% }); %>
@@ -43,73 +78,113 @@
         </div>
     </div>
     <div class = "row">
-        <div class = "col-md-12">
-        <h2>Add a New Course</h2>
-            <form id = "addCourse">
-              <div class="form-group">
-                <label for="courseName">Course Name*</label>
-                <input required type="text" class="form-control" id="courseName" placeholder="Name">
-              </div>
-              <div class="form-group">
-                <label for="courseDescription">Course Description</label>
-                <input type="textarea" class="form-control" id="courseDescription" placeholder="Course Description">
-              </div>
-              <div class="form-group">
-                <label for="courseOrder">Order</label>
-                <input type="number" class="form-control" id="courseOrder">
-              </div>
-              <button type="submit" class="btn btn-primary">Add Course</button>
-            </form>
+        <div class ="col-md-2">
+            <button data-toggle="modal" data-target="#courseAddModal" class = "btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Course</button>
         </div>
     </div>
 </div>
 
 <!-- Modals -->
-<div class="modal fade" id="courseAddedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="courseAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Course Added</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add a New Course</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        Added a new course to the Academy.
+        <form id = "addCourse">
+            <div class="form-group">
+              <label for="courseName">Course Name*</label>
+              <input required type="text" class="form-control" id="courseName" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <label for="courseDescription">Course Description</label>
+              <input type="textarea" class="form-control" id="courseDescription" placeholder="Course Description">
+            </div>
+            <div class="form-group">
+              <label for="courseOrder">Order</label>
+              <input type="number" class="form-control" id="courseOrder">
+            </div>
+            <button type="submit" class="btn btn-success">Add Course</button>
+        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="courseAddedConfirm">Ok</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
       </div>
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="courseDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="courseToDeleteName"></p>
+        <strong>You are about to Delete this course. This cannot be undone.</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="courseDeleteConfirm">Delete Course</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts --> 
 <script>
 
 $(document).ready(function(){
+    
     $("#addCourse").submit(function(e){
             e.preventDefault();
             var data = {}
             data.name = $("#courseName").val();
             data.description = $("#courseDescription").val();
             data.order = $("#courseOrder").val()||99;
-            $.ajax
-                ({
-                  type: "POST",
-                  url: "http://localhost:3000/api/courses",
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/api/courses",
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (){
+                        location.reload(true);                    
+                    }
+                });
+    })
+
+    $('#courseDeleteModal').on('show.bs.modal', function(e){
+        var button = $(e.relatedTarget); 
+        var modal = $(this);
+        modal.find('#courseToDeleteName').text(button.data('courseName'));
+        modal.find('#courseDeleteConfirm').on('click', function(e){
+            var url = "http://localhost:3000/api/courses/" + button.data('courseId');
+            $.ajax({
+                  type: "DELETE",
+                  url: url,
                   dataType: 'json',
                   async: true,
-                  data: data,
                   success: function (){
-                    $('#courseAddedModal').modal('toggle')
-                                      }
-                });
+                        location.reload(true);
+                    }
+            })
+        })
+    });
 
-    })
-
-    $('#courseAddedConfirm').on('click', function(e){
-            e.preventDefault();
-            location.reload(true);
-    })
+    $('#courseDeleteModal').on('hide.bs.modal', function(e){
+        var modal = $(this);
+        modal.find('#courseDeleteConfirm').off('click');
+    });
     
 })
 </script>

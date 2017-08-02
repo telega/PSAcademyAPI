@@ -14,12 +14,11 @@ module.exports = function(app,passport){
 	apiRouter.route('/courses')
 		.get( courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
-		//.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourse);
 
 	apiRouter.route('/courses/:course_id')
 		.get(courseController.getCourse)
-		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourse)
-		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourse);
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
+		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
 		
 	apiRouter.route('/courses/:course_id/units')
 		.get(courseController.getCourseUnits)
@@ -69,7 +68,12 @@ module.exports = function(app,passport){
 		}));
 
 	adminRouter.route('/courses')
-		.get(adminController.getCourses);
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourses);
+
+
+	adminRouter.route('/courses/:course_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourse);
+
 	
 	// Passport (Auth) Routes
 	router.route('/signup')

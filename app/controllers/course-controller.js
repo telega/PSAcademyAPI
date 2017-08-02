@@ -41,6 +41,7 @@ exports.putCourse = function(req,res){
 		course.name = req.body.name || course.name;
 		course.description = req.body.description || course.description;
 		course.order = req.body.order || course.order;
+		course.published = req.body.published || course.published;
 
 		course.save(function(err){
 			if(err){
