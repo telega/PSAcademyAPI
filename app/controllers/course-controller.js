@@ -75,9 +75,14 @@ exports.postCourseUnit = function(req,res){
 	var unit = {
 		name : req.body.name,
 		description: req.body.description,
+		order: req.body.order
 	};
 
 	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+		}
+
 		course.units.push(unit);
 
 		course.save(function(err){
@@ -109,6 +114,8 @@ exports.putCourseUnit = function(req,res){
 
 		unit.name = req.body.name || unit.name;
 		unit.description = req.body.description || unit.description;
+		unit.order = req.body.order || unit.order;
+		unit.published = req.body.published || unit.published;
 
 		course.save(function(err){
 			if(err){
@@ -151,7 +158,8 @@ exports.postCourseUnitModule = function(req,res){
 		name : req.body.name,
 		description: req.body.description,
 		length: req.body.length,
-		type: req.body.type
+		type: req.body.type,
+		order: req.body.order
 	};
 
 	Course.findById(req.params.course_id, function(err,course){

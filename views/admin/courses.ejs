@@ -18,7 +18,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/admin/courses">Courses</a></li>
-        <li><a href="#">Users</a></li>
+        <li><a href="/admin/users">Users</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/admin/logout">Logout</a></li>
@@ -145,21 +145,21 @@
 $(document).ready(function(){
     
     $("#addCourse").submit(function(e){
-            e.preventDefault();
-            var data = {}
-            data.name = $("#courseName").val();
-            data.description = $("#courseDescription").val();
-            data.order = $("#courseOrder").val()||99;
-            $.ajax({
-                type: "POST",
-                url: "http://localhost:3000/api/courses",
-                dataType: 'json',
-                async: true,
-                data: data,
-                success: function (){
-                        location.reload(true);                    
-                    }
-                });
+        e.preventDefault();
+        var data = {}
+        data.name = $("#courseName").val();
+        data.description = $("#courseDescription").val();
+        data.order = $("#courseOrder").val()||99;
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/api/courses",
+            dataType: 'json',
+            async: true,
+            data: data,
+            success: function (){
+                    location.reload(true);                    
+                }
+            });
     })
 
     $('#courseDeleteModal').on('show.bs.modal', function(e){

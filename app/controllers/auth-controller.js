@@ -22,7 +22,8 @@ exports.isAdmin= function(req,res,next) {
 			return next();
 		}
 		console.log('isAdmin: Unauthorized API credentials')
-		res.status(401).json({error: 'Unauthorized API credentials'});
+		//res.status(401).json({error: 'Unauthorized API credentials'});
+		res.status(401).redirect('/admin/login');
 	});
 };
 

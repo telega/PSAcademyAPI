@@ -22,16 +22,16 @@ module.exports = function(app,passport){
 		
 	apiRouter.route('/courses/:course_id/units')
 		.get(courseController.getCourseUnits)
-		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourseUnit);
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnit);
 
 	apiRouter.route('/courses/:course_id/units/:unit_id')
 		.get(courseController.getCourseUnit)
-		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourseUnit)
-		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourseUnit);
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnit)
+		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnit);
 
 	apiRouter.route('/courses/:course_id/units/:unit_id/modules')
 		.get(courseController.getCourseUnitModules)
-		.post(authController.isAuthenticated, authController.isAdmin, courseController.postCourseUnitModule);
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnitModule);
 	
 	apiRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
 		.get(courseController.getCourseUnitModule)
@@ -53,8 +53,8 @@ module.exports = function(app,passport){
 	// admin Routes
 	
 	adminRouter.route('/')
-		.get(function(req,res){
-			res.render('admin/index.ejs');
+		.get(authController.isLoggedIn, authController.isAdmin, function(req,res){
+			res.render('admin/index.ejs', {user: req.user});
 		});
 
 	adminRouter.route('/login')
@@ -62,10 +62,13 @@ module.exports = function(app,passport){
 			res.render('admin/login.ejs',{ message: req.flash('loginMessage')});
 		})
 		.post(passport.authenticate('local-login', {
-			successRedirect:'/admin/courses',
+			successRedirect:'/admin',
 			failureRedirect:'/admin/login',
 			failureFlash: true
 		}));
+
+	adminRouter.route('/users')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUsers);
 
 	adminRouter.route('/courses')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourses);
@@ -73,6 +76,9 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/courses/:course_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourse);
+
+	adminRouter.route('/courses/:course_id/units/:unit_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUnit);
 
 	
 	// Passport (Auth) Routes

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Academy | Admin</title>
+    <title>Users| Admin</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -18,7 +18,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/admin/courses">Courses</a></li>
-        <li><a href="/admin/users">Users</a></li>
+        <li class="active"><a href="/admin/users">Users</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/admin/logout">Logout</a></li>
@@ -33,27 +33,40 @@
             <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
         <div>
     </div>
-
     <div class = row>
         <div class = "col-md-12">
             <ol class="breadcrumb">
-                <li class="active">Home</li>
+                <li><a href="/admin">Home</a></li>
+                <li class = "active">Users</li>
             </ol>
         </div>
     </div>
     <div class = "row">
         <div class="col-md-12">
-          &nbsp;
+            <h2>Users</h2>
         </div>
     </div>
     <div class = "row">
         <div class="col-md-12">
-         <a href="/admin/courses" class = "btn btn-primary btn-lg"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> Manage Courses</a>
-         <a href="/admin/users" class = "btn btn-primary btn-lg"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Manage Users</a>
+            <table width='100%' class="table table-striped">
+            <thead>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </thead>    
+            <tbody>
+            <% users.forEach(function(user){ %>
+                <tr>
+                    <td><%= user.local.email %></td>
+                    <td><%= user.local.role %></td>
+                    <td> </td>
+                </tr>
+            <% }); %>
+            </tbody>
+            </table>
         </div>
     </div>
-
-</div>
+    
 
 <!-- Modals -->
 
@@ -62,8 +75,6 @@
 <script>
 
 $(document).ready(function(){
-    
-    
     
 })
 </script>

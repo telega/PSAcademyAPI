@@ -1,4 +1,4 @@
-//var User = require('../models/user');
+var User = require('../models/user');
 var Course = require('../models/course');
 
 //const passport = require('passport');
@@ -25,16 +25,28 @@ exports.getCourse = function(req,res){
 };
 
 
-/*
+exports.getUnit = function(req,res){
+	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+		}
+		
+		var unit = course.units.id(req.params.unit_id);
+
+		res.render('admin/unit.ejs', {user: req.user, course: course, unit: unit});
+	});
+};
+
+
 exports.getUsers = function(req,res){
 	User.find({}, function(err, users){
 		if(err){
 			console.log(err);
 		}
-		res.json({users});
+		res.render('admin/users.ejs', {user:req.user, users:users});
 	});
 };
-
+/*
 exports.getUser = function(req,res){
 	// User.find({}, function(err, users){
 	// 	if(err){
