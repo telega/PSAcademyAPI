@@ -163,10 +163,13 @@ exports.postCourseUnitModule = function(req,res){
 	};
 
 	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+		}
+
 		var unit = course.units.id(req.params.unit_id);
 		
 		unit.modules.push(module);
-		
 		course.save(function(err){
 			if(err){
 				console.log(err);
@@ -237,7 +240,7 @@ exports.putCourseUnitModule = function(req,res){
 				});
 			} else {
 				res.json({message: 'Cannot Update'});
-			} 
+			}
 		}
 	});
 };
@@ -251,20 +254,18 @@ exports.deleteCourseUnitModule = function(req,res){
 
 		for (var i = 0; i < unit.modules.length; i++){
 			if(unit.modules[i]._id == req.params.module_id){
-				
+				console.log('match');
 				unit.modules.pull({_id: req.params.module_id});
 				
 				course.save(function(err){
 					if(err){
 						console.log(err);
 					}
-
+					console.log('Deleted Module');
 					res.json({message: 'Deleted Module'});
 				});
-			} else {
-				console.log('putCourseUnit: Cannot Delete Module (Not Found?)');
-				res.json({message: 'putCourseUnit: Cannot Delete Module (Not Found?)'});
 			} 
-		}
+		} 
+
 	});
 };

@@ -35,8 +35,8 @@ module.exports = function(app,passport){
 	
 	apiRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
 		.get(courseController.getCourseUnitModule)
-		.put(authController.isAuthenticated, authController.isAdmin, courseController.putCourseUnitModule)
-		.delete(authController.isAuthenticated, authController.isAdmin, courseController.deleteCourseUnitModule);
+		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule)
+		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnitModule);
 	
 	// User Routes
 
