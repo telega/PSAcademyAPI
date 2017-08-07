@@ -30,13 +30,22 @@ exports.getUnit = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		
 		var unit = course.units.id(req.params.unit_id);
-
 		res.render('admin/unit.ejs', {user: req.user, course: course, unit: unit});
 	});
 };
 
+exports.getModule = function(req,res){
+	Course.findById(req.params.course_id, function(err,course){
+		if(err){
+			console.log(err);
+		}
+		var unit = course.units.id(req.params.unit_id);
+		let module = unit.modules.filter( m => m._id == req.params.module_id);
+		res.render('admin/module.ejs', {user: req.user, course: course, unit: unit, module: module[0] });
+
+	});
+};
 
 exports.getUsers = function(req,res){
 	User.find({}, function(err, users){
@@ -46,20 +55,3 @@ exports.getUsers = function(req,res){
 		res.render('admin/users.ejs', {user:req.user, users:users});
 	});
 };
-/*
-exports.getUser = function(req,res){
-	// User.find({}, function(err, users){
-	// 	if(err){
-	// 		console.log(err);
-	// 	}
-	// 	res.json({users});
-	// });
-};
-
-exports.verifyUser = function(req,res){
-	console.log('User Verified');
-	res.status(200).json({ message: 'Verified'});
-};
-
-*/
-

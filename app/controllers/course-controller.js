@@ -174,7 +174,6 @@ exports.postCourseUnitModule = function(req,res){
 			if(err){
 				console.log(err);
 			}
-
 			res.json({message: 'Module Added', data: module });
 		});
 	});
@@ -185,9 +184,7 @@ exports.getCourseUnitModules = function(req,res){
 		if(err){
 			console.log(err);
 		}
-
 		var unit = course.units.id(req.params.unit_id);
-		
 		res.json(unit.modules);
 	});
 };
@@ -198,15 +195,7 @@ exports.getCourseUnitModule = function(req,res){
 			console.log(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
-		
-		//now we need to loop and this is probably not very efficient
-		var module = {};
-		for (var i = 0; i < unit.modules.length; i++){
-			if(unit.modules[i]._id == req.params.module_id){
-				module = unit.modules[i];
-			}
-		}
-
+		let module = unit.modules.filter( m => m._id == req.params.module_id);
 		res.json(module);
 	});
 };
@@ -217,8 +206,6 @@ exports.putCourseUnitModule = function(req,res){
 			console.log(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
-
-
 		for (var i = 0; i < unit.modules.length; i++){
 			if(unit.modules[i]._id == req.params.module_id){
 				var module = unit.modules[i];
@@ -235,7 +222,6 @@ exports.putCourseUnitModule = function(req,res){
 					if(err){
 						console.log(err);
 					}
-
 					res.json(module);
 				});
 			} else {
@@ -254,14 +240,12 @@ exports.deleteCourseUnitModule = function(req,res){
 
 		for (var i = 0; i < unit.modules.length; i++){
 			if(unit.modules[i]._id == req.params.module_id){
-				console.log('match');
 				unit.modules.pull({_id: req.params.module_id});
 				
 				course.save(function(err){
 					if(err){
 						console.log(err);
 					}
-					console.log('Deleted Module');
 					res.json({message: 'Deleted Module'});
 				});
 			} 

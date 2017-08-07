@@ -10,7 +10,6 @@ const adminController = require('./controllers/admin-controller');
 module.exports = function(app,passport){
 
 	// Course Routes
-
 	apiRouter.route('/courses')
 		.get( courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
@@ -49,7 +48,6 @@ module.exports = function(app,passport){
 	apiRouter.route('/users/verify')
 		.get(authController.isAuthenticated, userController.verifyUser);
 
-
 	// admin Routes
 	
 	adminRouter.route('/')
@@ -80,8 +78,10 @@ module.exports = function(app,passport){
 	adminRouter.route('/courses/:course_id/units/:unit_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUnit);
 
+	adminRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getModule);
 	
-	// Passport (Auth) Routes
+	//  Non API routers
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
 			successRedirect: '/api/courses',
@@ -96,16 +96,17 @@ module.exports = function(app,passport){
 			failureFlash: true
 		}));
 
-	router.get('/', function (req,res){
-		res.json({message: 'PSAcademy API'});
-	});
-
-	// non API route
-	app.get('/',function(req,res){
-		res.render('index.ejs');
-	});
+	router.route('/')
+		.get(function(req,res){
+			res.render('index.ejs');
+		});
 
 	app.use('/', router);
 	app.use('/api', apiRouter);
 	app.use('/admin', adminRouter);
+
+	// Handle 404
+	app.use(function(req, res) {
+		res.status(404).render('index.ejs');
+	});
 };
