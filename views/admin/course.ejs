@@ -298,6 +298,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#unitToDeleteName').text(button.data('unitName'));
         modal.find('#unitDeleteConfirm').on('click', function(e){
+          e.preventDefault();
         var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId');
             $.ajax({
                   type: "DELETE",

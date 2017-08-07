@@ -214,19 +214,18 @@ exports.putCourseUnitModule = function(req,res){
 				module.description = req.body.description || module.description;
 				module.length = req.body.length || module.length;
 				module.type = req.body.type || module.type;
+				
 				if(req.body.resources){
 					module.resources = JSON.parse(req.body.resources);
 				}
-				
 				course.save(function(err){
 					if(err){
 						console.log(err);
 					}
 					res.json(module);
 				});
-			} else {
-				res.json({message: 'Cannot Update'});
-			}
+			} 
+			
 		}
 	});
 };

@@ -391,8 +391,6 @@ $(document).ready(function(){
       });
     })
 
-
-
     $('#addModule').submit(function(e){
       var modal = $("#moduleAddModal");
 
@@ -410,7 +408,6 @@ $(document).ready(function(){
           async: true,
           data: data,
           success: function (){
-                modal.modal('hide');
                 location.reload(true);                    
               }
           });

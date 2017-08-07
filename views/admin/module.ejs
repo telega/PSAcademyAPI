@@ -97,15 +97,16 @@
             <thead>
                 <th>Title</th>
                 <th>URL</th>
+                <th>Actions</th>
             </thead>    
             <tbody>
             <% module.resources.forEach(function(resource){ %>
                 <tr>
-                    <td><%= module.title %></td>
-                    <td><%= module.url %></td>
+                    <td><%= resource.title %></td>
+                    <td><%= resource.url %></td>
                     <td>
-                    <a href = "/admin/courses/<%=course._id%>/units/<%= unit._id %>/modules/<%=module._id%>" data-module-id = "<%= module._id %>" class = "btn btn-default">Edit</a>
-                    <button  data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-toggle="modal" data-target="#moduleDeleteResource" class = "btn btn-danger deleteUnit">Delete</button>
+                    <a href = "/admin/courses/<%=course._id%>/units/<%= unit._id %>/modules/<%=module._id%>" data-module-id = "<%= module._id %>" data-resource-id ="<%=resource._id%>" class = "btn btn-default">Edit</a>
+                    <button  data-resources = "<%=module.resources %>" data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-resource-id ="<%=resource._id%>" data-toggle="modal" data-target="#deleteResourceModal" class = "btn btn-danger deleteResource">Delete</button>
                     </td>
                 </tr>
 
@@ -117,7 +118,7 @@
     <% } %>
     <div class = "row">
         <div class ="col-md-2">
-            <button data-toggle="modal" data-target="#moduleAddModal" class = "btn btn-primary deleteCourse"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Resource</button>
+            <button data-toggle="modal" data-target="#addResourceModal" class = "btn btn-primary deleteCourse"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Resource</button>
         </div>
     </div>
 </div> 
@@ -136,10 +137,10 @@
       <div class="modal-body">
         <form id = "editTitle">
               <div class="form-group">
-                <label forid="newTitle">New Unit Name</label>
-                <input required type="text" class="form-control" id="newTitle" placeholder="<%=unit.name%>">
+                <label forid="newTitle">New Module Name</label>
+                <input required type="text" class="form-control" id="newTitle" placeholder="<%=module.name%>">
               </div>
-              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" class="btn btn-warning" id="updateName">Update Name</button>
+              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-module-id="<%=module._id%>" class="btn btn-warning" id="updateName">Update Name</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -153,7 +154,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Unit Description</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit Module Description</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -161,10 +162,10 @@
       <div class="modal-body">
         <form id = "editDescription">
               <div class="form-group">
-                <label forid="newTitle">New Unit Description</label>
-                <input required type="textfield" class="form-control" id="newDescription" placeholder="<%=unit.description%>">
+                <label forid="newTitle">New Module Description</label>
+                <input required type="textfield" class="form-control" id="newDescription" placeholder="<%=module.description%>">
               </div>
-              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" class="btn btn-warning" id="updateDescription">Update Description</button>
+              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-module-id="<%=module._id%>" class="btn btn-warning" id="updateDescription">Update Description</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -178,7 +179,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Unit Order</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit ModuleOrder</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -186,10 +187,10 @@
       <div class="modal-body">
         <form id = "editDescription">
               <div class="form-group">
-                <label forid="newTitle">New Unit Order</label>
-                <input required type="number" class="form-control" id="newOrder" placeholder="<%=unit.order%>" >
+                <label forid="newTitle">New Module Order</label>
+                <input required type="number" class="form-control" id="newOrder" placeholder="<%=module.order%>" >
               </div>
-              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" class="btn btn-warning" id="updateOrder">Update Order</button>
+              <button type="submit" data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-module-id="<%=module._id%>" class="btn btn-warning" id="updateOrder">Update Order</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -199,64 +200,26 @@
   </div>
 </div>
 
-<div class="modal fade" id="updateStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <% if(unit.published==true){ %>
-          <button data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-publish="<%=unit.published%>" class="btn btn-warning" id="updateStatus">  Unpublish </button>
-        <% } else { %>
-          <button data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-publish="<%=course.published%>" class="btn btn-primary" id="updateStatus"> Publish </button>
-        <% } %>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="moduleAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addResourceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" >
-        <h5 class="modal-title" id="exampleModalLabel">Add a New Module</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add a Resource</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id = "addModule" data-course-id="<%=course._id%>" data-unit-id="<%=unit._id%>">
+        <form id = "addResource" data-resources="<%= JSON.stringify(module.resources) %>" data-course-id="<%=course._id%>" data-unit-id="<%=unit._id%>" data-module-id="<%=module._id%>">
             <div class="form-group">
-              <label for="moduleName">Module Name*</label>
-              <input required type="text" class="form-control" id="moduleName" placeholder="Name">
+              <label for="resourceName">Resouce Name</label>
+              <input required type="text" class="form-control" id="resourceName" placeholder="Name">
             </div>
             <div class="form-group">
-              <label for="moduleDescription">Module Description</label>
-              <input type="textarea" class="form-control" id="moduleDescription" placeholder="Description">
+              <label for="resourceUrl">Resource URL</label>
+              <input required type="textarea" class="form-control" id="resourceUrl" placeholder="Description">
             </div>
-            <div class="form-group">
-              <label>Module Type</label>
-              <div class="radio">
-                <label for="moduleTypeVideo">
-                <input type="radio"  name="optionsModuleTypes" id="moduleTypeVideo" value="Video" checked>Video</label>
-              </div>
-              <div class="radio">
-                <label for="moduleTypeQuiz">
-                <input type="radio" name="optionsModuleTypes" id="moduleTypeQuiz" value="Quiz">Quiz</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="moduleOrder">Order</label>
-              <input type="number" class="form-control" id="moduleOrder">
-            </div>
-            <button type="submit" class="btn btn-success">Add Module</button>
+            <button type="submit" class="btn btn-success">Add Resource</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -266,7 +229,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="moduleDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteResourceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -276,12 +239,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <p id="moduleToDeleteName"></p>
-        <strong>You are about to Delete this module. This cannot be undone.</strong>
+        <p id="resourceToDeleteName"></p>
+        <strong>You are about to Delete this Resource. This cannot be undone.</strong>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="moduleDeleteConfirm">Delete Module</button>
+        <button type="button" class="btn btn-danger" id="resourceDeleteConfirm">Delete Module</button>
       </div>
     </div>
   </div>
@@ -291,120 +254,144 @@
 
 $(document).ready(function(){
 
-     $('#moduleDeleteModal').on('show.bs.modal', function(e){
-        var button = $(e.relatedTarget); 
-        var modal = $(this);
-        modal.find('#moduleToDeleteName').text(button.data('moduleName'));
-        modal.find('#moduleDeleteConfirm').on('click', function(e){
-        var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
-        console.log(url);
-            $.ajax({
-                  type: "DELETE",
-                  url: url,
-                  dataType: 'json',
-                  async: true,
-                  success: function (){
-                        location.reload(true);
-                    }
-            })
-        })
-    });
-
     $("#updateName").on('click', function(e){
+      var modal = $("#updateName");
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
       data = {
         name: $('#newTitle').val()
       }
       $.ajax({
-                type: "PUT",
-                url: url,
-                dataType: 'json',
-                async: true,
-                data: data,
-                success: function (){
-                  location.reload(true);                    
-                }
-      });
-    })
-
-    $("#updateDescription").on('click', function(e){
-      e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
-      data = {
-        description: $('#newDescription').val()
-      }
-      $.ajax({
-                type: "PUT",
-                url: url,
-                dataType: 'json',
-                async: true,
-                data: data,
-                success: function (){
-                        location.reload(true);                    
-                    }
-      });
-    })
-
-    $("#updateOrder").on('click', function(e){
-      e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
-      data = {
-        order: $('#newOrder').val()
-      }
-      $.ajax({
-            type: "PUT",
-            url: url,
-            dataType: 'json',
-            async: true,
-            data: data,
-            success: function (){
-                    location.reload(true);                    
-                }
-      });
-    })
-    
-    $("#updateStatus").on('click', function(e){
-        e.preventDefault();
-        var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
-        data = {
-          published: !$(this).data('publish')
-        }
-      $.ajax({
-            type: "PUT",
-            url: url,
-            dataType: 'json',
-            async: true,
-            data: data,
-            success: function (){
-                    location.reload(true);                    
-                }
-      });
-    })
-
-
-
-    $('#addModule').submit(function(e){
-      var modal = $("#moduleAddModal");
-
-      e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules" ;
-      var data = {};
-      data.name = $("#moduleName").val();
-      data.description = $("#moduleDescription").val();
-      data.order = $("#moduleOrder").val() || 99;
-      data.type= $("input[name=optionsModuleTypes]:checked","#addModule").val();
-      $.ajax({
-          type: "POST",
+          type: "PUT",
           url: url,
           dataType: 'json',
           async: true,
           data: data,
           success: function (){
-                modal.modal('hide');
-                location.reload(true);                    
-              }
-          });
+              location.reload(true);
+          }
+      });
+    })
+
+    $("#updateDescription").on('click', function(e){
+      e.preventDefault();
+      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
+      data = {
+        description: $('#newDescription').val()
+      }
+      $.ajax({
+          type: "PUT",
+          url: url,
+          dataType: 'json',
+          async: true,
+          data: data,
+          success: function (){
+              location.reload(true);                    
+          }
+      });
+    })
+
+    $("#updateOrder").on('click', function(e){
+      e.preventDefault();
+      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
+      data = {
+        order: $('#newOrder').val()
+      }
+      $.ajax({
+          type: "PUT",
+          url: url,
+          dataType: 'json',
+          async: true,
+          data: data,
+          success: function (){
+              location.reload(true);                    
+          }
+      });
+    })
+
+      $('#deleteResourceModal').on('show.bs.modal', function(e){
+        var button = $(e.relatedTarget); 
+        var modal = $(this);
+        modal.find('#resourceDeleteConfirm').on('click', function(e){
+          e.preventDefault();          
+        var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId' + '/modules/' + button.data('moduleId'));
+        var data = {};
+        var r = button.data('resources');
+        var resources = JSON.parse(JSON.stringify(r));
+        //resources.filter();
+
+        console.log(r)
+            // $.ajax({
+            //       type: "DELETE",
+            //       url: url,
+            //       dataType: 'json',
+            //       async: true,
+            //       success: function (){
+            //           location.reload(true);
+            //       }
+            // })
+        })
+    });
+
+    // $('#deleteResourceModal').on('click',function(e){
+    //   var modal = $('#deleteResourceModal');
+    //   var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules/" + $(this).data('moduleId');
+    //   var data = {};
+    //   var newResource = {}
+    //   var r = $(this).data('resources') ;
+    //   console.log(r);
+    //   var resources = JSON.parse(JSON.stringify(r));
+    //   console.log(resources);
+    //   newResource.title = $("#resourceName").val();
+    //   newResource.url = $("#resourceUrl").val();
+    //   var newResource = {
+    //       title: newResource.title,
+    //       url: newResource.url
+    //   };
+    //   resources.push(newResource);
+    //   data.resources = JSON.stringify(resources);
+    //   console.log(data);
+
+
+    //  $.ajax({
+    //     type: "PUT",
+    //     url: url,
+    //     dataType: 'json',
+    //     async: true,
+    //     data: data,
+    //     success: function (){
+    //           location.reload(true);                    
+    //         }
+    //     }); 
+    // })
+
+    $('#addResource').submit(function(e){
+      var modal = $("#moduleAddModal");
+
+      e.preventDefault();
+      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules/" + $(this).data('moduleId');
+      var data = {};
+      var newResource = {}
+      var r = $(this).data('resources') ;
+      var resources = JSON.parse(JSON.stringify(r));
+      newResource.title = $("#resourceName").val();
+      newResource.url = $("#resourceUrl").val();
+      var newResource = {
+          title: newResource.title,
+          url: newResource.url
+      };
+      resources.push(newResource);
+      data.resources = JSON.stringify(resources);
+      $.ajax({
+        type: "PUT",
+        url: url,
+        dataType: 'json',
+        async: true,
+        data: data,
+        success: function (){
+              location.reload(true);                    
+            }
+        });
     });
 
 })
