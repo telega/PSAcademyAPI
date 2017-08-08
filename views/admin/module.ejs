@@ -106,7 +106,7 @@
                     <td><%= resource.url %></td>
                     <td>
                     <a href = "/admin/courses/<%=course._id%>/units/<%= unit._id %>/modules/<%=module._id%>" data-module-id = "<%= module._id %>" data-resource-id ="<%=resource._id%>" class = "btn btn-default">Edit</a>
-                    <button  data-resources = "<%=module.resources %>" data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-resource-id ="<%=resource._id%>" data-toggle="modal" data-target="#deleteResourceModal" class = "btn btn-danger deleteResource">Delete</button>
+                    <button  data-resources = "<%= JSON.stringify(module.resources) %>" data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-resource-id ="<%=resource._id%>" data-toggle="modal" data-target="#deleteResourceModal" class = "btn btn-danger deleteResource">Delete</button>
                     </td>
                 </tr>
 
@@ -309,61 +309,35 @@ $(document).ready(function(){
       });
     })
 
-      $('#deleteResourceModal').on('show.bs.modal', function(e){
+    $('#deleteResourceModal').on('show.bs.modal', function(e){
         var button = $(e.relatedTarget); 
         var modal = $(this);
         modal.find('#resourceDeleteConfirm').on('click', function(e){
           e.preventDefault();          
-        var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId' + '/modules/' + button.data('moduleId'));
-        var data = {};
-        var r = button.data('resources');
-        var resources = JSON.parse(JSON.stringify(r));
-        //resources.filter();
-
-        console.log(r)
-            // $.ajax({
-            //       type: "DELETE",
-            //       url: url,
-            //       dataType: 'json',
-            //       async: true,
-            //       success: function (){
-            //           location.reload(true);
-            //       }
-            // })
+          var data = {};
+          var resourcesArray = button.data('resources');
+          console.log(resourcesArray)
+          var resourceToDeleteId = button.data('resourceId')
+          data.resources = JSON.stringify(resourcesArray.filter( resource => resource._id != resourceToDeleteId));
+          var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
+          console.log(data);
+             $.ajax({
+                  type: "PUT",
+                  url: url,
+                  dataType: 'json',
+                  data: data,
+                  async: true,
+                  success: function (){
+                     location.reload(true);
+                  }
+            })
         })
     });
 
-    // $('#deleteResourceModal').on('click',function(e){
-    //   var modal = $('#deleteResourceModal');
-    //   var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules/" + $(this).data('moduleId');
-    //   var data = {};
-    //   var newResource = {}
-    //   var r = $(this).data('resources') ;
-    //   console.log(r);
-    //   var resources = JSON.parse(JSON.stringify(r));
-    //   console.log(resources);
-    //   newResource.title = $("#resourceName").val();
-    //   newResource.url = $("#resourceUrl").val();
-    //   var newResource = {
-    //       title: newResource.title,
-    //       url: newResource.url
-    //   };
-    //   resources.push(newResource);
-    //   data.resources = JSON.stringify(resources);
-    //   console.log(data);
-
-
-    //  $.ajax({
-    //     type: "PUT",
-    //     url: url,
-    //     dataType: 'json',
-    //     async: true,
-    //     data: data,
-    //     success: function (){
-    //           location.reload(true);                    
-    //         }
-    //     }); 
-    // })
+    $('#deleteResourceModal').on('hide.bs.modal', function(e){
+        var modal = $(this);
+        modal.find('#resourceDeleteConfirm').off('click');
+    });
 
     $('#addResource').submit(function(e){
       var modal = $("#moduleAddModal");

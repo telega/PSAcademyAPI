@@ -218,6 +218,7 @@ exports.putCourseUnitModule = function(req,res){
 				if(req.body.resources){
 					module.resources = JSON.parse(req.body.resources);
 				}
+
 				course.save(function(err){
 					if(err){
 						console.log(err);
