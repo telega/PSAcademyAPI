@@ -1,10 +1,8 @@
 var User = require('../models/user');
 var Course = require('../models/course');
-
-//const passport = require('passport');
+var Quiz = require('../models/quiz');
 
 exports.getCourses = function(req,res){
-
 	Course.find({}).sort({order:1}).exec(function(err, courses){
 		if(err){
 			console.log(err);
@@ -12,7 +10,6 @@ exports.getCourses = function(req,res){
 		
 		res.render('admin/courses.ejs', {user: req.user, courses: courses});
 	});
-
 };
 
 exports.getCourse = function(req,res){
@@ -53,5 +50,23 @@ exports.getUsers = function(req,res){
 			console.log(err);
 		}
 		res.render('admin/users.ejs', {user:req.user, users:users});
+	});
+};
+
+exports.getQuizzes = function(req,res){
+	Quiz.find({}, function(err, quizzes){
+		if(err){
+			console.log(err);
+		}
+		res.render('admin/quizzes.ejs', {user: req.user, quizzes: quizzes});
+	});
+};
+
+exports.getQuiz = function(req,res){
+	Quiz.findOne({ _id: req.params.quiz_id}, function (err, quiz){
+		if(err){
+			console.log(err);
+		}
+		res.render('admin/quiz.ejs', {user: req.user, quiz: quiz});
 	});
 };

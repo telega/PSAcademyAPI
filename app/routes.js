@@ -6,10 +6,11 @@ const courseController = require('./controllers/course-controller');
 const userController = require('./controllers/user-controller');
 const authController = require('./controllers/auth-controller');
 const adminController = require('./controllers/admin-controller');
+const quizController = require('./controllers/quiz-controller');
 
 module.exports = function(app,passport){
 
-	// Course Routes
+	// Course Routes - API
 	apiRouter.route('/courses')
 		.get( courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
@@ -36,6 +37,15 @@ module.exports = function(app,passport){
 		.get(courseController.getCourseUnitModule)
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnitModule);
+
+	// Quiz Routes
+	apiRouter.route('/quizzes')
+		.get(quizController.getQuizzes)
+		.post(authController.isLoggedIn, authController.isAdmin, quizController.postQuiz);
+
+	apiRouter.route('/quizzes/:quiz_id')
+		.get(quizController.getQuiz)
+		.delete(authController.isLoggedIn, authController.isAdmin, quizController.deleteQuiz);
 	
 	// User Routes
 
@@ -80,6 +90,12 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/courses/:course_id/units/:unit_id/modules/:module_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getModule);
+
+	adminRouter.route('/quizzes')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuizzes);
+
+	adminRouter.route('/quizzes/:quiz_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuiz);
 	
 	//  Non API routers
 	router.route('/signup')

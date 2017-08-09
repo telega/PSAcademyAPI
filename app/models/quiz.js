@@ -16,7 +16,6 @@ var QuestionSchema = new Schema({
 
 var QuizSchema = new Schema({
 	name: {type: String, unique: true, required: true},
-	referenceNumber: {type: Number, unique: true, required: true},
 	main: String,
 	results: String,
 	questions: [QuestionSchema],
