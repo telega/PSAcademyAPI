@@ -59,10 +59,10 @@
                   <th>Actions</th>
               </thead>    
               <tbody>
-              <% quizzes.forEach(function(quiz){ %>
+              <% quiz.questions.forEach(function(question){ %>
                   <tr>
-                      <td><%= quiz.name %></td>
-                      <td><%= quiz._id %></td>
+                      <td></td>
+                      <td><%= question.q %></td>
                       <td>
                       <a href = "/admin/quiz/<%= quiz._id %>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-default">Edit</a>
                       <button  data-quiz-id = "<%= quiz._id %>" data-quiz-name = "<%= quiz.name %>" data-toggle=" modal" data-target="#deleteQuizModal" class = "btn btn-danger deleteQuiz">Delete</button>
@@ -93,12 +93,37 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id = "addQuiz">
+        <form id = "addQuestion" data-quiz-id = "<%=quiz._id%>">
             <div class="form-group">
-              <label for="quizName">Question*</label>
-              <input required type="text" class="form-control" id="quizName" placeholder="Name">
+              <label for="quizQuestion">Question*</label>
+              <input required type="text" class="form-control" id="quizQuestion" placeholder="What is the sound of one hand clapping?">
             </div>
-            <button type="submit" class="btn btn-success">Add Quiz</button>
+            <div class="form-group">
+              <label for="quizCorrectResponse">Correct Response*</label>
+              <input required type="text" class="form-control" id="quizCorrectResponse" placeholder="Correct">
+            </div>
+            <div class="form-group">
+              <label for="quizIncorrectResponse">Incorrect Response*</label>
+              <input required type="text" class="form-control" id="quizIncorrectResponse" placeholder="Incorrect">
+            </div>
+            <div class="form-group">
+              <label for="quizAnswers">Answers</label>
+              <div class="form-horizontal" id="quizAnswers">
+                <div class="quizAnswer">
+                  <input type="text" class="form-control">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> Check if Correct
+                      </label>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <a href="#" id="quizAddAnswer" class = "btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></a>
+              <label for="quizAddAnswer">Add Answer Option</label>
+            </div>
+            <button type="submit" class="btn btn-success">Add Question</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -108,7 +133,8 @@
   </div>
 </div>
 
-<div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<!-- <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -128,30 +154,65 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Scripts --> 
 <script>
 
 $(document).ready(function(){
-    
-    $("#addQuiz").submit(function(e){
-        e.preventDefault();
-        var data = {}
-        data.name = $("#quizName").val();
-        $.ajax({
-            type: "POST",
-            url: "http://localhost:3000/api/quizzes",
-            dataType: 'json',
-            async: true,
-            data: data,
-            success: function (){
-                location.reload(true);                    
-              }
-            });
-    })
 
-    $('#deleteQuizModal').on('show.bs.modal', function(e){
+  $('#quizAddAnswer').on('click', function(e){
+    e.preventDefault();
+    var answerInputField = '<div class="quizAnswer"><input type="text" class="form-control"><div class="checkbox"><label><input type="checkbox" > Check if Correct</label></div></div>';
+    $('#quizAnswers').append(answerInputField);
+  })
+
+  $('#addQuestionModal').on('hide.bs.modal', function(e){
+    var modal = $(this);
+    modal.find(".quizAnswer").remove();
+    //re-add an initial box
+    var answerInputField = '<div class="quizAnswer"><input type="text" class="form-control"><div class="checkbox"><label><input type="checkbox" > Check if Correct</label></div></div>';
+    $('#quizAnswers').append(answerInputField);
+  });
+
+  $("#addQuestion").submit(function(e){
+        e.preventDefault();
+        var form = $(this);
+        var data = {}
+        
+        data.q = $("#quizQuestion").val();
+        data.correct = $('#quizCorrectResponse').val();
+        data.incorrect = $('#quizIncorrectResponse').val();
+
+        var responses = [];
+        
+
+        form.find('.quizAnswer').each(function(){
+          var res = {}
+          res.option = $(this).find(':input').val();
+          if( $(this).find('input:checked').prop('checked')){
+            res.correct = true;
+          } else {
+            res.correct = false;
+          }
+          responses.push(res);
+        });
+
+        data.a = responses;
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/api/quizzes/" + form.data('quizId') + "/questions",
+          dataType: 'json',
+          async: true,
+          data: data,
+          success: function (){
+              location.reload(true);                    
+            }
+        });
+  });
+
+  $('#deleteQuizModal').on('show.bs.modal', function(e){
         var button = $(e.relatedTarget); 
         var modal = $(this);
         modal.find('#quizToDeleteName').text(button.data('quizName'));
@@ -167,12 +228,12 @@ $(document).ready(function(){
                     }
             })
         })
-    });
+  });
 
-    $('#deleteQuizModal').on('hide.bs.modal', function(e){
+  $('#deleteQuizModal').on('hide.bs.modal', function(e){
         var modal = $(this);
         modal.find('#quizDeleteConfirm').off('click');
-    });
+  });
     
 })
 </script>

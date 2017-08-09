@@ -41,6 +41,32 @@ exports.getQuiz = function(req,res){
 	});
 };
 
+
+exports.postQuestion = function(req,res){
+	var question = {
+		q: req.body.q,
+		correct: req.body.correct,
+		incorrect: req.body.incorrect,
+		a: req.body.a,
+	};
+
+	Quiz.findById(req.params.quiz_id, function(err,quiz){
+		if(err){
+			console.log(err);
+		}
+
+		quiz.questions.push(question);
+
+		quiz.save(function(err){
+			if(err){
+				console.log(err);
+			}
+
+			res.status(200).json({message: 'Question Added', data: quiz });
+		});
+	});
+};
+
 /*
 exports.putCourse = function(req,res){
 	Course.findById(req.params.course_id, function(err, course){
