@@ -45,10 +45,11 @@
     </div>
     <div class = "row">
         <div class="col-md-12">
+            <h3>Edit Quiz</h3>
             <h2><%=quiz.name%></h2>
-            <h3>Quiz Questions</h3>
         </div>
     </div>
+    <h3>Quiz Questions</h3>
     <% if(quiz.questions.length > 0){ %>
       <div class = "row">
           <div class="col-md-12">
@@ -64,7 +65,7 @@
                       <td></td>
                       <td><%= question.q %></td>
                       <td>
-                      <a href = "/admin/quiz/<%= quiz._id %>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-default">Edit</a>
+                      <a href = "/admin/quizzes/<%= quiz._id %>/questions/<%=question._id%>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-default">Edit</a>
                       <button  data-quiz-id = "<%= quiz._id %>" data-quiz-name = "<%= quiz.name %>" data-toggle=" modal" data-target="#deleteQuizModal" class = "btn btn-danger deleteQuiz">Delete</button>
                       </td>
                   </tr>

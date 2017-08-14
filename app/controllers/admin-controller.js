@@ -2,6 +2,8 @@ var User = require('../models/user');
 var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 
+// Courses
+
 exports.getCourses = function(req,res){
 	Course.find({}).sort({order:1}).exec(function(err, courses){
 		if(err){
@@ -44,14 +46,7 @@ exports.getModule = function(req,res){
 	});
 };
 
-exports.getUsers = function(req,res){
-	User.find({}, function(err, users){
-		if(err){
-			console.log(err);
-		}
-		res.render('admin/users.ejs', {user:req.user, users:users});
-	});
-};
+// Quizzes 
 
 exports.getQuizzes = function(req,res){
 	Quiz.find({}, function(err, quizzes){
@@ -67,6 +62,29 @@ exports.getQuiz = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		res.render('admin/quiz.ejs', {user: req.user, quiz: quiz});
+		res.render('admin/quiz.ejs', { user: req.user, quiz: quiz });
+	});
+};
+
+exports.getQuestion = function(req,res){
+
+	Quiz.findOne({ _id: req.params.quiz_id }, function(err, quiz){
+		if(err){
+			console.log(err);
+		}
+
+		var question = quiz.questions.id(req.params.question_id);
+		res.render('admin/question.ejs', { user: req.user, quiz: quiz, question: question });
+	});
+
+};
+
+// Users
+exports.getUsers = function(req,res){
+	User.find({}, function(err, users){
+		if(err){
+			console.log(err);
+		}
+		res.render('admin/users.ejs', {user:req.user, users:users});
 	});
 };

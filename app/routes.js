@@ -49,6 +49,9 @@ module.exports = function(app,passport){
 
 	apiRouter.route('/quizzes/:quiz_id/questions')
 		.post(authController.isLoggedIn, authController.isAdmin, quizController.postQuestion);
+
+	apiRouter.route('/quizzes/:quiz_id/questions/:question_id')
+		.get(quizController.getQuestion);
 	
 	// User Routes
 
@@ -99,6 +102,10 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/quizzes/:quiz_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuiz);
+
+
+	adminRouter.route('/quizzes/:quiz_id/questions/:question_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuestion);
 	
 	//  Non API routers
 	router.route('/signup')

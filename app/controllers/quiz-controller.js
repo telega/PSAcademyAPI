@@ -9,7 +9,6 @@ exports.getQuizzes = function(req,res){
 	});
 };
 
-
 exports.postQuiz = function(req,res){
 	var quiz = new Quiz();
 	quiz.name = req.body.name;
@@ -41,7 +40,6 @@ exports.getQuiz = function(req,res){
 	});
 };
 
-
 exports.postQuestion = function(req,res){
 	var question = {
 		q: req.body.q,
@@ -65,6 +63,19 @@ exports.postQuestion = function(req,res){
 			res.status(200).json({message: 'Question Added', data: quiz });
 		});
 	});
+};
+
+exports.getQuestion = function(req,res){
+
+	Quiz.findById(req.params.quiz_id, function(err, quiz){
+		if(err){
+			console.log(err);
+		}
+
+		var question = quiz.questions.id(req.params.question_id);
+		res.status(200).json(question);
+	});
+
 };
 
 /*

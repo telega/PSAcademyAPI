@@ -12,6 +12,7 @@ var QuestionSchema = new Schema({
 	correct: String,
 	incorrect: String,
 	select_any: {type: Boolean, default: false},
+	order: Number,
 });
 
 var QuizSchema = new Schema({
