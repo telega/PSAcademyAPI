@@ -51,7 +51,9 @@ module.exports = function(app,passport){
 		.post(authController.isLoggedIn, authController.isAdmin, quizController.postQuestion);
 
 	apiRouter.route('/quizzes/:quiz_id/questions/:question_id')
-		.get(quizController.getQuestion);
+		.get(quizController.getQuestion)
+		.put(authController.isLoggedIn, authController.isAdmin, quizController.putQuestion)
+		.delete(authController.isLoggedIn, authController.isAdmin, quizController.deleteQuestion);
 	
 	// User Routes
 

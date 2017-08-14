@@ -62,11 +62,11 @@
               <tbody>
               <% quiz.questions.forEach(function(question){ %>
                   <tr>
-                      <td></td>
+                      <td><%=question.order%></td>
                       <td><%= question.q %></td>
                       <td>
                       <a href = "/admin/quizzes/<%= quiz._id %>/questions/<%=question._id%>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-default">Edit</a>
-                      <button  data-quiz-id = "<%= quiz._id %>" data-quiz-name = "<%= quiz.name %>" data-toggle=" modal" data-target="#deleteQuizModal" class = "btn btn-danger deleteQuiz">Delete</button>
+                      <button  data-quiz-id = "<%= quiz._id %>" data-question-id="<%=question._id%>" data-quiz-name = "<%= quiz.name %>" data-toggle="modal" data-target="#deleteQuestionModal" class = "btn btn-danger deleteQuestion">Delete</button>
                       </td>
                   </tr>
   
@@ -135,7 +135,7 @@
 </div>
 
 
-<!-- <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -145,7 +145,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <p id="questionToDeleteName"></p>
         <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
         <strong>You are about to Delete this Question.This cannot be undone.</strong>
       </div>
@@ -155,7 +154,7 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
 
 <!-- Scripts --> 
 <script>
@@ -213,20 +212,19 @@ $(document).ready(function(){
         });
   });
 
-  $('#deleteQuizModal').on('show.bs.modal', function(e){
+  $('#deleteQuestionModal').on('show.bs.modal', function(e){
         var button = $(e.relatedTarget); 
         var modal = $(this);
-        modal.find('#quizToDeleteName').text(button.data('quizName'));
-        modal.find('#quizDeleteConfirm').on('click', function(e){
-            var url = "http://localhost:3000/api/quizzes/" + button.data('quizId');
+        modal.find('#questionDeleteConfirm').on('click', function(e){
+            var url = "http://localhost:3000/api/quizzes/" + button.data('quizId') + "/questions/" + button.data('questionId');
             $.ajax({
                   type: "DELETE",
                   url: url,
                   dataType: 'json',
                   async: true,
                   success: function (){
-                        location.reload(true);
-                    }
+                      location.reload(true);
+                  }
             })
         })
   });

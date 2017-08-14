@@ -105,8 +105,7 @@
                     <td><%= resource.title %></td>
                     <td><%= resource.url %></td>
                     <td>
-                    <a href = "/admin/courses/<%=course._id%>/units/<%= unit._id %>/modules/<%=module._id%>" data-module-id = "<%= module._id %>" data-resource-id ="<%=resource._id%>" class = "btn btn-default">Edit</a>
-                    <button  data-resources = "<%= JSON.stringify(module.resources) %>" data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-resource-id ="<%=resource._id%>" data-toggle="modal" data-target="#deleteResourceModal" class = "btn btn-danger deleteResource">Delete</button>
+                      <button  data-resources = "<%= JSON.stringify(module.resources) %>" data-module-id = "<%=module._id %>" data-unit-id= "<%=unit._id%>" data-module-name = "<%= module.name %>" data-course-id="<%=course._id%>" data-resource-id ="<%=resource._id%>" data-toggle="modal" data-target="#deleteResourceModal" class = "btn btn-danger deleteResource">Delete</button>
                     </td>
                 </tr>
 
@@ -316,11 +315,9 @@ $(document).ready(function(){
           e.preventDefault();          
           var data = {};
           var resourcesArray = button.data('resources');
-          console.log(resourcesArray)
           var resourceToDeleteId = button.data('resourceId')
           data.resources = JSON.stringify(resourcesArray.filter( resource => resource._id != resourceToDeleteId));
           var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
-          console.log(data);
              $.ajax({
                   type: "PUT",
                   url: url,
