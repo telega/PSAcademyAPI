@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -30,7 +31,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
 app.use(session({
-	secret: 'ilovescotchscotchyscotchscotch',
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false
 }));
