@@ -7,12 +7,13 @@ const userController = require('./controllers/user-controller');
 const authController = require('./controllers/auth-controller');
 const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
+const academyController = require('./controllers/academy-controller');
 
 module.exports = function(app,passport){
 
 	// Course Routes - API
 	apiRouter.route('/courses')
-		.get( courseController.getCourses)
+		.get(courseController.getCourses)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
 
 	apiRouter.route('/courses/:course_id')
@@ -112,17 +113,20 @@ module.exports = function(app,passport){
 	//  Non API routers
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
-			successRedirect: '/api/courses',
-			failureRedirect: '/api/courses',
+			successRedirect: '/courses',
+			failureRedirect: '/',
 			failureFlash: true
 		}));
 
 	router.route('/login')
 		.post(passport.authenticate('local-login', {
-			successRedirect:'/api/courses',
+			successRedirect:'/courses',
 			failureRedirect:'/',
 			failureFlash: true
 		}));
+
+	router.route('/courses')
+		.get(authController.isLoggedIn, academyController.getCourses);
 
 	router.route('/')
 		.get(function(req,res){

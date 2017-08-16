@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Courses | Admin</title>
+    <title>Courses | Academy by PatSnap</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -17,72 +17,46 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/admin/courses">Courses</a></li>
-        <li><a href="/admin/users">Users</a></li>
-        <li><a href="/admin/quizzes">Quizzes</a></li>
+        <li class="active"><a href="/courses">Courses</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/admin/logout">Logout</a></li>
+        <li><a href="/logout">Logout</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
 <div class="container">
-    <div class = "row">
-        <div class = "col-md-12">
-            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
-        <div>
-    </div>
     <div class = row>
         <div class = "col-md-12">
             <ol class="breadcrumb">
-                <li><a href="/admin">Home</a></li>
                 <li class = "active">Courses</li>
             </ol>
         </div>
     </div>
     <div class = "row">
-        <div class="col-md-12">
-            <h2>Courses </h2>
-        </div>
+        <div class = "col-md-12">
+          <div class="page-header">
+            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Courses </h1>
+          </div>
+        <div>
     </div>
     <div class = "row">
-        <div class="col-md-12">
-            <table width='100%' class="table table-striped">
-            <thead>
-                <th>#</th>
-                <th>Course Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </thead>    
-            <tbody>
             <% courses.forEach(function(course){ %>
-                <tr>
-                    <td><%= course.order %></td>
-                    <td><%= course.name %></td>
-                    <td><% if(course.published==true){ %>
-                            <strong> Published </strong>
-                        <% } else { %>
-                            Draft
-                        <% } %>
-                    </td>
-                    <td>
-                    <a href = "/admin/courses/<%= course._id %>" data-course-id = "<%= course._id %>" class = "btn btn-default">Edit</a>
-                    <button  data-course-id = "<%= course._id %>" data-course-name = "<%= course.name %>" data-toggle="modal" data-target="#courseDeleteModal" class = "btn btn-danger deleteCourse">Delete</button>
-                    </td>
-                </tr>
-
+              <div class="col-md-12">
+                <div class="thumbnail">
+                  <img src="..." alt="...">
+                  <div class="caption">
+                    <h3><%=course.name%></h3>
+                    <p><%=course.description%></p>
+                    <p><a href="#" class="btn btn-primary" role="button">Take the Course</a></p>
+                  </div>
+                </div>
+              </div>
             <% }); %>
-            </tbody>
-            </table>
         </div>
     </div>
-    <div class = "row">
-        <div class ="col-md-2">
-            <button data-toggle="modal" data-target="#courseAddModal" class = "btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Course</button>
-        </div>
-    </div>
+   
 </div>
 
 <!-- Modals -->
