@@ -12,14 +12,51 @@
 <div class="container">
 
     <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Academy </h1>
-
-        <p>Login or Register with:</p>
-
-        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span>Login</a>
-
+        <h1>Academy by PatSnap </h1>
     </div>
 
+    <div class = "row"> 
+        <div class="col-md-6">
+            <!-- LOGIN FORM -->
+            <h2>Login</h2>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password">
+                </div>
+        
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </form>
+        </div>
+        <div class = "col-md-6">
+            <!-- SIGNUP FORM -->
+            <h2>Sign Up</h2>
+            <form action="/signup" method="post">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" name="firstname">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" name="lastname">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password">
+                </div>
+        
+                <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

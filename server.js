@@ -10,11 +10,11 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const configDB =  require('./config/database');
+const dbUrl =  process.env.DB_URL;
 const bluebird = require('bluebird');
 
 mongoose.promise = bluebird;
-mongoose.connect(configDB.url, {
+mongoose.connect(dbUrl, {
 	useMongoClient:true
 });
 
