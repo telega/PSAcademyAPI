@@ -128,6 +128,9 @@ module.exports = function(app,passport){
 	router.route('/courses')
 		.get(authController.isLoggedIn, academyController.getCourses);
 
+	router.route('/courses/:course_id')
+		.get(authController.isLoggedIn, academyController.getCourse);
+
 	router.route('/')
 		.get(function(req,res){
 			res.render('index.ejs');

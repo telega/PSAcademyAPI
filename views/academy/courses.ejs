@@ -43,13 +43,13 @@
     </div>
     <div class = "row">
             <% courses.forEach(function(course){ %>
-              <div class="col-md-12">
+              <div class="col-md-4">
                 <div class="thumbnail">
-                  <img src="..." alt="...">
+                  <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>">
                   <div class="caption">
                     <h3><%=course.name%></h3>
                     <p><%=course.description%></p>
-                    <p><a href="#" class="btn btn-primary" role="button">Take the Course</a></p>
+                    <p><a href="/courses/<%=course._id%>" class="btn btn-primary" role="button">Take the Course</a></p>
                   </div>
                 </div>
               </div>

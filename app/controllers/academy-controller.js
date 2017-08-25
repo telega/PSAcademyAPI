@@ -10,11 +10,11 @@ exports.getCourses = function(req,res){
 };
 
 exports.getCourse = function(req,res){
-	Course.find({ _id: req.params.course_id}, function (err,course){
+	Course.findById(req.params.course_id, function (err,course){
 		if(err){
 			console.log(err);
 		}
-		res.json(course);
+		res.render('academy/course.ejs', {user: req.user, course: course});
 	});
 };
 

@@ -28,6 +28,14 @@ var UnitSchema = new Schema({
 	},
 	order: Number,
 	modules: [ModuleSchema],
+	unitImageUrl:{
+		type: String,
+		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default.jpg'
+	},
+	unitThumbImageUrl:{
+		type: String,
+		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default_thumb.jpg'
+	},
 });
 
 var CourseSchema = new Schema({
@@ -39,6 +47,14 @@ var CourseSchema = new Schema({
 	},
 	order: Number,
 	units: [UnitSchema],
+	courseImageUrl:{
+		type: String,
+		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default.jpg'
+	},
+	courseThumbImageUrl:{
+		type: String,
+		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default_thumb.jpg'
+	},
 });
 
 module.exports = mongoose.model('Course', CourseSchema);
