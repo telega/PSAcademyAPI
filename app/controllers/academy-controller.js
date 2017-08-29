@@ -19,15 +19,15 @@ exports.getCourse = function(req,res){
 };
 
 
-exports.getCourseUnits = function(req,res){
-	Course.findById(req.params.course_id, function(err,course){
-		if(err){
-			console.log(err);
-		}
+// exports.getCourseUnits = function(req,res){
+// 	Course.findById(req.params.course_id, function(err,course){
+// 		if(err){
+// 			console.log(err);
+// 		}
 
-		res.json(course.units);
-	});
-};
+// 		res.json(course.units);
+// 	});
+// };
 
 exports.getCourseUnit = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
@@ -35,7 +35,7 @@ exports.getCourseUnit = function(req,res){
 			console.log(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
-		res.json(unit);
+		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit});
 	});
 };
 

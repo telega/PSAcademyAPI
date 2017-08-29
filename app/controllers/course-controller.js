@@ -42,6 +42,8 @@ exports.putCourse = function(req,res){
 		course.description = req.body.description || course.description;
 		course.order = req.body.order || course.order;
 		course.published = req.body.published || course.published;
+		course.courseImageUrl = req.body.courseImageUrl || course.courseImageUrl;
+		course.courseThumbImageUrl = req.body.courseThumbImageUrl || course.courseThumbImageUrl;
 
 		course.save(function(err){
 			if(err){
@@ -116,6 +118,8 @@ exports.putCourseUnit = function(req,res){
 		unit.description = req.body.description || unit.description;
 		unit.order = req.body.order || unit.order;
 		unit.published = req.body.published || unit.published;
+		unit.unitImageUrl = req.body.unitImageUrl || unit.unitImageUrl;
+		unit.unitThumbImageUrl = req.body.unitThumbImageUrl || unit.unitThumbImageUrl;
 
 		course.save(function(err){
 			if(err){

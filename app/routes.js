@@ -106,7 +106,6 @@ module.exports = function(app,passport){
 	adminRouter.route('/quizzes/:quiz_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuiz);
 
-
 	adminRouter.route('/quizzes/:quiz_id/questions/:question_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuestion);
 	
@@ -130,6 +129,9 @@ module.exports = function(app,passport){
 
 	router.route('/courses/:course_id')
 		.get(authController.isLoggedIn, academyController.getCourse);
+
+	router.route('/courses/:course_id/units/:unit_id')
+		.get(authController.isLoggedIn, academyController.getCourseUnit);
 
 	router.route('/')
 		.get(function(req,res){

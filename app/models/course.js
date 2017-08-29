@@ -17,6 +17,10 @@ var ModuleSchema = new Schema({
 		title : String,
 		url : String
 	}],
+	contentId: {
+		type: String,
+		default: '226295792'
+	},
 });
 
 var UnitSchema = new Schema({
