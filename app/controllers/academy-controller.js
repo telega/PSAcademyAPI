@@ -1,4 +1,6 @@
 var Course = require('../models/course');
+var Quiz = require('../models/quiz');
+
 
 exports.getCourses = function(req,res){
 	Course.find({}, function(err, courses){
@@ -39,13 +41,21 @@ exports.getCourseUnit = function(req,res){
 	});
 };
 
-exports.getCourseUnitModule = function(req,res){
+
+exports.getQuiz = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
 			console.log(err);
 		}
-		var unit = course.units.id(req.params.unit_id);
-		let module = unit.modules.filter( m => m._id == req.params.module_id);
-		res.json(module);
+
+		Quiz.findById({ _id: req.params.quiz_id}, function (err,quiz){
+			if(err){
+				console.log(err);
+			}
+
+			var unit = course.units.id(req.params.unit_id);
+			res.render('academy/quiz.ejs', {user: req.user, course: course, unit: unit, quiz: JSON.stringify(quiz)});
+		});
+
 	});
 };

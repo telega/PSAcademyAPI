@@ -218,6 +218,7 @@ exports.putCourseUnitModule = function(req,res){
 				module.description = req.body.description || module.description;
 				module.length = req.body.length || module.length;
 				module.type = req.body.type || module.type;
+				module.contentId = req.body.contentId || module.contentId;
 				
 				if(req.body.resources){
 					module.resources = JSON.parse(req.body.resources);

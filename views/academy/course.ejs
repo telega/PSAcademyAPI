@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Course | Admin</title>
+    <title><%=course.name%> | Academy by PatSnap</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -25,8 +25,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/admin/courses">Courses</a></li>
-        <li><a href="/admin/users">Users</a></li>
-        <li><a href="/admin/quizzes">Quizzes</a></li>
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/admin/logout">Logout</a></li>
@@ -55,15 +54,12 @@
         <div class = "col-md-12">
 
           <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Course Description</h3>
-  </div>
-  <div class="panel-body">
-<%=course.description%>  </div>
-</div>
-
-
-
+            <div class="panel-heading">
+              <h3 class="panel-title">Course Description</h3>
+            </div>
+          <div class="panel-body">
+            <%=course.description%>  </div>
+          </div>
         </div>
     </div>
     
