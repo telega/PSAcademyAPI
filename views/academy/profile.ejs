@@ -49,22 +49,7 @@
     </div>
     <div class = "row">
         <div class="col-md-12">
-            <table width='100%' class="table table-striped">
-            <thead>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </thead>    
-            <tbody>
-            <% users.forEach(function(user){ %>
-                <tr>
-                    <td><%= user.local.email %></td>
-                    <td><%= user.local.role %></td>
-                    <td> </td>
-                </tr>
-            <% }); %>
-            </tbody>
-            </table>
+            <%=user%>
         </div>
     </div>
     

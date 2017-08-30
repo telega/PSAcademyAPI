@@ -58,14 +58,20 @@ module.exports = function(app,passport){
 	
 	// User Routes
 
-	router.route('/user')
-		.get(authController.isAuthenticated, userController.getUser);
+	// router.route('/user')
+	// 	.get(authController.isAuthenticated, userController.getUser);
 
 	apiRouter.route('/users')
 		.get(authController.isAuthenticated, authController.isAdmin, userController.getUsers);
 
 	apiRouter.route('/users/verify')
 		.get(authController.isAuthenticated, userController.verifyUser);
+
+	apiRouter.route('/users/:user_id')
+		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser);
+
+	apiRouter.route('/users/:user_id/progress/:item_id')
+		.put( userController.putCourseProgress);
 
 	// admin Routes
 	
@@ -86,6 +92,9 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/users')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUsers);
+
+	adminRouter.route('/users/:user_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUser);
 
 	adminRouter.route('/courses')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourses);
@@ -135,6 +144,9 @@ module.exports = function(app,passport){
 
 	router.route('/courses/:course_id/units/:unit_id/quiz/:quiz_id')
 		.get(authController.isLoggedIn, academyController.getQuiz);
+
+	router.route('/profile')
+		.get(authController.isLoggedIn, academyController.getProfile);
 
 	router.route('/')
 		.get(function(req,res){

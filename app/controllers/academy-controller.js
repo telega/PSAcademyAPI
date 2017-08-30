@@ -1,6 +1,6 @@
 var Course = require('../models/course');
 var Quiz = require('../models/quiz');
-
+var user = require('../models/user')
 
 exports.getCourses = function(req,res){
 	Course.find({}, function(err, courses){
@@ -18,6 +18,10 @@ exports.getCourse = function(req,res){
 		}
 		res.render('academy/course.ejs', {user: req.user, course: course});
 	});
+};
+
+exports.getProfile = function(req,res){
+	res.render('academy/profile.ejs', {user: req.user});
 };
 
 

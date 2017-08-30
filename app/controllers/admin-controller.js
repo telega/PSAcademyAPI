@@ -76,7 +76,6 @@ exports.getQuestion = function(req,res){
 		var question = quiz.questions.id(req.params.question_id);
 		res.render('admin/question.ejs', { user: req.user, quiz: quiz, question: question });
 	});
-
 };
 
 // Users
@@ -86,5 +85,14 @@ exports.getUsers = function(req,res){
 			console.log(err);
 		}
 		res.render('admin/users.ejs', {user:req.user, users:users});
+	});
+};
+
+exports.getUser = function(req,res){
+	User.findById({ _id: req.params.user_id }, function (err,user){
+		if(err){
+			console.log(err)
+		}
+		res.render('admin/user.ejs', {user: user});
 	});
 };

@@ -36,8 +36,14 @@ var userSchema = mongoose.Schema({
 			required: true
 		},
 		profile		: {
-			firstName: { type: String },
-			lastName: { type: String }
+			firstName: { 
+				type: String,
+				default:'User' 
+			},
+			lastName: { 
+				type: String, 
+				default:''
+			}
 		},
 		role		: {
 			type: String,

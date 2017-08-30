@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+    <title>Users| Admin</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src = "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/admin"><span class="glyphicon glyphicon-education" aria-hidden="true"></span></a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/admin/courses">Courses</a></li>
+        <li class="active"><a href="/admin/users">Users</a></li>
+        <li><a href="/admin/quizzes">Quizzes</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/admin/logout">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container">
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
+        <div>
+    </div>
+    <div class = row>
+        <div class = "col-md-12">
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li><a href="/admin/users">Users</a></li>
+                <li class = "active"><%=user.local.profile.firstName%> <%=user.local.profile.lastName%></li>
+            </ol>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
+            <h2>User Details</h2>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
+            <table width='100%' class="table table-striped">
+            <thead>
+                <th></th>
+                <th></th>
+                <th>Edit</th>
+            </thead>    
+            <tbody>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td><%= user.local.email %></td>
+                    <td><button data-toggle="modal" data-target="#updateEmailModal" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td><%= user.local.profile.firstName %> <%=user.local.profile.lastName%></td>
+                    <td><button data-toggle="modal" data-target="#updateNameModal" class="btn btn-default"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>Password</strong></td>
+                    <td></td>
+                    <td><button data-toggle="modal" data-target="#updatePasswordModal" class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>Role</strong></td>
+                    <td><%=user.local.role%></td>
+                    <td><button data-toggle="modal" data-target="#updateRoleModal" class="btn btn-danger"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
+            <h2>Academy Progress</h2>
+        </div>
+    </div>
+
+<!-- Modals -->
+
+<div class="modal fade" id="updateEmailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Email</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editEmail">
+              <div class="form-group">
+                <label forid="newEmail">New Email</label>
+                <input required type="text" class="form-control" id="newEmail" value="<%=user.local.email%>"  placeholder="<%=user.local.email%>">
+              </div>
+              <button type="submit" data-user-id = "<%=user._id%>"class="btn btn-warning" id="updateEmail">Update Email</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="updateRoleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Role</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editRole">
+          <div class="form-group">
+              <label>Role</label>
+              <div class="radio">
+                <label for="roleAdmin">
+                <input type="radio"  name="optionsModuleTypes" id="roleAdmin" value="Admin" <% if (user.local.role=='Admin'){%> checked <%}%> >Admin</label>
+              </div>
+              <div class="radio">
+                <label for="roleMember">
+                <input type="radio" name="optionsModuleTypes" id="roleMember" <% if (user.local.role=='Member'){%> checked <%}%> value="Quiz">Member</label>
+              </div>
+            </div>
+              <button type="submit" data-user-id = "<%=user._id%>" class="btn btn-danger" id="updateRole">Update Role</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateNameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Name</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editName">
+              <div class="form-group">
+                <label forid="newFirstName">First Name</label>
+                <input required type="text" class="form-control" id="newFirstName" value="<%=user.local.profile.firstName %>" >
+              </div>
+              <div class="form-group">
+                <label forid="newLastName">Last Name</label>
+                <input required type="text" class="form-control" id="newLastName" value="<%=user.local.profile.lastName %>" >
+              </div>
+              <button type="submit" data-user-id = "<%=user._id%>"class="btn btn-warning" id="updateName">Update Name</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Scripts --> 
+<script>
+
+$(document).ready(function(){
+
+    $("#updateName").on('click', function(e){
+      e.preventDefault();
+      var url = "http://localhost:3000/api/users/" + $(this).data('userId');
+      data = {
+        firstName: $('#newFirstName').val(),
+        lastName: $('#newLastName').val()
+      }
+      $.ajax({
+                type: "PUT",
+                url: url,
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (){
+                  location.reload(true);                    
+                }
+      });
+    })
+
+    // $("#updateRole").on('click', function(e){
+    //   var modal = $("#updateName");
+    //   e.preventDefault();
+    //   var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
+    //   data = {
+    //     type: $("input[name=optionsModuleTypes]:checked","#editType").val()
+    //   }
+
+    //   $.ajax({
+    //       type: "PUT",
+    //       url: url,
+    //       dataType: 'json',
+    //       async: true,
+    //       data: data,
+    //       success: function (){
+    //           location.reload(true);
+    //       }
+    //   });
+    // })
+
+    
+})
+</script>
+</body>
+</html>

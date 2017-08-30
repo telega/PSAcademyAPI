@@ -1,12 +1,61 @@
 <!doctype html>
 <html>
 <head>
-    <title>Quiz | Admin</title>
+    <title><%=unit.name%>| Academy by PatSnap</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
     <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src = "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <style>
+        .jumbotron{
+          background-image:url(<%=unit.unitImageUrl%>);
+          background-size:cover;
+          color:#fff;
+          min-height:400px;
+        }
+        /* BASE QUIZ STYLES */
+        /* These styles ensure that the necessary elements are hidden for toggling */
+        
+        /* DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING!! */
+        
+        .startQuiz,
+        .nextQuestion,
+        .backToQuestion,
+        .questions li.question,
+        .questions li.question .responses,
+        .questions li.question .responses .correct,
+        .questions li.question .responses .incorrect,
+        .quizResults {
+            display: none;
+        }
+        
+        /* If response messages are disabled or only shown on quiz completion,
+           nextQuestion button IS checkAnswer button - so it must be displayed */
+        .nextQuestion.checkAnswer {
+            display: block;
+        }
+        
+        ol.questions,
+        ul.answers,
+        ul.responses,
+        ol.questions li,
+        ul.answers li,
+        ul.responses li {
+            list-style-type: none;
+        }
+        
+        /* Accessibility */
+        .quizName span:first-child {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -17,9 +66,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/admin/courses">Courses</a></li>
-        <li><a href="/admin/users">Users</a></li>
-        <li class="active"><a href="/admin/quizzes">Quizzes</a></li>
+        <li class="active"><a href="/admin/courses">Courses</a></li>
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/admin/logout">Logout</a></li>
@@ -27,37 +75,26 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
 <div class="container">
-    <div class = "row">
-        <div class = "col-md-12">
-            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
-        <div>
-    </div>
-    <div class = row>
+
+  <div class = row>
         <div class = "col-md-12">
             <ol class="breadcrumb">
-                <li><a href="/admin">Home</a></li>
-                <li><a href="/admin/quizzes">Quizzes</a></li>
-                <li class ="active"><%=quiz.name%></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/courses">Courses</a></li>
+                <li><a href="/courses/<%=course._id%>/"><%=course.name%></a></li>
+                <li><a href="/courses/<%=course._id%>/units/<%=unit._id%>"><%=unit.name%></a></li>
+                <li class = "active">Quiz</li>
             </ol>
         </div>
     </div>
-    <div class = "row">
-        <div class="col-md-12">
-            <h3>Edit Quiz</h3>
-            <h2><%=quiz.name%></h2>
-        </div>
-    </div>
-    <h3>Quiz Questions</h3>
-      <div class = "row">
-          <div class="col-md-12">
+</div>
+<div class="container">
+  <div class="jumbotron">
+    <h2><%=unit.name%></h2>
+    <h1>Quiz</h1>
+  </div>
 
-          <%=quiz%>
-          </div>
-      </div>
-    <div class = "row">
-        <div class ="col-md-2">
             
 <div id="slickQuiz">
         <h1 class="quizName"><!-- where the quiz name goes --></h1>
