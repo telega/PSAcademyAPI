@@ -4,7 +4,7 @@ const bcrypt   = require('bcrypt-nodejs');
 mongoose.Promise = bluebird;
 
 var academyProgressSchema = mongoose.Schema({
-	itemId : Number,
+	itemId : String,
 	itemProgress : {
 		type: Number,
 		default: 0

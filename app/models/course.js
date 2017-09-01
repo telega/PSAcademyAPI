@@ -6,7 +6,10 @@ mongoose.Promise = bluebird;
 var ModuleSchema = new Schema({
 	name: {type: String, required: true},
 	description: String,
-	length: {type: Number},
+	length: {
+		type: Number,
+		default: 1
+	},
 	order: Number,
 	type: {
 		type: String,

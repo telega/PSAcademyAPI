@@ -39,6 +39,8 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnitModule);
 
+
+
 	// Quiz Routes
 	apiRouter.route('/quizzes')
 		.get(quizController.getQuizzes)
@@ -67,11 +69,17 @@ module.exports = function(app,passport){
 	apiRouter.route('/users/verify')
 		.get(authController.isAuthenticated, userController.verifyUser);
 
+	// apiRouter.route('/users/progress')
+	// 	.put(authController.isLoggedIn, userController.putCourseProgress);
+
 	apiRouter.route('/users/:user_id')
 		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser);
 
-	apiRouter.route('/users/:user_id/progress/:item_id')
-		.put( userController.putCourseProgress);
+	// apiRouter.route('/users/:user_id/progress/:item_id')
+	// 	.put( userController.putCourseProgress);
+
+	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id')
+		.put(academyController.putModuleProgress);
 
 	// admin Routes
 	

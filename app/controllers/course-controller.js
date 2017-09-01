@@ -68,7 +68,6 @@ exports.getCourseUnits = function(req,res){
 		if(err){
 			console.log(err);
 		}
-
 		res.json(course.units);
 	});
 };
