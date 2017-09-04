@@ -27,6 +27,11 @@ exports.isAdmin= function(req,res,next) {
 	});
 };
 
+exports.logOut = function(req,res){
+	req.logout();
+	res.redirect('/');
+};
+
 passport.use(new BasicStrategy(
 	function(email, password, next){
 		User.findOne({ 'local.email' :  email }, function(err, user) {

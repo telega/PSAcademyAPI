@@ -22,7 +22,62 @@ exports.getCourse = function(req,res){
 };
 
 exports.getProfile = function(req,res){
-	res.render('academy/profile.ejs', {user: req.user});
+
+	Course.find({}, function(err, courses){
+		if(err){
+			console.log(err);
+		}
+
+		let items = [];
+		// cant use array.map 
+		courses.forEach(function(course){
+
+			var cidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course._id.toString());
+			if(cidx !== -1){
+				items.push({
+					name: course.name,
+					progress: req.user.local.academyProgress[cidx].itemProgress,
+					completed: req.user.local.academyProgress[cidx].itemCompleted,
+					type: 'Course'
+				});
+			}
+
+			if(course.units.length > 0){
+				for(var j = 0; j < course.units.length; j++){
+
+					var uidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j]._id.toString());
+					if(uidx !== -1){
+						items.push({
+							name: course.units[j].name,
+							progress: req.user.local.academyProgress[uidx].itemProgress,
+							completed: req.user.local.academyProgress[uidx].itemCompleted,
+							type: 'Unit',
+						});
+					}
+
+					if(course.units[j].modules.length > 0 ){
+						for(var k = 0; k < course.units[j].modules.length; k++){
+							var idx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j].modules[k]._id.toString());
+							if( idx !== -1){
+								items.push({
+									name: course.units[j].modules[k].name,
+									progress: req.user.local.academyProgress[idx].itemProgress,
+									completed: req.user.local.academyProgress[idx].itemCompleted,
+									type: 'Module'
+								});
+							}
+						}
+					}
+					
+				}
+			}
+
+
+		
+		});
+
+		res.render('academy/profile.ejs', {items:items, courses: courses, user: req.user});	
+	});
 };
 
 
@@ -144,7 +199,6 @@ exports.getQuiz = function(req,res){
 // }
 
 exports.putModuleProgress = function(req,res){
-
 
 	// find the user that we want to update.
 	User.findById(req.params.user_id, function(err,user){
@@ -313,18 +367,18 @@ exports.putModuleProgress = function(req,res){
 			}
 
 			//console.log(user);
-		//
+			//
 
 
-		user.save(function(err){
-			if(err){
-				console.log(err);
-			}
-
-			console.log(user.local.academyProgress);
-
-			res.status(200).json({message: 'User Progress Updated', user: user});
-		});
+			user.save(function(err){
+				if(err){
+					console.log(err);
+				}
+	
+				console.log(user.local.academyProgress);
+	
+				res.status(200).json({message: 'User Progress Updated', user: user});
+			});
 
 		});
 

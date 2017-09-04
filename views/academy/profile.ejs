@@ -50,19 +50,26 @@
     <div class = "row">
         <div class="col-md-12">
         <h2>Progress</h2>
-            <%=user.local.academyProgress%>
+            <table width='100%' class="table table-striped">
+                <thead>
+                    <th>Name </th>
+                    <th>Level</th>
+                    <th>Progress </th>
+                    <th>Completed</th>
+                </thead>
+                <tbody>
+                    <% items.forEach(function(item){%>
+                    <tr>
+                        <td> <%=item.name%></td>
+                        <td> <%=item.type%></td>
+                        <td> <%=Math.round(item.progress)%> %</td>
+                        <td> <%=item.completed%></td>
+                    </tr>
+                    <%});%>
+                </tbody>
+            </table>
         </div>
-        <div class="col-md-12">
-        <h2>User</h2>
-                
-            <%=user%>
-        </div>
-    </div>
-
-    <div class = "row">
-        <div class="col-md-12">
-            <button id = "testButton" data-user-id="<%=user._id%>">test</button>
-        </div>
+        
     </div>
 
 <!-- Modals -->
@@ -72,26 +79,6 @@
 <script>
 
 $(document).ready(function(){
-
-    $("#testButton").on('click', function(e){
-      e.preventDefault();
-      var url = "/api/users/progress";
-      data = {
-            itemId: 9999,
-            itemProgress: 1,
-            unitId: '59831a4825354d05eba5a9e3'
-      }
-      $.ajax({
-                type: "PUT",
-                url: url,
-                dataType: 'json',
-                async: true,
-                data: data,
-                success: function (){
-                        location.reload(true);                    
-                    }
-      });
-    })
 
     
 })
