@@ -20,6 +20,7 @@ module.exports = function(passport){
 		passReqToCallback : true 
 	},
 	function(req, email, password, done) {
+		console.log(req.body)
 		process.nextTick(function() {
 		// find a user whose email is the same as the forms email
 		// we are checking to see if the user trying to login already exists
@@ -36,6 +37,8 @@ module.exports = function(passport){
 
 					newUser.local.email	= email;
 					newUser.local.password = newUser.generateHash(password);
+					newUser.local.profile.firstName = req.body.firstname;
+					newUser.local.profile.lastName = req.body.lastname;
 
 					newUser.save(function(err) {
 						if (err){

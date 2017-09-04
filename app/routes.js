@@ -129,14 +129,14 @@ module.exports = function(app,passport){
 	//  Non API routers
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
-			successRedirect: '/courses',
+			successRedirect: '/',
 			failureRedirect: '/',
 			failureFlash: true
 		}));
 
 	router.route('/login')
 		.post(passport.authenticate('local-login', {
-			successRedirect:'/courses',
+			successRedirect:'/',
 			failureRedirect:'/',
 			failureFlash: true
 		}));
@@ -156,10 +156,11 @@ module.exports = function(app,passport){
 	router.route('/profile')
 		.get(authController.isLoggedIn, academyController.getProfile);
 
+	router.route('/logout')
+		.get(authController.logOut);
+
 	router.route('/')
-		.get(function(req,res){
-			res.render('index.ejs');
-		});
+		.get(academyController.getHomepage);
 
 	app.use('/', router);
 	app.use('/api', apiRouter);

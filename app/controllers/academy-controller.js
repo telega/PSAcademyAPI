@@ -12,6 +12,38 @@ exports.getCourses = function(req,res){
 	});
 };
 
+exports.getHomepage = function(req,res){
+	if(req.user){
+		Course.find({}, function(err, courses){
+			if(err){
+				console.log(err);
+			}
+	
+			let items = [];
+			// cant use array.map 
+			courses.forEach(function(course){
+	
+				var cidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course._id.toString());
+				if(cidx !== -1){
+					items.push({
+						name: course.name,
+						progress: req.user.local.academyProgress[cidx].itemProgress,
+						completed: req.user.local.academyProgress[cidx].itemCompleted,
+						id: course._id
+					});
+				}
+	
+			
+			});
+
+			res.render('academy/academy.ejs', {items:items, user: req.user});	
+		});
+
+	} else {
+		res.render('index.ejs');
+	}
+};
+
 exports.getCourse = function(req,res){
 	Course.findById(req.params.course_id, function (err,course){
 		if(err){
