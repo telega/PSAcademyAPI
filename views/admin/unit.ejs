@@ -246,7 +246,7 @@
         <% if(unit.published==true){ %>
           <button data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-publish="<%=unit.published%>" class="btn btn-warning" id="updateStatus">  Unpublish </button>
         <% } else { %>
-          <button data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-publish="<%=course.published%>" class="btn btn-primary" id="updateStatus"> Publish </button>
+          <button data-course-id = "<%=course._id%>" data-unit-id = "<%=unit._id%>" data-publish="<%=unit.published%>" class="btn btn-primary" id="updateStatus"> Publish </button>
         <% } %>
       </div>
       <div class="modal-footer">

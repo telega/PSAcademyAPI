@@ -81,6 +81,9 @@ module.exports = function(app,passport){
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id')
 		.put(academyController.putModuleProgress);
 
+	apiRouter.route('/progress/:user_id/courses/:course_id')
+		.put(academyController.addCourseToUser);
+
 	// admin Routes
 	
 	adminRouter.route('/')
