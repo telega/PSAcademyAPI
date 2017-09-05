@@ -40,7 +40,6 @@ module.exports = function(app,passport){
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnitModule);
 
 
-
 	// Quiz Routes
 	apiRouter.route('/quizzes')
 		.get(quizController.getQuizzes)
@@ -73,7 +72,8 @@ module.exports = function(app,passport){
 	// 	.put(authController.isLoggedIn, userController.putCourseProgress);
 
 	apiRouter.route('/users/:user_id')
-		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser);
+		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser)
+		.delete(authController.isLoggedIn, authController.isAdmin, userController.deleteUser);
 
 	// apiRouter.route('/users/:user_id/progress/:item_id')
 	// 	.put( userController.putCourseProgress);

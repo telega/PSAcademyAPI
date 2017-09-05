@@ -49,7 +49,14 @@ exports.getCourse = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		res.render('academy/course.ejs', {user: req.user, course: course});
+
+		var courseProgress = 0; 
+		var courseItem = req.user.local.academyProgress.filter(m => m.itemId == course._id);
+		if(courseItem.length>0){
+			courseProgress = Math.round(courseItem[0].itemProgress);
+		}
+
+		res.render('academy/course.ejs', {user: req.user, course: course, courseProgress: courseProgress});
 	});
 };
 
@@ -121,7 +128,17 @@ exports.getCourseUnit = function(req,res){
 			console.log(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
-		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit});
+
+
+		var unitProgress = 0; 
+		var unitItem = req.user.local.academyProgress.filter(m => m.itemId == unit._id);
+		if(unitItem.length>0){
+			unitProgress = Math.round(unitItem[0].itemProgress);
+		}
+
+
+
+		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress});
 	});
 };
 

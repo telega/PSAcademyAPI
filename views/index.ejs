@@ -5,36 +5,45 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"> <!-- load bootstrap css -->    
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
+
+    .jumbotron{
+        background-image:url(https://www.patsnap.com/hubfs/Academy/Images/psa_course_default.jpg);
+              background-size:cover;
+      color:#fff;
+      min-height:400px;
+      background-repeat:no-repeat;
+    }
     </style>
 </head>
 <body>
 
-    <div class="jumbotron text-center">
-        <h1>Academy by PatSnap </h1>
+   <div class="jumbotron text-center jumbotron-fluid">
+        <img class = "img-fluid" src ="https://www.patsnap.com/hubfs/Academy/Logo/1278_PatSnap_Academy_Logo_v3_White-02.png">
     </div>
+
 
 <div class="container">
 
-    <div class = "row"> 
-        <div class="col-md-6">
-            <!-- LOGIN FORM -->
-            <h2>Login</h2>
-            <form action="/login" method="post">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" class="form-control" name="email">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="password">
-                </div>
-        
-                <button type="submit" class="btn btn-primary btn-lg">Login</button>
-            </form>
-        </div>
-        <div class = "col-md-6">
-            <!-- SIGNUP FORM -->
-            <h2>Sign Up</h2>
+    <div class ="row">
+    <div class="col-md-6">
+    <h1 >Academy by PatSnap</h1>
+    <p>Welcome to Academy by <a href="https://www.patsnap.com">PatSnap</a>, a place where learning is free, fun and Duncan rules with an iron fist.</p>
+    <p>Chicharrones iceland prism bushwick subway tile. Cliche lyft bitters copper mug celiac selfies iPhone. Literally keytar williamsburg kinfolk poutine raw denim, franzen green juice succulents coloring book portland semiotics. PBR&B 3 wolf moon kickstarter salvia. Gentrify seitan fam jianbing coloring book gastropub meggings single-origin coffee cray tumeric vape. Normcore pinterest leggings pabst iPhone single-origin coffee subway tile polaroid tilde pitchfork lumbersexual kickstarter shabby chic fixie +1. Thundercats waistcoat chicharrones twee narwhal organic farm-to-table kombucha vice readymade schlitz normcore swag 8-bit shoreditch. Migas chambray truffaut taiyaki synth. Readymade hell of taxidermy, affogato PBR&B raclette bitters helvetica vaporware migas ennui dreamcatcher ramps distillery echo park.</p>
+
+    <h2>About PatSnap</h2>
+    <p>Proin nulla purus, tempus vel mollis vel, fringilla vitae quam. Nunc lobortis tristique metus vitae posuere. Fusce est orci, tincidunt dictum elit quis, auctor bibendum ligula. Etiam sem lacus, auctor eget rhoncus id, dictum at eros. Nunc elit diam, tempus in viverra eu, accumsan et sem. Pellentesque in ipsum et sapien pellentesque lobortis. Suspendisse vel lacus vel ligula pellentesque mattis. Nullam nisi urna, aliquam eget finibus maximus, pellentesque vitae tellus. Proin ornare fringilla risus vel congue. Praesent sit am</p> 
+    </div>
+<div class="col-md-6">
+    <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="pills-signup-tab" data-toggle="pill" href="#pills-signup" role="tab" aria-controls="pills-home" aria-expanded="true">Sign Up</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " id="pills-login-tab" data-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-profile" aria-expanded="true">Log In</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-signup" role="tabpanel" aria-labelledby="pills-signup-tab"><h2>Sign Up</h2>
             <form action="/signup" method="post">
                 <div class="form-group">
                     <label>First Name</label>
@@ -54,9 +63,72 @@
                 </div>
         
                 <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
-            </form>
-        </div>
+            </form></div>
+  <div class="tab-pane fade" id="pills-login" role="tabpanel" aria-labelledby="pills-login-tab"><h2>Login</h2>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password">
+                </div>
+        
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </form></div>
     </div>
+
+
+    </div>
+    </div>
+    </div>
+<div class="row bg-dark mt-5 pt-4">
+<div class="col-md-12">
+<div class = "container">
+<div class = "row">
+    <div class="col-md-3">
+        <h4><a href="https://www.patsnap.com/product">Product</a></h4>
+        <ul>
+        <li><a href="https://www.patsnap.com/product/#search">Search</a></li>
+        <li><a href="https://www.patsnap.com/product/#analysis">Analysis</a></li>
+        <li><a href="https://www.patsnap.com/product/#business-intelligence">Business Intelligence</a></li>
+        <li><a href="https://www.patsnap.com/product/#workflow">Workflow</a></li>
+        <li><a href="https://www.patsnap.com/product/#customer-success">Customer Success</a></li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h4><a href="https://www.patsnap.com/solutions">Solutions</a></h4>
+        <ul>
+        <li><a href="https://www.patsnap.com/solutions/rd">Research &amp; Development</a></li>
+        <li><a href="https://www.patsnap.com/solutions/ip">Intellectual Property Assessment</a></li>
+        <li><a href="https://www.patsnap.com/solutions/legal">Legal</a></li>
+        <li><a href="https://www.patsnap.com/solutions/strategy-and-business">Strategy and BI</a></li>
+        <li><a href="https://www.patsnap.com/solutions/academia">Academic and Government</a></li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h4><a href="https://www.patsnap.com/resources">Resources</a></h4>
+        <ul>
+        <li><a href="https://www.patsnap.com/resources/industry-innovation-reports">Innovation Reports</a></li>
+        <li><a href="https://www.patsnap.com/resources/whitepapers">Whitepapers</a></li>
+        <li><a href="//www.patsnap.com/resources/webinars">Webinars</a></li>
+        <li><a href="https://blog.patsnap.com/">Blog</a></li>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h4><a href="https://www.patsnap.com/company">Company</a></h4>
+        <ul>
+        <li><a href="https://www.patsnap.com/company">About Us</a></li>
+        <li><a href="https://www.patsnap.com/company/team">Team</a></li>
+        <li><a href="https://www.patsnap.com/careers">Careers</a></li>
+        <li><a href="https://www.patsnap.com/contact">Contact</a></li>
+        </ul>
+        <h4><a href="https://www.patsnap.com/customers">Customers</a></h4>
+    </div>
+</div>
+</div>
+</div>
 </div>
 
 <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
