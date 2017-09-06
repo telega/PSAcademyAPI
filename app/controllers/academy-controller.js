@@ -1,6 +1,7 @@
 var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var User = require('../models/user');
+var Academy = require('../models/academy')
 //var mongoose = require('mongoose');
 
 exports.getCourses = function(req,res){
@@ -11,6 +12,7 @@ exports.getCourses = function(req,res){
 		res.render('academy/courses.ejs', {user: req.user, courses: courses});
 	});
 };
+
 
 exports.getHomepage = function(req,res){
 	if(req.user){
@@ -36,11 +38,24 @@ exports.getHomepage = function(req,res){
 			
 			});
 
-			res.render('academy/academy.ejs', {items:items, user: req.user});	
+			Academy.findOne({}, function(err,academyOptions){  
+				if(err){
+					console.log(err);
+				}
+
+				res.render('academy/academy.ejs', {items:items, user: req.user, options:academyOptions});	
+		
+			});
 		});
 
 	} else {
-		res.render('index.ejs');
+		Academy.findOne({}, function(err,academyOptions){  
+			if(err){
+				console.log(err);
+			}
+
+			res.render('index.ejs', {options:academyOptions});
+		});
 	}
 };
 

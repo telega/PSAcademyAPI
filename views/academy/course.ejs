@@ -67,19 +67,22 @@
     
 
     <div class="row">
-        <div class = "col-md-12 border-top-0 border-left-0 border-right-0 border mb-2 ">
+        <div class = "col-md-12">
        
             <h2>Units in this Course</h2>
+            <hr>
 
         </div>
     </div>
     
     <div class = "row">
-        <div class = "col-md-12">
+        
 
         <% course.units.forEach(function(unit){
           if(unit.published == true) { %>
-              <div class="card" style="width:24rem;">
+                         <div class = "col-md-4 mt-2 mb-2"> 
+
+              <div class="card" >
                   <img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=unit.name%></h4>
@@ -87,9 +90,10 @@
                     <a href="/courses/<%=course._id%>/units/<%=unit._id%>" class="btn btn-primary" role="button">Take the Unit</a>
                   </div>
               </div>
+              </div>
             <%}}); %>
 
-        </div>
+
     </div>
     
 </div>

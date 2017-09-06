@@ -1,52 +1,44 @@
-<!doctype html>
-<html>
-<head>
-    <title>Quiz | Admin</title>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src = "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-</head>
+<%- include partials/header.ejs %>
 <body>
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/admin"><span class="glyphicon glyphicon-education" aria-hidden="true"></span></a>
-    </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <a class="navbar-brand"  href="/admin"><span class="fa fa-graduation-cap" aria-hidden="true"></span></a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="/admin/courses">Courses</a></li>
-        <li><a href="/admin/users">Users</a></li>
-        <li class="active"><a href="/admin/quizzes">Quizzes</a></li>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class=" navbar-nav mr-auto">
+        <li class = "nav-item"><a href="/admin/courses" class = "nav-link">Courses</a></li>
+        <li class = "nav-item"><a href="/admin/users" class = "nav-link">Users</a></li>
+        <li class = "nav-item"><a href="/admin/quizzes" class = "nav-link active">Quizzes</a></li>
+        <li class = "nav-item"><a href="/admin/academy" class = "nav-link">Options</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/admin/logout">Logout</a></li>
+        <li class = "nav-item"><a href="/logout" class="nav-link">Logout</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
 </nav>
 
 <div class="container">
-    <div class = "row">
-        <div class = "col-md-12">
-            <h1><span class="glyphicon glyphicon-education" aria-hidden="true"></span> Academy Admin </h1>
-        <div>
-    </div>
     <div class = row>
         <div class = "col-md-12">
             <ol class="breadcrumb">
-                <li><a href="/admin">Home</a></li>
-                <li><a href="/admin/quizzes">Quizzes</a></li>
-                <li class ="active"><%=quiz.name%></li>
+                <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                <li class="breadcrumb-item"><a href="/admin/quizzes">Quizzes</a></li>
+                <li class ="breadcrumb-item active"><%=quiz.name%></li>
             </ol>
         </div>
     </div>
     <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="fa fa-question-circle" aria-hidden="true"> </span> Quiz: <%=quiz.name%></h1>
+            <hr>
+        <div>
+    </div>
+
+    <div class = "row">
         <div class="col-md-12">
-            <h3>Edit Quiz</h3>
-            <h2><%=quiz.name%></h2>
+            <h2>Edit Quiz</h2>
         </div>
     </div>
     <h3>Quiz Questions</h3>
@@ -65,7 +57,7 @@
                       <td><%=question.order%></td>
                       <td><%= question.q %></td>
                       <td>
-                      <a href = "/admin/quizzes/<%= quiz._id %>/questions/<%=question._id%>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-default">Edit</a>
+                      <a href = "/admin/quizzes/<%= quiz._id %>/questions/<%=question._id%>" data-quiz-id = "<%= quiz._id %>" class = "btn   btn-secondary">Edit</a>
                       <button  data-quiz-id = "<%= quiz._id %>" data-question-id="<%=question._id%>" data-quiz-name = "<%= quiz.name %>" data-toggle="modal" data-target="#deleteQuestionModal" class = "btn btn-danger deleteQuestion">Delete</button>
                       </td>
                   </tr>
@@ -78,7 +70,7 @@
      <% }%>
     <div class = "row">
         <div class ="col-md-2">
-            <button data-toggle="modal" data-target="#addQuestionModal" class = "btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Quiz Question</button>
+            <button data-toggle="modal" data-target="#addQuestionModal" class = "btn btn-primary"><span class="fa fa-plus" aria-hidden="true"></span> Add Quiz Question</button>
         </div>
     </div>
 </div>
@@ -121,14 +113,14 @@
               </div>
             </div>
             <div class="form-group">
-              <a href="#" id="quizAddAnswer" class = "btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></a>
+              <a href="#" id="quizAddAnswer" class = "btn btn-primary"><span class="fa fa-plus" aria-hidden="true"></a>
               <label for="quizAddAnswer">Add Answer Option</label>
             </div>
             <button type="submit" class="btn btn-success">Add Question</button>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
       </div>
     </div>
   </div>
@@ -149,14 +141,17 @@
         <strong>You are about to Delete this Question.This cannot be undone.</strong>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-danger" id="questionDeleteConfirm">Delete Question</button>
       </div>
     </div>
   </div>
 </div>
 
+
 <!-- Scripts --> 
+<%- include partials/footer.ejs %>
+
 <script>
 
 $(document).ready(function(){

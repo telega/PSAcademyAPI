@@ -42,27 +42,27 @@
 <div class="container">
     <div class = "row">
         <div class = "col-md-12">
-          <div class=" border-top-0 border-left-0 border-right-0 border mb-2 ">
             <h1><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Courses </h1>
-          </div>
+            <p>Browse the courses available on Academy by PatSnap. If a topic isn't covered, let us know. </p>
+            <hr>
         <div>
     </div>
     <div class = "row">
-      <div class = "col-md-12">
 
             <% courses.forEach(function(course){
                 if (course.published == true){  %>
-              <div class="card" style="width:24rem;">
+               <div class = "col-md-6 mt-2 mb-2"> 
+                <div class="card">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=course.name%></h4>
                     <p class="card-text"><%=course.description%></p>
                     <a href="/courses/<%=course._id%>" class="btn btn-primary" role="button">Take the Course</a>
                   </div>
-              </div>
+                </div>
+                </div>
             <% }
             }); %>
-        </div>
     </div>
    </div>
 </div>

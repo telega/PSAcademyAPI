@@ -87,19 +87,24 @@ module.exports = function(app,passport){
 	// admin Routes
 	
 	adminRouter.route('/')
-		.get(authController.isLoggedIn, authController.isAdmin, function(req,res){
-			res.render('admin/index.ejs', {user: req.user});
-		});
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getAdminPage);
 
 	adminRouter.route('/login')
 		.get(function(req,res){
-			res.render('admin/login.ejs',{ message: req.flash('loginMessage')});
+			let pageInfo = {
+				title: 'Login'
+			};
+			res.render('admin/login.ejs',{ message: req.flash('loginMessage'), page: pageInfo});
 		})
 		.post(passport.authenticate('local-login', {
 			successRedirect:'/admin',
 			failureRedirect:'/admin/login',
 			failureFlash: true
 		}));
+
+	adminRouter.route('/academy')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getAcademyOptions)
+		.put(authController.isLoggedIn, authController.isAdmin, adminController.putAcademyOptions);
 
 	adminRouter.route('/users')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUsers);

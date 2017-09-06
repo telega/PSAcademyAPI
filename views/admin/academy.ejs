@@ -1,0 +1,115 @@
+<%- include partials/header.ejs %>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <a class="navbar-brand"  href="/admin"><span class="fa fa-graduation-cap" aria-hidden="true"></span></a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class=" navbar-nav mr-auto">
+        <li class = "nav-item"><a href="/admin/courses" class = "nav-link">Courses</a></li>
+        <li class = "nav-item"><a href="/admin/users" class = "nav-link">Users</a></li>
+        <li class = "nav-item"><a href="/admin/quizzes" class = "nav-link">Quizzes</a></li>
+        <li class = "nav-item"><a href="/admin/academy" class = "nav-link active">Options</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class = "nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+</nav>
+
+<div class="container">
+
+      <div class = row>
+        <div class = "col-md-12">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                <li class = "breadcrumb-item active">Academy Options</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="fa fa-gears" aria-hidden="true"></span> Academy Options </h1>
+            <hr>
+        <div>
+    </div>
+
+    <div class = "row">
+        <div class="col-md-12">
+           <% if(options){%>
+           
+           <form id = "setOptions">
+            <div class="form-group">
+              <label for="academyIntroText">Academy Intro Text</label>
+              <input type="text" class="form-control" id="academyIntroText" placeholder="Welcome" value="<%=options.academyIntroText%>">
+            </div>
+            <div class="form-group">
+              <label for="academyNewsHeadline">News Headline</label>
+              <input type="text" class="form-control" id="academyNewsHeadline" placeholder="Good News" value="<%=options.academyNewsHeadline%>">
+            </div>
+            <div class="form-group">
+              <label for="academyNewsText">News Text</label>
+              <input type="textarea" class="form-control" id="academyNewsText" placeholder="Lorem Ipsum Dolor" value="<%=options.academyNewsText%>">
+            </div>
+            <button type="submit" class="btn btn-primary">Set Academy Options</button>
+          </form>
+
+          <%} else {%>
+
+             <form id = "setOptions">
+              <div class="form-group">
+                <label for="academyIntroText">Academy Intro Text</label>
+                <input type="text" class="form-control" id="academyIntroText" placeholder="Welcome">
+              </div>
+              <div class="form-group">
+                <label for="academyNewsHeadline">News Headline</label>
+                <input type="text" class="form-control" id="academyNewsHeadline" placeholder="Good News">
+              </div>
+              <div class="form-group">
+                <label for="academyNewsText">News Text</label>
+                <input type="textarea" class="form-control" id="academyNewsText" placeholder="Lorem Ipsum Dolor">
+              </div>
+              <button type="submit" class="btn btn-primary">Set Academy Options</button>
+              </form>
+
+          <%}%>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+
+
+<!-- Scripts --> 
+<%- include partials/footer.ejs %>
+
+<script>
+
+$(document).ready(function(){
+    
+    $("#setOptions").submit(function(e){
+        e.preventDefault();
+        var data = {}
+        data.academyIntroText = $("#academyIntroText").val();
+        data.academyNewsHeadline = $("#academyNewsHeadline").val();
+        data.academyNewsText = $("#academyNewsText").val();
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:3000/admin/academy",
+            dataType: 'json',
+            async: true,
+            data: data,
+            success: function (){
+                    location.reload(true);                    
+                }
+            });
+    })
+
+})
+</script>
+</body>
+</html>
