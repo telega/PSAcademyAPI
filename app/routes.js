@@ -79,10 +79,13 @@ module.exports = function(app,passport){
 	// 	.put( userController.putCourseProgress);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id')
-		.put(academyController.putModuleProgress);
+		.put(authController.isLoggedIn,userController.putModuleProgress);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id')
-		.put(academyController.addCourseToUser);
+		.put(authController.isLoggedIn, userController.addCourseToUser);
+
+	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id')
+		.get(authController.isLoggedIn, userController.getUnitProgress);
 
 	// admin Routes
 	

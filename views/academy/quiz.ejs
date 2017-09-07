@@ -8,6 +8,12 @@
           body{
     padding-top:65px;
   }
+   .jumbotron{
+      background-image:url(<%=unit.unitImageUrl%>);
+      background-size:cover;
+      color:#fff;
+      min-height:340px;
+    }
         /* BASE QUIZ STYLES */
         /* These styles ensure that the necessary elements are hidden for toggling */
         
@@ -84,7 +90,16 @@
     </div>
 </div>
 <div class="container">
-              
+<div class="row">
+  <div class="col-md-12">
+    <div class="jumbotron">
+      <h3><%=course.name%></h3>
+      <h1><%=unit.name%></h1>
+    </div>
+    </div>
+    </div>
+   <div class = row>
+        <div class = "col-md-12"> 
 <div id="slickQuiz">
         <h1 class="quizName"><!-- where the quiz name goes --></h1>
 
@@ -111,6 +126,10 @@
         </div>
     </div>
 </div>
+
+
+<%- include partials/footer.ejs %>
+
 
 <!-- Modals -->
 

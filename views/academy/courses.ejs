@@ -8,6 +8,14 @@
   body{
     padding-top:65px;
   }
+  .jumbotron{
+        background-color:#27688f;
+        background-size:cover;
+        color:#fff;
+
+        background-repeat:no-repeat;
+
+  }
 </style>
 </head>
 <body>
@@ -38,37 +46,82 @@
         </div>
     </div>
 </div>
+<div class="container">
+
+</div>
 
 <div class="container">
-    <div class = "row">
-        <div class = "col-md-12">
-            <h1><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Courses </h1>
-            <p>Browse the courses available on Academy by PatSnap. If a topic isn't covered, let us know. </p>
-            <hr>
-        <div>
+    <div class="jumbotron">
+      <h1><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Courses </h1>
+      <p>Browse the courses available on Academy by PatSnap. If a topic isn't covered, let us know. </p>
     </div>
     <div class = "row">
-
             <% courses.forEach(function(course){
-                if (course.published == true){  %>
+                if (course.published == true){  
+                  let filteredItems = items.filter(i => i.id == course._id);
+                  if(filteredItems.length > 0){ %>
+                                 <div class = "col-md-6 mt-2 mb-2"> 
+                <div class="card">
+                  <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
+                  <div class="card-body">
+                    <h4 class="card-title"><%=course.name%></h4>
+                    <p class="card-text">You have completed <%=Math.round(filteredItems[0].progress)%> % of this course.</p>
+                    <a href="/courses/<%=course._id%>" class="btn btn-secondary" >Resume Course</a>
+                  </div>
+                </div>
+                </div>
+
+                  <%}else{%>
                <div class = "col-md-6 mt-2 mb-2"> 
                 <div class="card">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=course.name%></h4>
                     <p class="card-text"><%=course.description%></p>
-                    <a href="/courses/<%=course._id%>" class="btn btn-primary" role="button">Take the Course</a>
+                    <button href="/courses/<%=course._id%>" class="btn btn-primary addCourseToUser" data-user-id="<%=user._id%>" data-course-id="<%=course._id%>"  role="button">Take the Course</button>
                   </div>
                 </div>
                 </div>
-            <% }
+            <% }}
             }); %>
     </div>
    </div>
-</div>
+
+
+<%- include partials/footer.ejs %>
+
 <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+<script>
+
+$(document).ready(function(){
+
+  $(".addCourseToUser").each(function(i){
+    var button = $(this);
+    button.on('click', function(e){
+      e.preventDefault();
+      var url = "/api/progress/" + button.data('userId') + '/courses/' + button.data('courseId');
+      data = {
+      }
+      $.ajax({
+        type: "PUT",
+        url: url,
+        dataType: 'json',
+        async: true,
+        data: data,
+        success: function (){
+            $(location).attr('href',button.attr('href'));
+        }
+      });
+    });
+  });
+
+
+
+});
+</script>
 
 </body>
 </html>

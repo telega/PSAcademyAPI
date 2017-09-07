@@ -59,13 +59,26 @@
   <div class="col-md-5 ml-auto mb-4">
     <h4>Description</h4>
     <p><%=unit.description%></p>
-    <h4>Progress</h4>
-    <div class="progress mb-2">
+    <h5>Duration</h5>
+      <div>This unit has <span id="totalDuration">0</span> Minutes of videos.</div>
+    <h4>Unit Progress</h4>
+    <div class="progress mb-2" data-course-id="<%=course._id%>" data-user-id="<%=user._id%>" data-unit-id="<%=unit._id%>">
       <div class="progress-bar" role="progressbar" aria-valuenow="<%=unitProgress%>" style="width:<%=unitProgress%>%; " aria-valuemin="0" aria-valuemax="100"><%=unitProgress%>%</div>
     </div>
     <h5>Modules</h5>
+        <% if(unit.modules.length > 0 ){
+          //sort modules 
+          unit.modules.sort(function(a,b){
+            if(a.order < b.order){
+              return -1;
+            }
+            if(a.order > b.order){
+              return 1;
+            }
+            return 0;
 
-        <% if(unit.modules.length > 0 ){ %>
+          });
+         %>
         <ol>
          <% unit.modules.forEach(function(module,i){ %>
             <% if(module.type == 'Video'){%>
@@ -77,9 +90,9 @@
          <%})%>
         </ol>
         <%}%>
-
   </div> 
 </div>
+
       <div class = "row">
         <div class = "col-md-12">
         <h3>Modules</h3>
@@ -92,14 +105,24 @@
             <% unit.modules.forEach(function(module,i){ %>
             <div class = "row">
           <div class = "col-md-12 mb-4"> 
-               <% if(module.type == 'Video'){%>
+               <% if(module.type == 'Video'){
+                  let moduleCompleted = false;
+                  let filteredItems = items.filter(i => i.id == module._id); 
+                      if(filteredItems.length > 0){
+                        moduleCompleted = filteredItems[0].completed;
+                        } %>
+
                   <div class="card" id="module-<%=i%>">
                       <div class="card-body">
-                        <div data-vimeo-id="<%=module.contentId%>" class="embed-responsive embed-responsive-16by9"></div>
+                        <div id ="video-<%=i%>" data-module-id = "<%=module._id%>" data-user-id="<%=user._id%>" data-unit-id="<%=unit._id%>" data-course-id="<%=course._id%>" data-vimeo-id="<%=module.contentId%>" class="embed-responsive embed-responsive-16by9 videoContainer"></div>
                         <div class = "row  mt-4">
                         <div class="col-md-3">
                         <h5 class="card-title">Module <%=i+1%> </h5>
                         <h4 class="card-title"><%= module.name %></h4> 
+                        <p><strong>Duration: </strong><span id = "duration-<%=i%>">0</span> Minutes</p>
+                        <%if(moduleCompleted){%>
+                        Completed
+                        <%}%>
                         </div>
                         <div class = "col-md-7 ml-auto">
                         <div class="card-text">
@@ -118,6 +141,7 @@
                 <p>
                 <a href = "/courses/<%=course._id%>/units/<%=unit._id%>/quiz/<%=module.contentId%>" class="btn btn-primary">Take the Quiz</a>   </p>
                 </div>
+                </div>
 
            <% } %>
  
@@ -130,6 +154,11 @@
 
 </div>
 
+</div>
+
+<%- include partials/footer.ejs %>
+
+
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 
@@ -139,9 +168,66 @@
 
 <script>
 
+function updateProgressBar(){
+       var progress = $('.progress');
+     var url = "/api/progress/" + progress.data('userId') + '/courses/' + progress.data('courseId') + '/units/'+ progress.data('unitId');
+     data = {
+     }
+     $.ajax({
+       type: "GET",
+       url: url,
+       dataType: 'json',
+       async: true,
+       data: data,
+       success: function (data){
+                 $('.progress-bar').text(data.progress + ' %');
+                 $('.progress-bar').css('width',data.progress+'%');
+       }
+     });
+}
+
 $(document).ready(function(){
 
 
+  var totalModuleDuration = 0;
+
+  $('.videoContainer').each(function(i){
+    let vc = $(this);
+    
+     let played = false;
+
+     var videoPlayer = new Vimeo.Player(vc.attr('id'));
+     videoPlayer.getDuration().then(function(duration){
+      $("#duration-"+i).text( (duration/60).toFixed(1) );
+      totalModuleDuration += duration;
+      $("#totalDuration").text( Math.round(totalModuleDuration / 60));
+     })
+
+     videoPlayer.on('timeupdate', function(t){
+        if(t.percent >= 0.5){
+          if(played == false){
+               var url = "/api/progress/" + vc.data('userId') + '/courses/' + vc.data('courseId') + '/units/' + vc.data('unitId') + '/modules/' + vc.data('moduleId');
+               data = {
+                itemCompleted: true,
+                itemProgress: 100
+               };
+               $.ajax({
+                 type: "PUT",
+                 url: url,
+                 dataType: 'json',
+                 async: true,
+                 data: data,
+                 success: function (){
+                    updateProgressBar();
+                 }
+               });
+
+          }
+          played = true;
+        }
+     })
+
+  })
 
 })
 </script>
