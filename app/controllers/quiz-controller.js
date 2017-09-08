@@ -22,6 +22,27 @@ exports.postQuiz = function(req,res){
 	});
 };
 
+
+exports.putQuiz = function(req,res){
+	Quiz.findById(req.params.quiz_id, function(err,quiz){
+		if(err){
+			console.log(err);
+		}
+
+		quiz.name = req.body.name || quiz.name;
+		quiz.main = req.body.main|| quiz.main;
+		quiz.results = req.body.results || quiz.results;
+	
+		quiz.save(function(err){
+			if(err){
+				console.log(err);
+			}
+			res.json(quiz);
+		});
+
+	});
+};
+
 exports.deleteQuiz = function(req,res){
 	Quiz.remove({ _id: req.params.quiz_id }, function(err){
 		if(err){

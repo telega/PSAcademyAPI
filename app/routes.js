@@ -42,11 +42,12 @@ module.exports = function(app,passport){
 
 	// Quiz Routes
 	apiRouter.route('/quizzes')
-		.get(quizController.getQuizzes)
+		.get(authController.isLoggedIn, quizController.getQuizzes)
 		.post(authController.isLoggedIn, authController.isAdmin, quizController.postQuiz);
 
 	apiRouter.route('/quizzes/:quiz_id')
-		.get(quizController.getQuiz)
+		.get(authController.isLoggedIn,quizController.getQuiz)
+		.put(authController.isLoggedIn, authController.isAdmin, quizController.putQuiz)
 		.delete(authController.isLoggedIn, authController.isAdmin, quizController.deleteQuiz);
 
 	apiRouter.route('/quizzes/:quiz_id/questions')

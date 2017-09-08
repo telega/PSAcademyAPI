@@ -175,7 +175,7 @@ exports.putModuleProgress = function(req,res){
 				user.local.academyProgress.push(unitAcademyProgress);
 			} else {
 				for(var i = 0; i<units.length; i++){
-					units[i].itemProgress = units[i].itemProgress + unitProgress;
+					units[i].itemProgress = unitProgress;
 					if(units[i].itemProgress >= 100){
 						units[i].itemCompleted = true;
 						units[i].itemProgress = 100;					

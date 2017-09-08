@@ -138,21 +138,47 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
-<script src ="https://cdn.jsdelivr.net/gh/jewlofthelotus/SlickQuiz/js/slickQuiz.js"></script>
+<script src ="https://cdn.jsdelivr.net/gh/jewlofthelotus/SlickQuiz@1.5.19/js/slickQuiz.js"></script>
 <script>
 $(document).ready(function(){
 
   var quizJSON = parseQuizData(JSON.parse('<%-quiz%>'));
-  console.log(quizJSON);
   $('#slickQuiz').slickQuiz({
-      json:quizJSON
+      json:quizJSON,
+      checkAnswerText: 'Next Question',
+      skipStartButton: true,
+      perQuestionResponseMessaging: false,
+      completionResponseMessaging: true,
+      scoreAsPercentage: true,
+      disableRanking: true,
+      scoreTemplateText: '%score',
+      events: {
+        onCompleteQuiz: function (options) {
+          var score = Math.round( 100 * (options.score/options.questionCount) );
+          // updateCourseProgress($( "body" ).data("userId"), $("body").data("quizScoreId") , score);
+          $('#slickQuiz').data('quizScore',score);
+
+          if( score >= 80){
+            // updateCourseProgress($( "body" ).data("userId"), $("body").data("quizCompleteId"), 1);
+            // updateCourseProgress($( "body" ).data("userId"), $( "body" ).data("courseUnitId"), 100);
+            // $('#slickQuiz .quiz-checkbox').addClass('quiz-checkbox-checked');
+            // $('#slickQuiz .quiz-checkbox').text('Course Completed');
+            // $('#slickQuiz').find('.quiz-checkbox').data('quizScore', score);
+            // $('#slickQuiz').css('background-color','#2d8461');
+            // updateBars();
+          } else{
+          }
+        }  
+      }
     });
 });
 
 function parseQuizData(d){
 
   var info = {
-    name:d.name
+    name:d.name,
+    results: d.results,
+    main: d.main
   }
 
   var questions = d.questions;

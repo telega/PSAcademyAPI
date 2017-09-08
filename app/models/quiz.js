@@ -20,6 +20,7 @@ var QuizSchema = new Schema({
 	main: String,
 	results: String,
 	questions: [QuestionSchema],
+
 });
 
 module.exports = mongoose.model('Quiz', QuizSchema);
