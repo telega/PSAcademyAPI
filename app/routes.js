@@ -39,7 +39,6 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourseUnitModule)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourseUnitModule);
 
-
 	// Quiz Routes
 	apiRouter.route('/quizzes')
 		.get(authController.isLoggedIn, quizController.getQuizzes)

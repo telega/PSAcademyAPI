@@ -100,13 +100,17 @@
     </div>
    <div class = row>
         <div class = "col-md-12"> 
-<div id="slickQuiz">
+
+        <% var quizId = JSON.parse(quiz)._id; 
+          var module = unit.modules.filter( m => m.contentId == quizId);
+        %>
+<div id="slickQuiz" data-module-id="<%=module[0]._id%>" data-user-id="<%=user._id%>" data-course-id="<%=course._id%>" 
+  data-unit-id="<%=unit._id%>" >
         <h1 class="quizName"><!-- where the quiz name goes --></h1>
 
         <div class="quizArea">
             <div class="quizHeader">
                 <!-- where the quiz main copy goes -->
-
                 <a class="button startQuiz" href="#">Get Started!</a>
             </div>
 
@@ -154,20 +158,28 @@ $(document).ready(function(){
       scoreTemplateText: '%score',
       events: {
         onCompleteQuiz: function (options) {
-          var score = Math.round( 100 * (options.score/options.questionCount) );
-          // updateCourseProgress($( "body" ).data("userId"), $("body").data("quizScoreId") , score);
+          var score = parseInt(options.score);
           $('#slickQuiz').data('quizScore',score);
-
+          var quizCompleted = false;
           if( score >= 80){
-            // updateCourseProgress($( "body" ).data("userId"), $("body").data("quizCompleteId"), 1);
-            // updateCourseProgress($( "body" ).data("userId"), $( "body" ).data("courseUnitId"), 100);
-            // $('#slickQuiz .quiz-checkbox').addClass('quiz-checkbox-checked');
-            // $('#slickQuiz .quiz-checkbox').text('Course Completed');
-            // $('#slickQuiz').find('.quiz-checkbox').data('quizScore', score);
-            // $('#slickQuiz').css('background-color','#2d8461');
-            // updateBars();
-          } else{
-          }
+            quizCompleted = true;
+          } 
+            var sq=$('#slickQuiz');
+            var url = "/api/progress/" + sq.data('userId') + '/courses/' + sq.data('courseId') + '/units/' + sq.data('unitId') + '/modules/' + sq.data('moduleId');
+               data = {
+                itemCompleted: quizCompleted,
+                itemProgress: score
+               };
+
+               $.ajax({
+                 type: "PUT",
+                 url: url,
+                 dataType: 'json',
+                 async: true,
+                 data: data,
+                 success: function (){
+                 }
+               });
         }  
       }
     });

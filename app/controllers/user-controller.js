@@ -100,13 +100,8 @@ exports.putModuleProgress = function(req,res){
 			user.local.academyProgress.push(moduleAcademyProgress);
 		} else {
 			for(var i = 0; i<modules.length; i++){
-				modules[i].itemProgress = modules[i].itemProgress + parseFloat(req.body.itemProgress);
-				if(modules[i].itemProgress >= 100){
-					modules[i].itemCompleted = true;
-					modules[i].itemProgress = 100;					
-				}else{
-					modules[i].itemCompleted = false;
-				}
+				modules[i].itemProgress = parseFloat(req.body.itemProgress);
+				modules[i].itemCompleted = req.body.itemCompleted;
 			}
 		}
 
@@ -148,9 +143,15 @@ exports.putModuleProgress = function(req,res){
 				}
 			});
 
+			console.log(modulesCompleted)
 			var unitProgress = 0;
 			// check if they passed the quiz
-			if(modulesCompleted.indexOf(quizId) !== -1){
+
+			var quizCompletedItem = modulesCompleted.filter(function(m){
+				return m.itemId == quizId;
+			});
+
+			if(quizCompletedItem.length > 0){
 				unitProgress = 100;
 			} else {
 				// compare unit size to modules completed.
@@ -216,7 +217,7 @@ exports.putModuleProgress = function(req,res){
 			});
 
 			var courseProgress = 100 * (unitsCompleted.length / courseData.courseSize);
-			
+			console.log(courseProgress)
 			// now we update the Course Progress.
 			// check if the course exists, if not Add it
 
@@ -226,6 +227,7 @@ exports.putModuleProgress = function(req,res){
 				var courseCompleted = false;
 				if(courseProgress >= 100){
 					courseCompleted = true;
+					courseProgress = 100;
 					// ToDo: put a badge on it
 				}
 				var courseAcademyProgress = {
@@ -236,7 +238,6 @@ exports.putModuleProgress = function(req,res){
 				user.local.academyProgress.push(courseAcademyProgress);
 			} else {
 				for(var j = 0; j<courses.length; j++){
-					console.log(units[j]);
 					courses[j].itemProgress = units[j].itemProgress + courseProgress;
 					if(units[j].itemProgress >= 100){
 						units[j].itemCompleted = true;
