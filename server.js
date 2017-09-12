@@ -41,6 +41,6 @@ app.use(flash());
 
 require('./app/routes')(app, passport);
 
-app.listen(port, function(){
+module.exports = app.listen(port, function(){
 	console.log('Listening on ' + port);
 });

@@ -20,7 +20,7 @@ exports.getCourses = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		res.json({courses});
+		res.status(200).json(courses);
 	});
 };
 

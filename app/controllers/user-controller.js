@@ -143,7 +143,6 @@ exports.putModuleProgress = function(req,res){
 				}
 			});
 
-			console.log(modulesCompleted)
 			var unitProgress = 0;
 			// check if they passed the quiz
 
@@ -236,9 +235,11 @@ exports.putModuleProgress = function(req,res){
 					itemCompleted: courseCompleted
 				};
 				user.local.academyProgress.push(courseAcademyProgress);
+
+				/*LOOK HERE*/ 
 			} else {
 				for(var j = 0; j<courses.length; j++){
-					courses[j].itemProgress = units[j].itemProgress + courseProgress;
+					courses[j].itemProgress = courseProgress;
 					if(units[j].itemProgress >= 100){
 						units[j].itemCompleted = true;
 						units[j].itemProgress = 100;
