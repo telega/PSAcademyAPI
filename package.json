@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "API server for PS Academy",
   "main": "server.js",
+  "repository":{
+    "type":"git",
+    "url":"https://github.com/telega/PSAcademyAPI.git"
+  },
   "scripts": {
     "test": "mocha --timeout 120000"
   },
@@ -25,7 +29,9 @@
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "serve-favicon": "^2.4.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",

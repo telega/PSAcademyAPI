@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require('express');
+const favicon = require('serve-favicon');
+const path = require('path');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 3000;
@@ -12,6 +14,10 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const dbUrl =  process.env.DB_URL;
 const bluebird = require('bluebird');
+
+
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use('/public',express.static('public'));
 
 mongoose.promise = bluebird;
 mongoose.connect(dbUrl, {

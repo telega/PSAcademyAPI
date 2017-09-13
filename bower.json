@@ -1,0 +1,21 @@
+{
+  "name": "psacademyapi",
+  "description": "API server for PS Academy",
+  "main": "server.js",
+  "authors": [
+    "telega"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/telega/PSAcademyAPI",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4.0.0-beta"
+  }
+}
