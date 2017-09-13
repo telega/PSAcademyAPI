@@ -51,10 +51,34 @@ exports.getCourses = function(req,res){
 
 		let items = getUserCourseItems(courses, req.user.local.academyProgress);
 
-		res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items});
+		let pageInfo = {
+			title: 'Courses',
+			breadcrumbs: [
+				{title:'Home', url: '/'},
+				{title:'Courses', url: '/courses'}
+			],
+			activeNavItem: 'Courses',
+			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+		};
+
+		res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo});
 	});
 };
 
+
+exports.getGlossary = function(req,res){
+	let pageInfo = {
+		title: 'IP Glossary',
+		breadcrumbs: [
+			{title:'Home', url: '/'},
+			{title:'IP Glossary', url: '/glossary'}
+		],
+		activeNavItem: 'Glossary',
+		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+	};
+	res.render('academy/glossary.ejs', { pageInfo: pageInfo});
+
+};
 
 exports.getHomepage = function(req,res){
 	if(req.user){
@@ -65,12 +89,21 @@ exports.getHomepage = function(req,res){
 	
 			let items = getUserCourseItems(courses, req.user.local.academyProgress);
 
+			let pageInfo = {
+				title: 'Welcome',
+				breadcrumbs: [
+					{title:'Home', url: '/'}
+				],
+				activeNavItem: null,
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+			};
+
 			Academy.findOne({}, function(err,academyOptions){  
 				if(err){
 					console.log(err);
 				}
 
-				res.render('academy/academy.ejs', {items:items, user: req.user, options:academyOptions});	
+				res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions});	
 		
 			});
 		});
@@ -98,7 +131,18 @@ exports.getCourse = function(req,res){
 			courseProgress = Math.round(courseItem[0].itemProgress);
 		}
 
-		res.render('academy/course.ejs', {user: req.user, course: course, courseProgress: courseProgress});
+		let pageInfo = {
+			title: course.name,
+			breadcrumbs: [
+				{title:'Home', url: '/'},
+				{title:'Courses', url: '/courses'},
+				{title:course.name, url: '/courses/'+ course._id}
+			],
+			activeNavItem: 'Courses',
+			jumbotronImageUrl: course.courseImageUrl
+		};
+
+		res.render('academy/course.ejs', {user: req.user, pageInfo:pageInfo, course: course, courseProgress: courseProgress});
 	});
 };
 
@@ -155,7 +199,14 @@ exports.getProfile = function(req,res){
 		
 		});
 
-		res.render('academy/profile.ejs', {items:items, courses: courses, user: req.user});	
+		let pageInfo = {
+			title: 'Profile',
+			breadcrumbs: [{title:'Profile', url: '/Profile'}],
+			activeNavItem: 'Profile',
+			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+		};
+
+		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, courses: courses, user: req.user});	
 	});
 };
 
@@ -172,9 +223,22 @@ exports.getCourseUnit = function(req,res){
 			unitProgress = Math.round(unitItem[0].itemProgress);
 		}
 
+
+		let pageInfo = {
+			title: unit.name,
+			breadcrumbs: [
+				{title:'Home', url: '/'},
+				{title:'Courses', url: '/courses'},
+				{title:course.name, url: '/courses/'+ course._id},
+				{title:unit.name, url: '/courses/' + course._id + /units/ + unit._id}
+			],
+			activeNavItem: 'Courses',
+			jumbotronImageUrl: unit.unitImageUrl
+		};
+
 		let items = getUserUnitModuleItems(unit,req.user.local.academyProgress);
 
-		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress, items: items});
+		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress, pageInfo: pageInfo, items: items});
 	});
 };
 
@@ -191,7 +255,20 @@ exports.getQuiz = function(req,res){
 			}
 
 			var unit = course.units.id(req.params.unit_id);
-			res.render('academy/quiz.ejs', {user: req.user, course: course, unit: unit, quiz: JSON.stringify(quiz)});
+
+			let pageInfo = {
+				title: '' + unit.name + ' - Quiz',
+				breadcrumbs: [
+					{title:'Home', url: '/'},
+					{title:'Courses', url: '/courses'},
+					{title:course.name, url: '/courses/'+ course._id},
+					{title:unit.name, url: '/courses/' + course._id + /units/ + unit._id},
+					{title:'Quiz', url: '/courses/' + course._id + /units/ + unit._id + '/quiz/' + quiz._id}
+				],
+				activeNavItem: 'Courses',
+				jumbotronImageUrl: unit.unitImageUrl
+			};
+			res.render('academy/quiz.ejs', {user: req.user, pageInfo:pageInfo,course: course, unit: unit, quiz: JSON.stringify(quiz)});
 		});
 
 	});

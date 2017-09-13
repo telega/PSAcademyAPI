@@ -152,6 +152,9 @@ module.exports = function(app,passport){
 			failureFlash: true
 		}));
 
+	router.route('/glossary')
+		.get(authController.isLoggedIn, academyController.getGlossary);
+
 	router.route('/courses')
 		.get(authController.isLoggedIn, academyController.getCourses);
 
