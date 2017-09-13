@@ -100,12 +100,12 @@ sup {
   top: -.5em; }
 
 a {
-  color: #204b62;
+  color: #00a5c4;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects; }
   a:hover {
-    color: #0d1f28;
+    color: #006578;
     text-decoration: underline; }
 
 a:not([href]):not([tabindex]) {
@@ -156,7 +156,7 @@ table {
 caption {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  color: #868e96;
+  color: #6f6f6f;
   text-align: left;
   caption-side: bottom; }
 
