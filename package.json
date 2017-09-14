@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "API server for PS Academy",
   "main": "server.js",
-  "repository":{
-    "type":"git",
-    "url":"https://github.com/telega/PSAcademyAPI.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/telega/PSAcademyAPI.git"
   },
   "scripts": {
     "test": "mocha --timeout 120000"
@@ -27,6 +27,8 @@
     "http": "0.0.0",
     "mongoose": "^4.11.3",
     "morgan": "^1.8.2",
+    "nodemailer": "^4.1.0",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",

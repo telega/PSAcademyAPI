@@ -1,5 +1,11 @@
 var User = require('../models/user');
 var Course = require('../models/course');
+var crypto = require('crypto');
+var nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
+const sgKey = process.env.SENDGRID_API_KEY;
+//const sgUser = process.env.SENDGRID_USER;
+
 //const passport = require('passport');
 
 // exports.postUser = function(req,res){
@@ -271,6 +277,9 @@ exports.putUser = function(req,res){
 
 		user.local.profile.firstName = req.body.firstName || user.local.profile.firstName;
 		user.local.profile.lastName = req.body.lastName || user.local.profile.lastName;
+		user.local.role = req.body.role || user.local.role;
+		user.local.email = req.body.email || user.local.email;
+		user.local.password = user.generateHash(req.body.password) || user.local.password;
 
 		user.save(function(err){
 			if(err){
@@ -281,6 +290,141 @@ exports.putUser = function(req,res){
 	});
 };
 
+exports.getForgot = function(req,res){
+	res.status(200).render('forgot.ejs', { message: req.flash('loginMessage') });
+};
+
+exports.postForgot = function(req,res){
+	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
+		if(err){
+			console.log(err);
+			req.flash('loginMessage','An error occured.');
+			res.redirect('/forgot');
+
+		}
+		if(!user){
+			req.flash('loginMessage','No user found with that email address.');
+			res.redirect('/forgot');
+		}
+
+		var token = crypto.randomBytes(20).toString('hex');
+
+		user.resetPasswordToken = token; 
+		user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+		user.save(function(err){
+			if(err){
+				console.log(err);
+			}
+		
+			var sgOptions = {
+				auth: {
+					//api_user: sgUser,
+					api_key: sgKey
+				}
+			};
+			
+
+			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+	
+			var email = {
+				to: user.local.email,
+				from: 'academy@patsnap.com',
+				subject: 'Academy by Patsnap - Password Reset',
+				text: 'You are receiving this message because someone has requested the reset of the password for your Academy account.\n\n' +
+					'To reset yoru password, please click on the following link (or paste it into your browser):\n\n' +
+					'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+					'If you did not make this request ignore this email.\n'+
+					' The Academy Team\n'
+			};
+
+
+			sgClient.sendMail(email,function(err, info){
+				if(err){
+					console.log(err);
+				} else {
+					console.log('Message sent to ' + user.local.email);
+				}
+			});
+
+			req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+			res.redirect('/forgot');
+
+		});
+	});
+
+};
+
+exports.getReset = function(req,res){
+	User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
+		if(err){
+			console.log(err);
+		}
+		if(!user){
+			req.flash('loginMessage','Password reset token is invalid or expired.');
+			res.redirect('/forgot');
+		}
+
+		res.status(200).render('reset.ejs', { message: req.flash('loginMessage'), user: user});
+	});
+};
+
+exports.postReset = function(req,res){
+
+User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
+		if(err){
+			console.log(err);
+		}
+		if(!user){
+			req.flash('loginMessage','Password reset token is invalid or expired.');
+			res.redirect('/forgot');
+		}
+
+		user.local.password = user.generateHash(req.body.password); 
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpires = undefined;
+
+		user.save(function(err){
+			if(err){
+				console.log(err);
+			}
+		
+			var sgOptions = {
+				auth: {
+					//api_user: sgUser,
+					api_key: sgKey
+				}
+			};
+			
+
+			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+
+			var email = {
+				to: user.local.email,
+				from: 'academy@patsnap.com',
+				subject: 'Academy by Patsnap - Password Changed',
+				text: 'This is a confirmation that your Academy password has been changed.\n\n' +
+						'The Academy Team\n'
+			};
+
+
+			sgClient.sendMail(email,function(err, info){
+				if(err){
+					console.log(err);
+				} else {
+					console.log('Message sent to ' + user.local.email );
+				}
+			});	
+
+			res.redirect('/');
+		});
+
+
+
+	});
+
+
+};
 
 exports.deleteUser = function(req,res){
 	User.remove({ _id: req.params.user_id }, function(err){

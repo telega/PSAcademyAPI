@@ -52,7 +52,9 @@ var userSchema = mongoose.Schema({
 		},
 		academyProgress: [academyProgressSchema],
 		academyBadges: [academyBadgesSchema]
-	}
+	},
+	resetPasswordToken: String,
+	resetPasswordExpires: Date
 });
 
 userSchema.methods.generateHash = function(password) {

@@ -32,26 +32,26 @@ exports.logOut = function(req,res){
 	res.redirect('/');
 };
 
-passport.use(new BasicStrategy(
-	function(email, password, next){
-		User.findOne({ 'local.email' :  email }, function(err, user) {
-		// if there are any errors, return the error before anything else
-			if (err){
-				return done(err);
-			}
-			// if no user is found, return the message
-			if (!user){
-				return next(null, false); 
-			}
-			// if the user is found but the password is wrong
-			if (password !== user.local.password){
-				return next(null, false); 
-			}
+// passport.use(new BasicStrategy(
+// 	function(email, password, next){
+// 		User.findOne({ 'local.email' :  email }, function(err, user) {
+// 		// if there are any errors, return the error before anything else
+// 			if (err){
+// 				return done(err);
+// 			}
+// 			// if no user is found, return the message
+// 			if (!user){
+// 				return next(null, false); 
+// 			}
+// 			// if the user is found but the password is wrong
+// 			if (password !== user.local.password){
+// 				return next(null, false); 
+// 			}
 
-			// all is well, return successful user
-			return next(null, user);
-		});
-	}
-));
+// 			// all is well, return successful user
+// 			return next(null, user);
+// 		});
+// 	}
+// ));
 
 exports.isAuthenticated = passport.authenticate('basic', { session: false});

@@ -152,6 +152,14 @@ module.exports = function(app,passport){
 			failureFlash: true
 		}));
 
+	router.route('/forgot')
+		.get(userController.getForgot)
+		.post(userController.postForgot);
+
+	router.route('/reset/:token')
+		.get(userController.getReset)
+		.post(userController.postReset);
+
 	router.route('/glossary')
 		.get(authController.isLoggedIn, academyController.getGlossary);
 

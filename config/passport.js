@@ -2,7 +2,6 @@ const passport = require('passport');
 const User = require('../app/models/user');
 const LocalStrategy = require('passport-local').Strategy;
 
-
 module.exports = function(passport){
 	passport.serializeUser(function(user, done) {
 		done(null, user.id);
@@ -20,7 +19,6 @@ module.exports = function(passport){
 		passReqToCallback : true 
 	},
 	function(req, email, password, done) {
-		console.log(req.body)
 		process.nextTick(function() {
 		// find a user whose email is the same as the forms email
 		// we are checking to see if the user trying to login already exists
