@@ -58,7 +58,7 @@ exports.getCourses = function(req,res){
 				{title:'Courses', url: '/courses'}
 			],
 			activeNavItem: 'Courses',
-			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/CoursePageHeaderGettyImages-658984379.jpg' 
 		};
 
 		res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo});
@@ -74,7 +74,7 @@ exports.getGlossary = function(req,res){
 			{title:'IP Glossary', url: '/glossary'}
 		],
 		activeNavItem: 'Glossary',
-		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/IPGlossaryHeader.jpg' 
 	};
 	res.render('academy/glossary.ejs', { pageInfo: pageInfo});
 
@@ -95,7 +95,7 @@ exports.getHomepage = function(req,res){
 					{title:'Home', url: '/'}
 				],
 				activeNavItem: null,
-				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/AcademyWelcomeHeader.jpg' 
 			};
 
 			Academy.findOne({}, function(err,academyOptions){  
