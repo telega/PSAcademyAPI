@@ -196,12 +196,12 @@ exports.putModuleProgress = function(req,res){
 			// now we need to do something similar at the Course Level. 
 			// we dont worry about quizzes but we worry about some badges. 
 
-			var courseSize = 0;
+			var courseSize = course.units.length;
 			var unitIds = [];
 				
-			for(var u = 0; u < course.units.length; u++){
+			for(var u = 0; u < courseSize; u++){
 				var ul = course.units[u].modules.length;
-				courseSize += ul;
+				//courseSize += ul;
 				var unitIdString = course.units[u]._id.toString();
 				unitIds.push(unitIdString);
 			}
@@ -211,10 +211,11 @@ exports.putModuleProgress = function(req,res){
 				courseSize: courseSize,
 				unitIds: unitIds
 			};
+
 			
 			// now Compare course Data to user's Academy Progress
 
-			// filter all the modules from user progress that are part of the unit, and completed
+			// filter all the units from user progress that are part of the course, and completed
 			var unitsCompleted = user.local.academyProgress.filter( function(u){
 				if(courseData.unitIds.indexOf(u.itemId)!== -1){
 					return u.itemCompleted == true;
@@ -222,7 +223,6 @@ exports.putModuleProgress = function(req,res){
 			});
 
 			var courseProgress = 100 * (unitsCompleted.length / courseData.courseSize);
-			console.log(courseProgress)
 			// now we update the Course Progress.
 			// check if the course exists, if not Add it
 

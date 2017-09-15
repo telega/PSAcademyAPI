@@ -132,7 +132,7 @@ function updateProgressBar(){
        async: true,
        data: data,
        success: function (data){
-                 $('.progress-bar').text(data.progress + ' %');
+                 $('.progress-bar').text(data.progress + '%');
                  $('.progress-bar').css('width',data.progress+'%');
        }
      });

@@ -1,6 +1,11 @@
 const passport = require('passport');
 const User = require('../app/models/user');
 const LocalStrategy = require('passport-local').Strategy;
+const hsPortalId = process.env.HS_PORTAL_ID || null;
+const hsFormID = process.env.HS_FORM_ID || null;
+const https = require('https');
+const querystring = require('querystring');
+
 
 module.exports = function(passport){
 	passport.serializeUser(function(user, done) {
@@ -37,6 +42,59 @@ module.exports = function(passport){
 					newUser.local.password = newUser.generateHash(password);
 					newUser.local.profile.firstName = req.body.firstname;
 					newUser.local.profile.lastName = req.body.lastname;
+
+
+					// HS Request
+					if(hsPortalId && hsFormID) {
+
+
+						var postData = querystring.stringify({
+						    'email': email,
+						    'firstname': req.body.firstname,
+						    'lastname': req.body.lastname,
+						    'hs_context': JSON.stringify({
+						        "ipAddress": req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+						        "pageName": "Academy by PatSnap"
+						    })
+						});
+						
+						// set the post options, changing out the HUB ID and FORM GUID variables.
+						
+						var options = {
+							hostname: 'forms.hubspot.com',
+							path: '/uploads/form/v2/'+ hsPortalId + '/' + hsFormID,
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded',
+								'Content-Length': postData.length
+							}
+						}
+						
+						// set up the request
+						
+						var request = https.request(options, function(response){
+							console.log("Status: " + response.statusCode);
+							console.log("Headers: " + JSON.stringify(response.headers));
+							response.setEncoding('utf8');
+							response.on('data', function(chunk){
+								console.log('Body: ' + chunk)
+							});
+						});
+						
+						request.on('error', function(e){
+							console.log("Problem with request " + e.message)
+						});
+						
+						// post the data
+						
+						request.write(postData);
+						request.end();
+
+
+					}
+
+
+					// end HS Request
 
 					newUser.save(function(err) {
 						if (err){
