@@ -6092,6 +6092,20 @@ a.text-dark:focus, a.text-dark:hover {
   background-color: transparent;
   color: #6f6f6f; }
 
+.gterms h3 {
+  padding-top: 65px; }
+
+.footer ul {
+  list-style-type: none;
+  padding-left: 0px; }
+
+.footer h5 a {
+  color: #aebd38 !important; }
+
+ul.social li {
+  display: inline;
+  padding-left: 8px; }
+
 /* BASE QUIZ STYLES */
 /* These styles ensure that the necessary elements are hidden for toggling */
 /* DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING!! */
