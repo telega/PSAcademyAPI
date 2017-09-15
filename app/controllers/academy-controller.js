@@ -114,7 +114,21 @@ exports.getHomepage = function(req,res){
 				console.log(err);
 			}
 
-			res.render('index.ejs', {options:academyOptions});
+			if(!academyOptions){
+				academyOptions = new Academy();
+
+				academyOptions.save(function(err){
+					if(err){
+						console.log(err);
+					}
+
+					res.status(200).render('index.ejs', {options:academyOptions});
+
+				})
+
+				} else {
+					res.status(200).render('index.ejs', {options:academyOptions});
+				}
 		});
 	}
 };
