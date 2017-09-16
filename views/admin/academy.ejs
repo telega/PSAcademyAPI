@@ -99,7 +99,7 @@ $(document).ready(function(){
         data.academyNewsText = $("#academyNewsText").val();
         $.ajax({
             type: "PUT",
-            url: "http://localhost:3000/admin/academy",
+            url: "/admin/academy",
             dataType: 'json',
             async: true,
             data: data,

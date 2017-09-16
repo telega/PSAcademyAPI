@@ -275,7 +275,7 @@ $(document).ready(function(){
       var modal = $("#addResponseModal");
       e.preventDefault();
 
-      var url = "http://localhost:3000/api/quizzes/" + $(this).data('quizId') + "/questions/" + $(this).data('questionId');
+      var url = "/api/quizzes/" + $(this).data('quizId') + "/questions/" + $(this).data('questionId');
       var data = {};
 
       var newResponse = {}
@@ -316,7 +316,7 @@ $(document).ready(function(){
           var responsesArray = button.data('responses');
           var responseToDeleteId = button.data('responseId')
           data.a = JSON.stringify(responsesArray.filter( response => response._id != responseToDeleteId));
-          var url = "http://localhost:3000/api/quizzes/" + button.data('quizId') + '/questions/' + button.data('questionId');
+          var url = "/api/quizzes/" + button.data('quizId') + '/questions/' + button.data('questionId');
 
           $.ajax({
                   type: "PUT",
@@ -338,7 +338,7 @@ $(document).ready(function(){
 
     $("#updateCorrectResponse").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
+      var url = "/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
       
       data = {
         correct: $('#newCorrectResponse').val()
@@ -357,7 +357,7 @@ $(document).ready(function(){
     
     $("#updateIncorrectResponse").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
+      var url = "/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
       
       data = {
         incorrect: $('#newIncorrectResponse').val()
@@ -377,7 +377,7 @@ $(document).ready(function(){
 
     $("#updateOrder").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
+      var url = "/api/quizzes/" + $(this).data('quizId') + /questions/ + $(this).data('questionId');
       data = {
         order: $('#newOrder').val()
       }

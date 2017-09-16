@@ -132,7 +132,7 @@ $(document).ready(function(){
         data.name = $("#quizName").val();
         $.ajax({
             type: "POST",
-            url: "http://localhost:3000/api/quizzes",
+            url: "/api/quizzes",
             dataType: 'json',
             async: true,
             data: data,
@@ -147,7 +147,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#quizToDeleteName').text(button.data('quizName'));
         modal.find('#quizDeleteConfirm').on('click', function(e){
-            var url = "http://localhost:3000/api/quizzes/" + button.data('quizId');
+            var url = "/api/quizzes/" + button.data('quizId');
             $.ajax({
                   type: "DELETE",
                   url: url,

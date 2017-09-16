@@ -356,7 +356,7 @@ $(document).ready(function(){
 
         $.ajax({
           type: "POST",
-          url: "http://localhost:3000/api/quizzes/" + form.data('quizId') + "/questions",
+          url: "/api/quizzes/" + form.data('quizId') + "/questions",
           dataType: 'json',
           async: true,
           data: data,
@@ -370,7 +370,7 @@ $(document).ready(function(){
         var button = $(e.relatedTarget); 
         var modal = $(this);
         modal.find('#questionDeleteConfirm').on('click', function(e){
-            var url = "http://localhost:3000/api/quizzes/" + button.data('quizId') + "/questions/" + button.data('questionId');
+            var url = "//api/quizzes/" + button.data('quizId') + "/questions/" + button.data('questionId');
             $.ajax({
                   type: "DELETE",
                   url: url,

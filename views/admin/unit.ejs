@@ -348,7 +348,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#moduleToDeleteName').text(button.data('moduleName'));
         modal.find('#moduleDeleteConfirm').on('click', function(e){
-        var url = "http://localhost:3000/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
+        var url = "/api/courses/" + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
         console.log(url);
             $.ajax({
                   type: "DELETE",
@@ -364,7 +364,7 @@ $(document).ready(function(){
 
     $("#updateName").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
       data = {
         name: $('#newTitle').val()
       }
@@ -382,7 +382,7 @@ $(document).ready(function(){
 
     $("#updateDescription").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
       data = {
         description: $('#newDescription').val()
       }
@@ -400,7 +400,7 @@ $(document).ready(function(){
 
     $("#updateUnitImages").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
       data = {
         unitImageUrl: $('#newMainImageURL').val(),
         unitThumbImageUrl: $('#newThumbImageURL').val()
@@ -420,7 +420,7 @@ $(document).ready(function(){
 
     $("#updateOrder").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
       data = {
         order: $('#newOrder').val()
       }
@@ -438,7 +438,7 @@ $(document).ready(function(){
     
     $("#updateStatus").on('click', function(e){
         e.preventDefault();
-        var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
+        var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId');
         data = {
           published: !$(this).data('publish')
         }
@@ -458,7 +458,7 @@ $(document).ready(function(){
       var modal = $("#moduleAddModal");
 
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules" ;
+      var url = "/api/courses/" + $(this).data('courseId') + "/units/" + $(this).data('unitId') + "/modules" ;
       var data = {};
       data.name = $("#moduleName").val();
       data.description = $("#moduleDescription").val();

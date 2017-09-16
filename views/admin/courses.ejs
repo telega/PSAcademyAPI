@@ -150,7 +150,7 @@ $(document).ready(function(){
         data.order = $("#courseOrder").val()||99;
         $.ajax({
             type: "POST",
-            url: "http://localhost:3000/api/courses",
+            url: "/api/courses",
             dataType: 'json',
             async: true,
             data: data,
@@ -165,7 +165,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#courseToDeleteName').text(button.data('courseName'));
         modal.find('#courseDeleteConfirm').on('click', function(e){
-            var url = "http://localhost:3000/api/courses/" + button.data('courseId');
+            var url = "/api/courses/" + button.data('courseId');
             $.ajax({
                   type: "DELETE",
                   url: url,

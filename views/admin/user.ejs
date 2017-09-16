@@ -222,7 +222,7 @@ $(document).ready(function(){
 
     $("#updateName").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/users/" + $(this).data('userId');
+      var url = "/api/users/" + $(this).data('userId');
       data = {
         firstName: $('#newFirstName').val(),
         lastName: $('#newLastName').val()
@@ -241,7 +241,7 @@ $(document).ready(function(){
 
     $("#updateEmail").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/users/" + $(this).data('userId');
+      var url = "/api/users/" + $(this).data('userId');
       data = {
         email: $('#newEmail').val(),
       }
@@ -260,7 +260,7 @@ $(document).ready(function(){
 
       $("#updatePassword").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/users/" + $(this).data('userId');
+      var url = "/api/users/" + $(this).data('userId');
       data = {
         password: $('#newPassword').val()
       }
@@ -279,7 +279,7 @@ $(document).ready(function(){
 
       $("#updateRole").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/users/" + $(this).data('userId');
+      var url = "/api/users/" + $(this).data('userId');
       data = {
         role: $("input[name=optionsModuleRoles]:checked","#editRole").val()
       }

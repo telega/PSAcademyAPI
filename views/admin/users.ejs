@@ -97,7 +97,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#userToDeleteEmail').text(button.data('userEmail'));
         modal.find('#userDeleteConfirm').on('click', function(e){
-            var url = "http://localhost:3000/api/users/" + button.data('userId');
+            var url = "/api/users/" + button.data('userId');
             $.ajax({
                   type: "DELETE",
                   url: url,
