@@ -308,7 +308,7 @@ $(document).ready(function(){
     $("#updateName").on('click', function(e){
       var modal = $("#updateName");
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
       data = {
         name: $('#newTitle').val()
       }
@@ -327,7 +327,7 @@ $(document).ready(function(){
     $("#updateType").on('click', function(e){
       var modal = $("#updateName");
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
       data = {
         type: $("input[name=optionsModuleTypes]:checked","#editType").val()
       }
@@ -347,7 +347,7 @@ $(document).ready(function(){
     $("#updateContentId").on('click', function(e){
       var modal = $("#updateName");
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
       data = {
         contentId: $('#newContentId').val()
       }
@@ -365,7 +365,7 @@ $(document).ready(function(){
 
     $("#updateDescription").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
       data = {
         description: $('#newDescription').val()
       }
@@ -383,7 +383,7 @@ $(document).ready(function(){
 
     $("#updateOrder").on('click', function(e){
       e.preventDefault();
-      var url = "http://localhost:3000/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
+      var url = "/api/courses/" + $(this).data('courseId') + /units/ + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');      
       data = {
         order: $('#newOrder').val()
       }
