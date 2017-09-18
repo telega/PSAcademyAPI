@@ -1028,8 +1028,8 @@ pre {
     border-top: 1px solid #e9ecef; }
   .table thead th {
     vertical-align: bottom;
-    border-bottom: 2px solid #e9ecef;
-    background-color: white; }
+    background-color: #3c3c3c;
+    font-weight: 400; }
   .table tbody + tbody {
     border-top: 2px solid #e9ecef; }
   .table .table {
@@ -1158,8 +1158,8 @@ pre {
   background-color: #212529; }
 
 .thead-default th {
-  color: #495057;
-  background-color: #e9ecef; }
+  color: #aebd38;
+  background-color: #3c3c3c; }
 
 .table-inverse {
   color: #fff;
@@ -6084,6 +6084,9 @@ a.text-dark:focus, a.text-dark:hover {
 .invisible {
   visibility: hidden !important; }
 
+html, body {
+  height: 100%; }
+
 .btn-primary:hover {
   background-color: #75bb00;
   border-color: #75bb00; }
@@ -6095,6 +6098,12 @@ a.text-dark:focus, a.text-dark:hover {
 .gterms h3 {
   padding-top: 65px; }
 
+.main-content {
+  min-height: 100%; }
+
+.footer img {
+  max-width: 220px; }
+
 .footer ul {
   list-style-type: none;
   padding-left: 0px; }
@@ -6105,6 +6114,10 @@ a.text-dark:focus, a.text-dark:hover {
 ul.social li {
   display: inline;
   padding-left: 8px; }
+
+.cta img {
+  max-width: 100% !important;
+  height: auto !important; }
 
 /* BASE QUIZ STYLES */
 /* These styles ensure that the necessary elements are hidden for toggling */

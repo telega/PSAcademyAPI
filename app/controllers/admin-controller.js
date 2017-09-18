@@ -44,7 +44,6 @@ exports.getAcademyOptions = function(req,res){
 	});
 };
 
-
 exports.putAcademyOptions = function(req,res){
 	Academy.findOne({}, function(err, academyOptions){
 		if(err){
@@ -55,10 +54,12 @@ exports.putAcademyOptions = function(req,res){
 			academyOptions.academyIntroText = req.body.academyIntroText;
 			academyOptions.academyNewsHeadline = req.body.academyNewsHeadline;
 			academyOptions.academyNewsText = req.body.academyNewsText;
+			academyOptions.academyHomeCta = req.body.academyHomeCta;
 		} else {
 			academyOptions.academyIntroText = req.body.academyIntroText || academyOptions.academyIntroText;
 			academyOptions.academyNewsHeadline = req.body.academyNewsHeadline || academyOptions.academyNewsHeadline;
 			academyOptions.academyNewsText = req.body.academyNewsText || academyOptions.academyNewsText; 
+			academyOptions.academyHomeCta = req.body.academyHomeCta || academyOptions.academyHomeCta; 
 		}
 
 		academyOptions.save(function(err){

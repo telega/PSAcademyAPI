@@ -54,6 +54,10 @@
               <label for="academyNewsText">News Text</label>
               <input type="textarea" class="form-control" id="academyNewsText" placeholder="Lorem Ipsum Dolor" value="<%=options.academyNewsText%>">
             </div>
+            <div class="form-group">
+                <label for="academyHomeCta">Hubspot CTA Embed Code</label>
+              <input type="textarea" class="form-control" id="academyHomeCta" placeholder="Lorem Ipsum Dolor" value="<%=options.academyHomeCta%>">
+            </div>
             <button type="submit" class="btn btn-primary">Set Academy Options</button>
           </form>
 
@@ -71,6 +75,10 @@
               <div class="form-group">
                 <label for="academyNewsText">News Text</label>
                 <input type="textarea" class="form-control" id="academyNewsText" placeholder="Lorem Ipsum Dolor">
+              </div>
+               <div class="form-group">
+                <label for="academyHomeCta">Hubspot CTA Embed Code</label>
+                <input type="textarea" class="form-control" id="academyHomeCta" placeholder="">
               </div>
               <button type="submit" class="btn btn-primary">Set Academy Options</button>
               </form>
@@ -97,6 +105,7 @@ $(document).ready(function(){
         data.academyIntroText = $("#academyIntroText").val();
         data.academyNewsHeadline = $("#academyNewsHeadline").val();
         data.academyNewsText = $("#academyNewsText").val();
+        data.academyHomeCta = $("#academyHomeCta").val();
         $.ajax({
             type: "PUT",
             url: "/admin/academy",

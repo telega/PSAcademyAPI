@@ -16,6 +16,10 @@ var AcademySchema = new Schema({
 		type:String,
 		default: 'Latest News Item'
 	},
+	academyHomeCta: {
+		type:String,
+		default: ''
+	}
 });
 
 module.exports = mongoose.model('Academy', AcademySchema);

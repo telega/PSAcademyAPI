@@ -1,6 +1,6 @@
 <%- include partials/header.ejs %>
 
-<div class="container">
+<div class="container main-content">
   <div class="row">
   <div class="col-md-6">
     <div class="jumbotron">
@@ -8,7 +8,7 @@
       <h1><%=unit.name%></h1>
     </div>
   </div>
-  <div class="col-md-5 ml-auto mb-4">
+  <div class="col-md-6 ml-auto mb-4">
     <h4>Description</h4>
     <p><%=unit.description%></p>
     <h5>Duration</h5>
@@ -78,7 +78,21 @@
                         </div>
                         <div class = "col-md-7 ml-auto">
                         <div class="card-text">
-                          <%=module.description%>
+                          <p><%=module.description%></p>
+                          
+                          <%if (module.resources.length > 0){ %>
+                          <table >
+                          <thead>
+                            <th><strong>Additional Resources</strong></th>
+                          </thead>
+                          <tbody>
+                          <% module.resources.forEach(function(resource){%>
+                          <tr><td><a href="<%=resource.url%>" target="_blank" alt="<%=resource.title%>"><%=resource.title%> <span class="fa fa-external-link" aria-hidden="true"></span></a></td></tr>
+
+                          <%})%>
+                          </tbody>
+                          </table>
+                          <%}%>
                         </div>
                         </div>
                         </div>
