@@ -6,23 +6,43 @@
       <p>Browse the courses available on Academy by PatSnap. If a topic isn't covered, let us know. </p>
     </div>
     <div class = "row">
-            <% courses.forEach(function(course){
-                if (course.published == true){  
+      <div class="col-md-12">
+        <div class="card-deck mb-4">
+            <%  let publishedCourseCount = 1; 
+                let lastCardIsOdd = false;
+                courses.forEach(function(course){
+                if (course.published == true){
+                  publishedCourseCount += 1;
+                  if(publishedCourseCount%2 == 0){
+                    lastCardIsOdd = true;%>
+                  </div>
+                  <div class="card-deck mb-4">
+                    <%} else {
+                      lastCardIsOdd = false;
+                      }%>
+                  <%  
                   let filteredItems = items.filter(i => i.id == course._id);
                   if(filteredItems.length > 0){ %>
-                                 <div class = "col-md-6 mt-2 mb-2"> 
                 <div class="card">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=course.name%></h4>
-                    <p class="card-text">You have completed <%=Math.round(filteredItems[0].progress)%> % of this course.</p>
+                    <p class="card-text"><%=course.description%> <br> 
+                    <% let courseProgress = Math.round(filteredItems[0].progress);%>
+                      <% if(courseProgress >= 100){ %>
+
+                        <div class="mb-4 text-light moduleProgress completed">                 
+                           Completed <span class="fa fa-check" aria-hidden="true"></span>
+                        </div>
+
+                      <% } else {%>
+                        <strong>You have completed <%=courseProgress%> % of this course.</strong></p>
+                    <%}%>
                     <a href="/courses/<%=course._id%>" class="btn btn-secondary" >Resume Course</a>
                   </div>
                 </div>
-                </div>
 
                   <%}else{%>
-               <div class = "col-md-6 mt-2 mb-2"> 
                 <div class="card">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
@@ -31,9 +51,26 @@
                     <button href="/courses/<%=course._id%>" class="btn btn-primary addCourseToUser" data-user-id="<%=user._id%>" data-course-id="<%=course._id%>"  role="button">Take the Course</button>
                   </div>
                 </div>
-                </div>
             <% }}
             }); %>
+    
+            <%if(lastCardIsOdd){%>
+            <div class="card bg-white"></div>
+            <%}%>
+    </div>
+
+
+
+    </div>
+    </div>
+
+        <div class="row">
+      <div class="col-md-12">
+      <p>
+      <hr>
+      <a href="/" alt="Academy Home" class="btn btn-secondary"><span class="fa fa-arrow-left" aria-hidden="true"></span> Back to Academy Home</a></p>
+
+      </div>
     </div>
    </div>
 

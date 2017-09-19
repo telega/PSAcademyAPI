@@ -242,16 +242,15 @@ exports.putModuleProgress = function(req,res){
 				};
 				user.local.academyProgress.push(courseAcademyProgress);
 
-				/*LOOK HERE*/ 
 			} else {
 				for(var j = 0; j<courses.length; j++){
 					courses[j].itemProgress = courseProgress;
-					if(units[j].itemProgress >= 100){
-						units[j].itemCompleted = true;
-						units[j].itemProgress = 100;
+					if(courses[j].itemProgress >= 100){
+						courses[j].itemCompleted = true;
+						courses[j].itemProgress = 100;
 						// ToDo: put a badge on it 					
 					} else {
-						units[j].itemCompleted = false;
+						courses[j].itemCompleted = false;
 					}
 				}
 			}

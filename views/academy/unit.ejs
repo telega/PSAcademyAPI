@@ -13,6 +13,7 @@
     <p><%=unit.description%></p>
     <h5>Duration</h5>
       <div>This unit has <span id="totalDuration">0</span> Minutes of videos.</div>
+    <br>
     <h4>Unit Progress</h4>
     <div class="progress mb-2" data-course-id="<%=course._id%>" data-user-id="<%=user._id%>" data-unit-id="<%=unit._id%>">
       <div class="progress-bar" role="progressbar" aria-valuenow="<%=unitProgress%>" style="width:<%=unitProgress%>%; " aria-valuemin="0" aria-valuemax="100"><%=unitProgress%>%</div>
@@ -68,13 +69,13 @@
                       <div class="card-body">
                         <div id ="video-<%=i%>" data-module-id = "<%=module._id%>" data-user-id="<%=user._id%>" data-unit-id="<%=unit._id%>" data-course-id="<%=course._id%>" data-vimeo-id="<%=module.contentId%>" class="embed-responsive embed-responsive-16by9 videoContainer"></div>
                         <div class = "row  mt-4">
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-lg-3">
                         <h5 class="card-title">Module <%=i+1%> </h5>
                         <h4 class="card-title"><%= module.name %></h4> 
                         <p><strong>Duration: </strong><span id = "duration-<%=i%>">0</span> Minutes</p>
-                        <%if(moduleCompleted){%>
-                        Completed
-                        <%}%>
+                        <div class="mb-4 text-light moduleProgress <%if(moduleCompleted){%>completed<%}%>">                 
+                           Completed <span class="fa fa-check" aria-hidden="true"></span>
+                        </div>
                         </div>
                         <div class = "col-md-7 ml-auto">
                         <div class="card-text">
@@ -99,13 +100,27 @@
                       </div>
                   </div>                            
 
-            <% }if(module.type == 'Quiz'){ %>
+            <% }if(module.type == 'Quiz'){ 
+                                let moduleCompleted = false;
+                  let filteredItems = items.filter(i => i.id == module._id); 
+                      if(filteredItems.length > 0){
+                        moduleCompleted = filteredItems[0].completed;
+                        } %>%>
+
+
                 <div class="card" id = "module-<%=i%>">
                   <div class="card-header">Test Your Knowledge</div>
                   <div class = "card-body">
                 <p>When you are ready to complete this unit, take the quiz to see what you remember.</p>
                 <p>
                 <a href = "/courses/<%=course._id%>/units/<%=unit._id%>/quiz/<%=module.contentId%>" class="btn btn-primary">Take the Quiz</a>   </p>
+                <div class="row">
+                <div class="col-md-4 col-lg-3">
+                <div class="mb-4 text-light moduleProgress <%if(moduleCompleted){%>completed<%}%>">                 
+                           Completed <span class="fa fa-check" aria-hidden="true"></span>
+                  </div>
+                </div>
+                </div>
                 </div>
                 </div>
 
@@ -117,6 +132,15 @@
            <% }); %>
 
     <% } %>
+
+        <div class="row">
+      <div class="col-md-12">
+      <p>
+      <hr>
+      <a href="/courses/<%=course._id%>" alt="back" class="btn btn-secondary"><span class="fa fa-arrow-left" aria-hidden="true"></span> Back to <%=course.name%></a></p>
+
+      </div>
+    </div>
 
 </div>
 
@@ -169,6 +193,8 @@ $(document).ready(function(){
       $("#totalDuration").text( Math.round(totalModuleDuration / 60));
      })
 
+     var mp = $("#module-" + i).find('.moduleProgress');
+
      videoPlayer.on('timeupdate', function(t){
         if(t.percent >= 0.5){
           if(played == false){
@@ -185,6 +211,7 @@ $(document).ready(function(){
                  data: data,
                  success: function (){
                     updateProgressBar();
+                    mp.fadeIn('slow');
                  }
                });
 

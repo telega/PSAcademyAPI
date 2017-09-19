@@ -29,23 +29,33 @@
     </div>
     
     <div class = "row">
-        
+    <div class = "col-md-12 mt-2 mb-2"> 
+
+        <div class="card-deck">
+
         <% course.units.forEach(function(unit){
           if(unit.published == true) { %>
-                         <div class = "col-md-4 mt-2 mb-2"> 
 
-              <div class="card" >
+              <div class="card"  >
                   <img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=unit.name%></h4>
                     <p class="card-text"><%=unit.description%></p>
-                    <a href="/courses/<%=course._id%>/units/<%=unit._id%>" class="btn btn-primary" role="button">Take the Unit</a>
+                    <p class="card-text"><a href="/courses/<%=course._id%>/units/<%=unit._id%>" class="btn btn-primary" role="button">Take the Unit</a></p>
                   </div>
-              </div>
               </div>
             <%}}); %>
 
+            </div>
+    </div>
 
+        <div class="row">
+      <div class="col-md-12">
+      <p>
+      <hr>
+      <a href="/courses" alt="back" class="btn btn-secondary"><span class="fa fa-arrow-left" aria-hidden="true"></span> Back to Courses</a></p>
+
+      </div>
     </div>
     
 </div>

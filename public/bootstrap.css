@@ -1464,7 +1464,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
     .form-inline .has-feedback .form-control-feedback {
       top: 0; } }
 
-.btn {
+.btn, .button {
   display: inline-block;
   font-weight: normal;
   text-align: center;
@@ -1476,14 +1476,14 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
   font-size: 1rem;
   line-height: 1.25;
   transition: all 0.15s ease-in-out; }
-  .btn:focus, .btn:hover {
+  .btn:focus, .btn:hover, .button:focus, .button:hover {
     text-decoration: none; }
-  .btn:focus, .btn.focus {
+  .btn:focus, .btn.focus, .button:focus, .button.focus {
     outline: 0;
     box-shadow: 0 0 0 3px rgba(0, 165, 196, 0.25); }
-  .btn.disabled, .btn:disabled {
+  .btn.disabled, .btn:disabled, .button.disabled, .button:disabled {
     opacity: .65; }
-  .btn:active, .btn.active {
+  .btn:active, .btn.active, .button:active, .button.active {
     background-image: none; }
 
 a.btn.disabled,
@@ -6119,6 +6119,20 @@ ul.social li {
   max-width: 100% !important;
   height: auto !important; }
 
+.moduleProgress {
+  background-color: #2d8461;
+  display: none;
+  padding: 0px 4px; }
+
+.moduleProgress span {
+  float: right;
+  line-height: 24px;
+  font-size: 60px;
+  color: #aebd38; }
+
+.completed {
+  display: block; }
+
 /* BASE QUIZ STYLES */
 /* These styles ensure that the necessary elements are hidden for toggling */
 /* DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING!! */
@@ -6135,7 +6149,7 @@ ul.social li {
 /* If response messages are disabled or only shown on quiz completion,
    nextQuestion button IS checkAnswer button - so it must be displayed */
 .nextQuestion.checkAnswer {
-  display: block; }
+  display: inline-block; }
 
 ol.questions,
 ul.answers,
@@ -6155,5 +6169,34 @@ ul.responses li {
   padding: 0;
   position: absolute;
   width: 1px; }
+
+/* Custom Quiz Styling */
+#slickQuiz {
+  padding: 8px;
+  background-color: #ececec; }
+
+#slickQuiz .button {
+  color: #fff;
+  margin-top: 12px;
+  background-color: #27688f;
+  border-color: #27688f; }
+
+#slickQuiz .button:hover {
+  color: #fff;
+  background-color: #75bb00;
+  border-color: #75bb00; }
+
+#slickQuiz .button:focus, #slickQuiz .button.focus {
+  box-shadow: 0 0 0 3px rgba(0, 165, 196, 0.5); }
+
+#slickQuiz ol.questions {
+  padding-left: 0px; }
+
+.quizHeader {
+  margin-bottom: 12px;
+  color: #27688f; }
+
+.questionCount {
+  margin-bottom: 12px !important; }
 
 /*# sourceMappingURL=bootstrap.css.map */
