@@ -16,7 +16,7 @@
           var module = unit.modules.filter( m => m.contentId == quizId);
         %>
 <div id="slickQuiz" data-module-id="<%=module[0]._id%>" data-user-id="<%=user._id%>" data-course-id="<%=course._id%>" 
-  data-unit-id="<%=unit._id%>" >
+  data-unit-id="<%=unit._id%>" data-quiz-json="<%=quiz%>" >
         <h1 class="quizName"><!-- where the quiz name goes --></h1>
 
         <div class="quizArea">
@@ -57,7 +57,7 @@
 <script>
 $(document).ready(function(){
 
-  var quizJSON = parseQuizData(JSON.parse('<%-quiz%>'));
+  var quizJSON = parseQuizData($('#slickQuiz').data('quizJson'));
   $('#slickQuiz').slickQuiz({
       json:quizJSON,
       checkAnswerText: 'Next Question',
@@ -103,6 +103,7 @@ function parseQuizData(d){
     results: d.results,
     main: d.main
   }
+  console.log(info);
 
   var questions = d.questions;
 
