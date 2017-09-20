@@ -163,7 +163,7 @@ exports.getUsers = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		res.render('admin/users.ejs', {user:req.user, users:users, page: pageInfo});
+		res.status(200).render('admin/users.ejs', {user:req.user, users:users, page: pageInfo});
 	});
 };
 

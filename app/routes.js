@@ -190,6 +190,6 @@ module.exports = function(app,passport){
 
 	// Handle 404
 	app.use(function(req, res) {
-		res.status(404).render('index.ejs');
+		res.status(404).render('404.ejs');
 	});
 };
