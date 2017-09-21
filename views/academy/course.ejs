@@ -31,11 +31,45 @@
     <div class = "row">
     <div class = "col-md-12 mt-2 mb-2"> 
 
-        <div class="card-deck">
+        <div class="card-deck mb-4">
 
-        <% course.units.forEach(function(unit){
+        <%let publishedUnitCount = 1;
+        let lastCardIsOdd = false;
+        course.units.forEach(function(unit){
           
-          if(unit.published == true) { %>
+          if(unit.published == true){ 
+            publishedUnitCount +=1;
+            if(publishedUnitCount%2 == 0){
+              lastCardIsOdd = true;%>
+              </div>
+              <div class="card-deck mb-4">
+            <%} else {
+              lastCardIsOdd = false;
+            }%>
+               <%let filteredItems = items.filter(i => i.id == unit._id);
+                  if(filteredItems.length > 0){ %>
+              <div class="card"  >
+                  <img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top">
+                  <div class="card-body">
+                    <h4 class="card-title"><%=unit.name%></h4>
+                    <p class="card-text"><%=unit.description%></p>
+
+                    <% let unitProgress = Math.round(filteredItems[0].progress);%>
+                      <% if(unitProgress >= 100){ %>
+
+                        <div class="mb-4 text-light moduleProgress completed">                 
+                           Completed <span class="fa fa-check" aria-hidden="true"></span>
+                        </div>
+
+                      <% } else {%>
+                        <strong>You have completed <%=unitProgress%> % of this unit.</strong></p>
+                    <%}%>
+
+                    <p class="card-text"><a href="/courses/<%=course._id%>/units/<%=unit._id%>" class="btn btn-secondary" role="button">Resume Unit</a></p>
+                  </div>
+              </div>
+
+              <%} else {%>
 
               <div class="card"  >
                   <img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top">
@@ -45,7 +79,15 @@
                     <p class="card-text"><a href="/courses/<%=course._id%>/units/<%=unit._id%>" class="btn btn-primary" role="button">Take the Unit</a></p>
                   </div>
               </div>
+
+
+
+              <%}%>
             <%}}); %>
+
+             <%if(lastCardIsOdd){%>
+            <div class="card bg-white"></div>
+            <%}%>
 
             </div>
     </div>

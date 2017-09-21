@@ -50,6 +50,9 @@
   <li class="nav-item">
     <a class="nav-link " id="pills-login-tab" data-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-profile" aria-expanded="true">Log In</a>
   </li>
+    <li class="nav-item">
+    <a class="nav-link " id="pills-terms-tab" data-toggle="pill" href="#pills-terms" role="tab" aria-controls="pills-profile" aria-expanded="true">Terms &amp; Conditions</a>
+  </li>
 </ul>
 <div class="tab-content" id="pills-tabContent">
   <div class="tab-pane fade show active" id="pills-signup" role="tabpanel" aria-labelledby="pills-signup-tab"><h2>Sign Up</h2>
@@ -91,6 +94,15 @@
                             <p><a href='/forgot'>Forgot your password?</a></p>
 
             </div>
+
+        <div class="tab-pane fade" id="pills-terms" role="tabpanel" aria-labelledby="pills-login-tab">
+            <h2>Terms &amp; Conditions</h2>
+                <% if(options.academyTOS){%>
+    <p><%=options.academyTOS%></p>
+    <%}%>
+
+        </div>
+    
     </div>
 
 

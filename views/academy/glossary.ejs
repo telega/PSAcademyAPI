@@ -1,6 +1,6 @@
  <%- include partials/header.ejs %>
 
-<div class="container main-content">
+<div class="container main-content" >
   
     <div class="row">
       <div class="col-md-12">
@@ -14,10 +14,14 @@
         
     
         <div class="row">
-              <div class = "col-md-3" >
-                <div class = "row">
-                  <div class="col-12">
-                  <h4>Term List</h4>
+              <div class = "col-md-3 bd-sidebar" >
+              <div class="row"><div class="sidebar-header"><h4 class="navbar-brand" >Term List</h4></div>
+<button class=" btn-link bd-search-docs-toggle d-md-none p-0 ml-auto" type="button" data-toggle="collapse" data-target="#bd-docs-nav" aria-controls="bd-docs-nav" aria-expanded="false" aria-label="Toggle docs avigation">
+               <svg class="" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false"><title>Menu</title><path stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"/></svg>
+
+              </button>
+              </div>
+                  <nav class="collapse bd-links" id="bd-docs-nav">
                 <ul class="nav nav-pills flex-column" >
                   <li class="nav-item">
                     <a class="nav-link" href="#gabstract">Abstract</a>
@@ -145,14 +149,14 @@
                   
                 </ul>
 
-            </div>
-          </div>
+            </nav>
         </div>
       
-            <div class="col-md-7 ml-auto ">
+            <div class="col-md-7 ml-auto mr-auto">
               <div class="row">
-                <div class="col-12 gterms">
+                <div class="col-12 gterms" data-spy="scroll" data-target="#bd-docs-nav">
                 <h2>Definitions</h2>
+                <hr>
 
               <a id="gabstract"></a>
               <h3>Abstract</h3>
@@ -194,13 +198,13 @@
 
               <a id="gepo"></a>
               <h3>EPO</h3>
-              <p>European Patent Office</p>
+              <p>European Patent Office <a href="//www.epo.org/" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a></p>
               <hr>
 
 
               <a id="geuipo"></a>
               <h3>EUIPO</h3>
-              <p>The European Intellectual Property Office, formerly known as OHIM (the Office for the Harmonization of the Internal Market)
+              <p>The European Intellectual Property Office <a href="//euipo.europa.eu" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a>, formerly known as OHIM (the Office for the Harmonization of the Internal Market)
               </p>
               <hr>
 
@@ -221,7 +225,7 @@
 
               <a id="ginpadoc"></a>
               <h3>INPADOC</h3>
-              <p>International Patent Documentation - this refers to a publicly accessible database that is maintained by the EPO and is one system used for identifying <a href="#gpatent_families">patent families</a>.
+              <p>International Patent Documentation - this refers to a publicly accessible database that is maintained by the EPO and is one system used for identifying <a href="#gpatent_family">patent families</a>.
               </p>
               <hr>
 
@@ -246,8 +250,6 @@
               </p>
               <hr>
 
-     
-
               <a id="gisr"></a>
               <h3>ISR</h3>
               <p>International Search Report - the report produced by the ISA (International Searching Authority) on whether an invention is patentable.
@@ -256,19 +258,25 @@
 
               <a id="gjpo"></a>
               <h3>JPO</h3>
-              <p>Japan Patent Office
+              <p>Japan Patent Office <a href="//www.jpo.go.jp" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a>
               </p>
               <hr>
 
               <a id="gjv"></a>
-              <h3>ISA</h3>
+              <h3>JV</h3>
               <p>Joint Venture - where businesses agree to share resources or expertise in order to achieve a specific objective.
+              </p>
+              <hr>
+
+              <a id="gisa"></a>
+              <h3>ISA</h3>
+              <p>International Searching Authority - a body that will search patents and prior art to determine whether an invention is patentable.
               </p>
               <hr>
 
               <a id="gkipo"></a>
               <h3>Kipo</h3>
-              <p>Korean Intellectual Property Office
+              <p>Korean Intellectual Property Office <a href="//www.kipo.go.kr/" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a>
               </p>
               <hr>
 
@@ -319,7 +327,7 @@
 
               <a id="gsipo"></a>
               <h3>SIPO</h3>
-              <p>State Intellectual Property Office, which is also known as the Chinese Patent Office 
+              <p>State Intellectual Property Office <a href="//english.sipo.gov.cn/" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a>, which is also known as the Chinese Patent Office 
               </p>
               <hr>
 
@@ -354,14 +362,14 @@
 
               <a id="guspto"></a>
               <h3>USPTO</h3>
-              <p>United States Patent and Trademark Office
+              <p>United States Patent and Trademark Office <a href="//www.wipo.int/" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a>
               </p>
               <hr>
 
 
               <a id="gwipo"></a>
               <h3>WIPO</h3>
-              <p>World Intellectual Property Organization - a self-funded UN agency with 189 member states which provides a global forum for intellectual property services, policy, information and cooperation. 
+              <p>World Intellectual Property Organization <a href="//www.uspto.gov/" target="_blank"><span class="fa fa-external-link" aria-hidden="true"></span></a> - a self-funded UN agency with 189 member states which provides a global forum for intellectual property services, policy, information and cooperation. 
               </p>
               <hr>
 
