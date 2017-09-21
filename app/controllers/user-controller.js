@@ -40,7 +40,6 @@ exports.getUsers = function(req,res){
 };
 
 
-
 exports.addCourseToUser = function(req,res){
 
 	// find the user that we want to update.

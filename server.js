@@ -27,7 +27,9 @@ mongoose.connect(dbUrl, {
 require('./config/passport')(passport);
 
 app.use(cors());
-app.use(morgan('dev'));
+if(process.env.NODE_ENV !== 'test'){
+	app.use(morgan('dev'));
+}
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
 	extended: true

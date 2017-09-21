@@ -26,6 +26,24 @@ function getUserCourseItems(courses, academyProgress){
 }
 
 
+function getUserUnitItems(course,academyProgress){
+	let items = [];
+
+	course.units.forEach(function(unit){
+		let idx = academyProgress.map(function(e){return e.itemId;}).indexOf(unit._id.toString());
+		if(idx !== -1){
+			items.push({
+				name: unit.name,
+				progress: academyProgress[idx].itemProgress,
+				completed: academyProgress[idx].itemCompleted,
+				id: unit._id
+			});
+		}
+	});
+
+	return items;
+}
+
 function getUserUnitModuleItems(unit, academyProgress){
 	let items = [];
 
@@ -122,13 +140,13 @@ exports.getHomepage = function(req,res){
 						console.log(err);
 					}
 
-					res.status(200).render('index.ejs', {options:academyOptions});
+					res.status(200).render('index.ejs', {options:academyOptions, message: req.flash('loginMessage') });
 
-				})
+				});
 
-				} else {
-					res.status(200).render('index.ejs', {options:academyOptions});
-				}
+			} else {
+				res.status(200).render('index.ejs', {options:academyOptions, message: req.flash('loginMessage') });
+			}
 		});
 	}
 };
@@ -145,6 +163,8 @@ exports.getCourse = function(req,res){
 			courseProgress = Math.round(courseItem[0].itemProgress);
 		}
 
+		let items = getUserUnitItems(course, req.user.local.academyProgress);
+
 		let pageInfo = {
 			title: course.name,
 			breadcrumbs: [
@@ -156,7 +176,7 @@ exports.getCourse = function(req,res){
 			jumbotronImageUrl: course.courseImageUrl
 		};
 
-		res.render('academy/course.ejs', {user: req.user, pageInfo:pageInfo, course: course, courseProgress: courseProgress});
+		res.status(200).render('academy/course.ejs', {user: req.user, items: items, pageInfo:pageInfo, course: course, courseProgress: courseProgress});
 	});
 };
 
@@ -236,7 +256,6 @@ exports.getCourseUnit = function(req,res){
 		if(unitItem.length>0){
 			unitProgress = Math.round(unitItem[0].itemProgress);
 		}
-
 
 		let pageInfo = {
 			title: unit.name,

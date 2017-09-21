@@ -7,10 +7,9 @@ exports.postCourse = function(req,res){
 	course.order = req.body.order;
 	course.save(function(err){
 		if(err){
-			console.log(err);
-			res.status(400).json({message: 'Error adding Course'});
+			res.status(500).json({message: 'Error adding Course'});
 		} else {
-			res.json({message: 'Course Added', data: course});
+			res.status(200).json({message: 'Course Added', course: course});
 		}
 	});
 };
@@ -59,7 +58,7 @@ exports.deleteCourse = function(req,res){
 		if(err){
 			console.log(err);
 		}
-		res.json({message: 'Deleted Course'});
+		res.status(200).json({message: 'Deleted Course'});
 	});
 };
 
