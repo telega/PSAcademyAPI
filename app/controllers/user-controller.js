@@ -292,18 +292,24 @@ exports.getForgot = function(req,res){
 	res.status(200).render('forgot.ejs', { message: req.flash('loginMessage') });
 };
 
-exports.postForgot = function(req,res){
+exports.getPasswordSetup = function(req,res){
+	res.status(200).render('password.ejs', { message: req.flash('loginMessage') });
+};
+
+
+exports.postPasswordSetup = function(req,res){
 	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
 		if(err){
 			console.log(err);
 			req.flash('loginMessage','An error occured.');
-			res.redirect('/forgot');
+			res.redirect('/password');
 
 		}
+
 		if(!user){
 			req.flash('loginMessage','No user found with that email address.');
-			res.redirect('/forgot');
-		}
+			res.redirect('/password');
+		} else {
 
 		var token = crypto.randomBytes(20).toString('hex');
 
@@ -330,7 +336,7 @@ exports.postForgot = function(req,res){
 				from: 'academy@patsnap.com',
 				subject: 'Academy by Patsnap - Password Reset',
 				text: 'You are receiving this message because someone has requested the reset of the password for your Academy account.\n\n' +
-					'To reset yoru password, please click on the following link (or paste it into your browser):\n\n' +
+					'To reset your password, please click on the following link (or paste it into your browser):\n\n' +
 					'http://' + req.headers.host + '/reset/' + token + '\n\n' +
 					'If you did not make this request ignore this email.\n'+
 					' The Academy Team\n'
@@ -349,6 +355,70 @@ exports.postForgot = function(req,res){
 			res.redirect('/forgot');
 
 		});
+	}
+	});
+
+};
+
+
+exports.postForgot = function(req,res){
+	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
+		if(err){
+			console.log(err);
+			req.flash('loginMessage','An error occured.');
+			res.redirect('/forgot');
+
+		}
+		if(!user){
+			req.flash('loginMessage','No user found with that email address.');
+			res.redirect('/forgot');
+		} else {
+
+		var token = crypto.randomBytes(20).toString('hex');
+
+		user.resetPasswordToken = token; 
+		user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+		user.save(function(err){
+			if(err){
+				console.log(err);
+			}
+		
+			var sgOptions = {
+				auth: {
+					//api_user: sgUser,
+					api_key: sgKey
+				}
+			};
+			
+
+			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+	
+			var email = {
+				to: user.local.email,
+				from: 'academy@patsnap.com',
+				subject: 'Academy by Patsnap - Setup Password',
+				text: 'You are receiving this message to set up the password for your Academy account.\n\n' +
+					'To set up your password, please click on the following link (or paste it into your browser):\n\n' +
+					'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+					'If you did not make this request ignore this email.\n'+
+					'\n Thanks! \n The Academy Team\n'
+			};
+
+
+			sgClient.sendMail(email,function(err, info){
+				if(err){
+					console.log(err);
+				} else {
+					console.log('Message sent to ' + user.local.email);
+				}
+			});
+
+			req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+			res.redirect('/forgot');
+
+		});
+	}
 	});
 
 };
