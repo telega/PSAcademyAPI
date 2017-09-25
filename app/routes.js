@@ -59,24 +59,15 @@ module.exports = function(app,passport){
 	
 	// User Routes
 
-	// router.route('/user')
-	// 	.get(authController.isAuthenticated, userController.getUser);
-
 	apiRouter.route('/users')
 		.get(authController.isAuthenticated, authController.isAdmin, userController.getUsers);
 
 	apiRouter.route('/users/verify')
 		.get(authController.isAuthenticated, userController.verifyUser);
 
-	// apiRouter.route('/users/progress')
-	// 	.put(authController.isLoggedIn, userController.putCourseProgress);
-
 	apiRouter.route('/users/:user_id')
 		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser)
 		.delete(authController.isLoggedIn, authController.isAdmin, userController.deleteUser);
-
-	// apiRouter.route('/users/:user_id/progress/:item_id')
-	// 	.put( userController.putCourseProgress);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id')
 		.put(authController.isLoggedIn,userController.putModuleProgress);

@@ -52,7 +52,6 @@ module.exports = function(passport){
 						// HS Request
 						if(hsPortalId && hsFormID) {
 	
-	
 							var postData = querystring.stringify({
 								'email': email,
 								'firstname': req.body.firstname,

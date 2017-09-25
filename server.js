@@ -12,7 +12,13 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const dbUrl =  process.env.DB_URL;
+var dbUrl;
+if(process.env.NODE_ENV !=='test'){
+	dbUrl =  process.env.DB_URL;
+} else {
+	dbUrl = process.env.TEST_DB;
+}
+
 const bluebird = require('bluebird');
  
 

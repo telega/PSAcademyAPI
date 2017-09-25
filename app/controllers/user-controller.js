@@ -73,7 +73,7 @@ exports.addCourseToUser = function(req,res){
 						console.log(err);
 					}
 			
-					res.status(200).json({message: 'Course Added to User', user: user});
+					res.status(200).json({message: 'Course Added to User'});
 				});
 			} else {
 				res.status(200).json({message: 'Course Already Exists'});
@@ -85,6 +85,9 @@ exports.addCourseToUser = function(req,res){
 
 exports.putModuleProgress = function(req,res){
 
+	if( (!req.body.itemProgress) || (!req.body.itemCompleted) ){
+		res.status(400).json({message: 'Request missing data.'})
+	} else {
 	// find the user that we want to update.
 	User.findById(req.params.user_id, function(err,user){
 		if(err){
@@ -258,12 +261,14 @@ exports.putModuleProgress = function(req,res){
 				if(err){
 					console.log(err);
 				}	
-				res.status(200).json({message: 'User Progress Updated', user: user});
+				res.status(200).json({message: 'User Progress Updated', academyProgress: user.local.academyProgress});
 			});
 
 		});
 
 	});
+
+};
 
 };
 
@@ -433,7 +438,7 @@ exports.getReset = function(req,res){
 			res.redirect('/forgot');
 		}
 
-		res.status(200).render('reset.ejs', { message: req.flash('loginMessage'), user: user});
+		res.status(200).render('reset.ejs', { message: req.flash('loginMessage') });
 	});
 };
 

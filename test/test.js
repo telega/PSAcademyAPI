@@ -2,6 +2,7 @@ require('dotenv').config();
 console.log(process.env.NODE_ENV);
 
 var Course = require('../app/models/course');
+var User = require('../app/models/user');
 
 const test_email = process.env.TEST_EMAIL; 
 const test_pw = process.env.TEST_PW;
@@ -25,7 +26,9 @@ let server = require('../server');
 let should = chai.should();
 
 chai.use(chaiHttp);
-// Auxiliary function.
+
+
+// Auxiliary functions .
 function createLoginCookie(s, loginDetails, done) {
 	request(s)
 		.post('/login')
@@ -38,7 +41,80 @@ function createLoginCookie(s, loginDetails, done) {
 			done(loginCookie);
 		});
 }
-// Using auxiliary function in test cases.
+
+function createTestUser(done){
+
+	// create the test User
+	var testUser = new User();
+
+	testUser.local.email = 'mytestuser@mytestuser.com';
+	testUser.local.password = 'testuserpassword';
+	testUser.local.profile.firstName = 'Test';
+	testUser.local.profile.lastName = 'User';
+
+
+	testUser.save((err)=>{
+		if(err){
+			throw err;
+		}
+		done(testUser);
+	});
+
+}
+
+function createTestCourse(done){
+
+	var testModule = {
+		name : 'TestModule',
+		description: 'Test Module'
+	};
+
+	var testUnit = {
+		name : 'TestUnit',
+		description: 'Test Unit',
+		modules: [testModule]
+	};
+
+	var testCourse = new Course();
+	testCourse.name = 'TestCourse2';
+	testCourse.description = 'Test Course';
+	testCourse.published = true;
+	testCourse.units = [testUnit];
+
+	testCourse.save(function(err){
+		if(err){
+			throw err;
+		}
+		done(testCourse);
+	});
+}
+
+
+function deleteTestCourse(courseId){
+	Course.remove({_id:courseId}, (err)=>{
+		if(err){
+			throw err;
+		}
+	});
+}
+
+
+function deleteTestUser(userId){
+
+	User.remove({_id: userId}, (err)=>{
+		if(err){
+			console.log(err);
+		}
+
+	});
+
+}
+
+
+// Tests for API routes
+
+/// Academy related routes
+
 describe('API Routes', ()=>{
 	
 	describe('Courses', () =>{
@@ -120,6 +196,121 @@ describe('API Routes', ()=>{
 
 });
 
+// User Progress Routes
+
+
+
+
+
+describe('User Progress Routes', ()=>{
+
+	it('it should add the course to the user on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+
+		createTestUser( function(testUser){
+
+			createTestCourse(function(testCourse){
+
+				createLoginCookie(server, theAccount, function(cookie) {
+
+					request(server)
+						.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id)
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+
+							//clean up
+							deleteTestCourse(testCourse._id);
+							deleteTestUser(testUser._id);
+							done();
+						});
+				});	
+
+			});
+
+		});
+
+	});
+
+	it('Respond 400 .../:user_id/courses/:course_id/units/:unit_id/modules/:module_id PUT', (done) => {
+
+		createTestUser( function(testUser){
+
+			createTestCourse(function(testCourse){
+				var testUnit = testCourse.units[0];
+				var testModule = testCourse.units[0].modules[0];
+
+
+				createLoginCookie(server, theAccount, function(cookie) {
+
+					request(server)
+						.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(400);
+							res.should.be.json;
+
+							//clean up
+							deleteTestCourse(testCourse._id);
+							deleteTestUser(testUser._id);
+							done();
+						});
+				});	
+
+			});
+
+		});
+
+	});
+
+
+	it('Progress the user/api/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id PUT', (done) => {
+
+		createTestUser( function(testUser){
+
+			createTestCourse(function(testCourse){
+				var testUnit = testCourse.units[0];
+				var testModule = testCourse.units[0].modules[0];
+
+
+				createLoginCookie(server, theAccount, function(cookie) {
+
+					request(server)
+						.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
+						.set('cookie', cookie)
+						.send({
+							itemProgress: 100,
+							itemCompleted: true
+						})
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+
+							
+							res.body.academyProgress.should.be.an('array');
+
+							let ap = res.body.academyProgress;
+							ap.forEach(function(item){
+								item.itemCompleted.should.equal(true);
+							});
+
+							//clean up
+							deleteTestCourse(testCourse._id);
+							deleteTestUser(testUser._id);
+							done();
+						});
+				});	
+
+			});
+
+		});
+
+	});
+
+});
+
+
+// Academy Admin Routes
 
 describe('Admin Routes ', () =>{
 	it('it should render the All Users admin page on /admin/users GET', (done) => {
