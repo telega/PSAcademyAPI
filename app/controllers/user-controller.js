@@ -103,8 +103,11 @@ function makeCourseProgress(c,p){
 			} else {
 				u.modules.forEach(function(m){
 					courseSize++;
-					if(m.itemCompleted == true){
-						courseModulesCompleted++;
+					let module =p.filter( progressItem => progressItem.itemId == m._id.toString());
+					if(module.length>0){
+						if(module[0].itemCompleted == true){
+							courseModulesCompleted++;
+						}
 					}
 				});
 			}
@@ -123,6 +126,7 @@ function makeCourseProgress(c,p){
 	courseProgress.courseSize = courseSize;
 	courseProgress.courseCompleted = courseCompleted;
 	courseProgress.courseModulesCompleted = courseModulesCompleted;
+	console.log(courseProgress);
 
 	return courseProgress;
 }

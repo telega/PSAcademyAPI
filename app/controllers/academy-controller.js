@@ -72,7 +72,7 @@ exports.getCourses = function(req,res){
 		let pageInfo = {
 			title: 'Courses',
 			breadcrumbs: [
-				{title:'Home', url: '/'},
+				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 				{title:'Courses', url: '/courses'}
 			],
 			activeNavItem: 'Courses',
@@ -88,7 +88,7 @@ exports.getGlossary = function(req,res){
 	let pageInfo = {
 		title: 'IP Glossary',
 		breadcrumbs: [
-			{title:'Home', url: '/'},
+			{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 			{title:'IP Glossary', url: '/glossary'}
 		],
 		activeNavItem: 'Glossary',
@@ -110,7 +110,7 @@ exports.getHomepage = function(req,res){
 			let pageInfo = {
 				title: 'Welcome',
 				breadcrumbs: [
-					{title:'Home', url: '/'}
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'}
 				],
 				activeNavItem: null,
 				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/AcademyWelcomeHeader.jpg' 
@@ -168,7 +168,7 @@ exports.getCourse = function(req,res){
 		let pageInfo = {
 			title: course.name,
 			breadcrumbs: [
-				{title:'Home', url: '/'},
+				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 				{title:'Courses', url: '/courses'},
 				{title:course.name, url: '/courses/'+ course._id}
 			],
@@ -235,7 +235,10 @@ exports.getProfile = function(req,res){
 
 		let pageInfo = {
 			title: 'Profile',
-			breadcrumbs: [{title:'Profile', url: '/Profile'}],
+			breadcrumbs: [
+				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+				{title:'Profile', url: '/Profile'}
+			],
 			activeNavItem: 'Profile',
 			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
 		};
@@ -260,7 +263,7 @@ exports.getCourseUnit = function(req,res){
 		let pageInfo = {
 			title: unit.name,
 			breadcrumbs: [
-				{title:'Home', url: '/'},
+				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 				{title:'Courses', url: '/courses'},
 				{title:course.name, url: '/courses/'+ course._id},
 				{title:unit.name, url: '/courses/' + course._id + /units/ + unit._id}
@@ -292,7 +295,7 @@ exports.getQuiz = function(req,res){
 			let pageInfo = {
 				title: '' + unit.name + ' - Quiz',
 				breadcrumbs: [
-					{title:'Home', url: '/'},
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 					{title:'Courses', url: '/courses'},
 					{title:course.name, url: '/courses/'+ course._id},
 					{title:unit.name, url: '/courses/' + course._id + /units/ + unit._id},
