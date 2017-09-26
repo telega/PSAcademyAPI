@@ -405,7 +405,7 @@ exports.postPasswordSetup = function(req,res){
 					}
 				});
 	
-				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Junkmail folder.');
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Spam folder.');
 				res.redirect('/forgot');
 	
 			});
@@ -468,7 +468,7 @@ exports.postForgot = function(req,res){
 					}
 				});
 	
-				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Junkmail folder.');
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Spam folder.');
 				res.redirect('/forgot');
 	
 			});

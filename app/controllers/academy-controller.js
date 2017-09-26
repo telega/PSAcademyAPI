@@ -211,7 +211,8 @@ exports.getProfile = function(req,res){
 					name: course.name,
 					progress: req.user.local.academyProgress[cidx].itemProgress,
 					completed: req.user.local.academyProgress[cidx].itemCompleted,
-					type: 'Course'
+					type: 'Course', 
+					url: '/courses/' + course._id
 				});
 			}
 
@@ -225,6 +226,7 @@ exports.getProfile = function(req,res){
 							progress: req.user.local.academyProgress[uidx].itemProgress,
 							completed: req.user.local.academyProgress[uidx].itemCompleted,
 							type: 'Unit',
+							url:'/courses/' + course._id + '/units/' + course.units[j]._id
 						});
 					}
 
@@ -236,7 +238,8 @@ exports.getProfile = function(req,res){
 									name: course.units[j].modules[k].name,
 									progress: req.user.local.academyProgress[idx].itemProgress,
 									completed: req.user.local.academyProgress[idx].itemCompleted,
-									type: 'Module'
+									type: 'Module',
+									url:'/courses/' + course._id + '/units/' + course.units[j]._id
 								});
 							}
 						}
@@ -257,7 +260,7 @@ exports.getProfile = function(req,res){
 			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
 		};
 
-		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, courses: courses, user: req.user});	
+		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, user: req.user});	
 	});
 };
 
