@@ -39,7 +39,6 @@ exports.getUsers = function(req,res){
 	});
 };
 
-
 exports.addCourseToUser = function(req,res){
 
 	// find the user that we want to update.
@@ -82,6 +81,53 @@ exports.addCourseToUser = function(req,res){
 	});
 
 };
+
+
+
+
+function makeCourseProgress(c,p){
+    
+	let courseProgress = {}
+	let courseSize = 0;
+	let courseCompleted = false;
+	let courseModulesCompleted = 0;
+
+	c.units.forEach(function(u){
+		let unit =p.filter( progressItem => progressItem.itemId == u._id.toString());
+		if(unit.length>0){
+			if(unit[0].itemCompleted == true){
+				u.modules.forEach(function(m){
+					courseSize++;
+					courseModulesCompleted++;
+				});
+			} else {
+				u.modules.forEach(function(m){
+					courseSize++;
+					if(m.itemCompleted == true){
+						courseModulesCompleted++;
+					}
+				});
+			}
+		} else {
+			u.modules.forEach(function(m){
+				courseSize++;
+			});
+		}
+
+	});
+
+	if(courseSize == courseModulesCompleted){
+		courseCompleted = true;
+	}
+
+	courseProgress.courseSize = courseSize;
+	courseProgress.courseCompleted = courseCompleted;
+	courseProgress.courseModulesCompleted = courseModulesCompleted;
+
+	return courseProgress;
+}
+
+
 
 exports.putModuleProgress = function(req,res){
 
@@ -194,10 +240,13 @@ exports.putModuleProgress = function(req,res){
 				}
 	
 				// filter units again because we have updated for new unit..
-				units = user.local.academyProgress.filter( u => u.itemId == req.params.unit_id);
+				//units = user.local.academyProgress.filter( u => u.itemId == req.params.unit_id);
 				// now we need to do something similar at the Course Level. 
 				// we dont worry about quizzes but we worry about some badges. 
 	
+
+				var cp = makeCourseProgress(course,user.local.academyProgress);
+				/*
 				var courseSize = course.units.length;
 				var unitIds = [];
 					
@@ -213,30 +262,26 @@ exports.putModuleProgress = function(req,res){
 					courseSize: courseSize,
 					unitIds: unitIds
 				};
+				*/
 
-				
 				// now Compare course Data to user's Academy Progress
 	
 				// filter all the units from user progress that are part of the course, and completed
-				var unitsCompleted = user.local.academyProgress.filter( function(u){
-					if(courseData.unitIds.indexOf(u.itemId)!== -1){
-						return u.itemCompleted == true;
-					}
-				});
+				// var unitsCompleted = user.local.academyProgress.filter( function(u){
+				// 	if(courseData.unitIds.indexOf(u.itemId)!== -1){
+				// 		return u.itemCompleted == true;
+				// 	}
+				// });
 	
-				var courseProgress = 100 * (unitsCompleted.length / courseData.courseSize);
+				var courseProgress = 100 * (cp.courseModulesCompleted / cp.courseSize);
 				// now we update the Course Progress.
 				// check if the course exists, if not Add it
 	
 				let courses = user.local.academyProgress.filter( c => c.itemId == req.params.course_id);
 	
 				if(courses.length == 0){
-					var courseCompleted = false;
-					if(courseProgress >= 100){
-						courseCompleted = true;
-						courseProgress = 100;
-						// ToDo: put a badge on it
-					}
+					var courseCompleted = cp.courseCompleted;
+					
 					var courseAcademyProgress = {
 						itemId: req.params.course_id,
 						itemProgress: courseProgress,
@@ -268,7 +313,7 @@ exports.putModuleProgress = function(req,res){
 	
 		});
 	
-	};
+	}
 
 };
 
@@ -316,51 +361,51 @@ exports.postPasswordSetup = function(req,res){
 			res.redirect('/password');
 		} else {
 
-		var token = crypto.randomBytes(20).toString('hex');
-
-		user.resetPasswordToken = token; 
-		user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-		user.save(function(err){
-			if(err){
-				console.log(err);
-			}
-		
-			var sgOptions = {
-				auth: {
-					//api_user: sgUser,
-					api_key: sgKey
-				}
-			};
-			
-
-			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+			var token = crypto.randomBytes(20).toString('hex');
 	
-			var email = {
-				to: user.local.email,
-				from: 'academy@patsnap.com',
-				subject: 'Academy by Patsnap - Password Reset',
-				text: 'You are receiving this message because someone has requested the reset of the password for your Academy account.\n\n' +
-					'To reset your password, please click on the following link (or paste it into your browser):\n\n' +
-					'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-					'If you did not make this request ignore this email.\n'+
-					' The Academy Team\n'
-			};
-
-
-			sgClient.sendMail(email,function(err, info){
+			user.resetPasswordToken = token; 
+			user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+	
+			user.save(function(err){
 				if(err){
 					console.log(err);
-				} else {
-					console.log('Message sent to ' + user.local.email);
 				}
+			
+				var sgOptions = {
+					auth: {
+						//api_user: sgUser,
+						api_key: sgKey
+					}
+				};
+				
+	
+				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+		
+				var email = {
+					to: user.local.email,
+					from: 'academy@patsnap.com',
+					subject: 'Academy by Patsnap - Password Reset',
+					text: 'You are receiving this message because someone has requested the reset of the password for your Academy account.\n\n' +
+						'To reset your password, please click on the following link (or paste it into your browser):\n\n' +
+						'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+						'If you did not make this request ignore this email.\n'+
+						' The Academy Team\n'
+				};
+	
+	
+				sgClient.sendMail(email,function(err, info){
+					if(err){
+						console.log(err);
+					} else {
+						console.log('Message sent to ' + user.local.email);
+					}
+				});
+	
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+				res.redirect('/forgot');
+	
 			});
-
-			req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
-			res.redirect('/forgot');
-
-		});
-	}
+		}
 	});
 
 };
@@ -379,51 +424,51 @@ exports.postForgot = function(req,res){
 			res.redirect('/forgot');
 		} else {
 
-		var token = crypto.randomBytes(20).toString('hex');
-
-		user.resetPasswordToken = token; 
-		user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-		user.save(function(err){
-			if(err){
-				console.log(err);
-			}
-		
-			var sgOptions = {
-				auth: {
-					//api_user: sgUser,
-					api_key: sgKey
-				}
-			};
-			
-
-			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+			var token = crypto.randomBytes(20).toString('hex');
 	
-			var email = {
-				to: user.local.email,
-				from: 'academy@patsnap.com',
-				subject: 'Academy by Patsnap - Setup Password',
-				text: 'You are receiving this message to set up the password for your Academy account.\n\n' +
-					'To set up your password, please click on the following link (or paste it into your browser):\n\n' +
-					'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-					'If you did not make this request ignore this email.\n'+
-					'\n Thanks! \n The Academy Team\n'
-			};
-
-
-			sgClient.sendMail(email,function(err, info){
+			user.resetPasswordToken = token; 
+			user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+	
+			user.save(function(err){
 				if(err){
 					console.log(err);
-				} else {
-					console.log('Message sent to ' + user.local.email);
 				}
+			
+				var sgOptions = {
+					auth: {
+						//api_user: sgUser,
+						api_key: sgKey
+					}
+				};
+				
+	
+				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+		
+				var email = {
+					to: user.local.email,
+					from: 'academy@patsnap.com',
+					subject: 'Academy by Patsnap - Setup Password',
+					text: 'You are receiving this message to set up the password for your Academy account.\n\n' +
+						'To set up your password, please click on the following link (or paste it into your browser):\n\n' +
+						'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+						'If you did not make this request ignore this email.\n'+
+						'\n Thanks! \n The Academy Team\n'
+				};
+	
+	
+				sgClient.sendMail(email,function(err, info){
+					if(err){
+						console.log(err);
+					} else {
+						console.log('Message sent to ' + user.local.email);
+					}
+				});
+	
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+				res.redirect('/forgot');
+	
 			});
-
-			req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
-			res.redirect('/forgot');
-
-		});
-	}
+		}
 	});
 
 };
