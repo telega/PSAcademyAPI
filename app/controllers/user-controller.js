@@ -361,7 +361,7 @@ exports.postPasswordSetup = function(req,res){
 		}
 
 		if(!user){
-			req.flash('loginMessage','No user found with that email address.');
+			req.flash('loginMessage','No Academy user found with that email address.');
 			res.redirect('/password');
 		} else {
 
@@ -405,7 +405,7 @@ exports.postPasswordSetup = function(req,res){
 					}
 				});
 	
-				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Junkmail folder.');
 				res.redirect('/forgot');
 	
 			});
@@ -424,7 +424,7 @@ exports.postForgot = function(req,res){
 
 		}
 		if(!user){
-			req.flash('loginMessage','No user found with that email address.');
+			req.flash('loginMessage','No Academy user found with that email address.');
 			res.redirect('/forgot');
 		} else {
 
@@ -468,7 +468,7 @@ exports.postForgot = function(req,res){
 					}
 				});
 	
-				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email.');
+				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Junkmail folder.');
 				res.redirect('/forgot');
 	
 			});
@@ -493,7 +493,7 @@ exports.getReset = function(req,res){
 
 exports.postReset = function(req,res){
 
-User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
+	User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
 		if(err){
 			console.log(err);
 		}
@@ -537,7 +537,7 @@ User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt
 				}
 			});	
 
-			res.redirect('/');
+			res.redirect('/login');
 		});
 
 

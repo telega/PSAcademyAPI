@@ -83,7 +83,7 @@ $(document).ready(function () {
               // var blogURL = "<a href='" + itemURL.text() + "'>" + itemURL.text() +"</a>";
   
               var itemTitle = ($(e).find("title"));
-              var blogItem = "<li class=''><a href ='" + itemURL.text() +  "'>" + itemTitle.text() + "</li>";
+              var blogItem = "<li class=''><a target='_blank' href ='" + itemURL.text() +  "'>" + itemTitle.text() + "</li>";
             $("#feed").append(blogItem);
           }
         }); 

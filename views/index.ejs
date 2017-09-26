@@ -21,7 +21,7 @@
    <div class="jumbotron text-center jumbotron-fluid">
     <div class="row">
         <div class="col-md-6 mr-auto ml-auto">
-        <img width="620" class = "img-fluid" src ="https://www.patsnap.com/hubfs/Academy/Logo/academy_rocket_logo_white.svg">
+        <img width="620" class = "img-fluid academyLogo" src ="https://www.patsnap.com/hubfs/Academy/Logo/academy_rocket_logo_white.svg">
         </div>
     </div>
     </div>
@@ -35,6 +35,13 @@
     <% if(options.academyIntroText){%>
     <p class="lead" ><%=options.academyIntroText%></p>
     <%}%>
+    <h4>Available Topics</h4>
+    <ul>
+        <%courses.forEach(function(course){
+            course.units.forEach(function(unit){%>
+        <li><%=unit.name%></li>
+        <%})})%>
+    </ul>
     </div>
 <div class="col-md-6 ml-auto " style="min-height:540px;">
         <% if (message.length > 0) { %>

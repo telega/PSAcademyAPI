@@ -127,26 +127,32 @@ exports.getHomepage = function(req,res){
 		});
 
 	} else {
-		Academy.findOne({}, function(err,academyOptions){  
+		Course.find({}, function(err, courses){
 			if(err){
 				console.log(err);
 			}
 
-			if(!academyOptions){
-				academyOptions = new Academy();
-
-				academyOptions.save(function(err){
-					if(err){
-						console.log(err);
-					}
-
-					res.status(200).render('index.ejs', {options:academyOptions, message: req.flash('loginMessage') });
-
-				});
-
-			} else {
-				res.status(200).render('index.ejs', {options:academyOptions, message: req.flash('loginMessage') });
-			}
+			Academy.findOne({}, function(err,academyOptions){  
+				if(err){
+					console.log(err);
+				}
+	
+				if(!academyOptions){
+					academyOptions = new Academy();
+	
+					academyOptions.save(function(err){
+						if(err){
+							console.log(err);
+						}
+	
+						res.status(200).render('index.ejs', { courses: courses, options:academyOptions, message: req.flash('loginMessage') });
+	
+					});
+	
+				} else {
+					res.status(200).render('index.ejs', { courses:courses, options:academyOptions, message: req.flash('loginMessage') });
+				}
+			});
 		});
 	}
 };
@@ -179,6 +185,14 @@ exports.getCourse = function(req,res){
 		res.status(200).render('academy/course.ejs', {user: req.user, items: items, pageInfo:pageInfo, course: course, courseProgress: courseProgress});
 	});
 };
+
+
+exports.getLogin = function(req,res){
+
+	res.status(200).render('academy/login.ejs', { message: req.flash('loginMessage') });
+
+}
+
 
 exports.getProfile = function(req,res){
 

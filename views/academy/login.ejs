@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <title>Academy by PatSnap</title>
+        <link rel="stylesheet" href="/public/bootstrap.css" crossorigin="anonymous"> <!-- load bootstrap css -->    
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+
+    .jumbotron{
+        background-image:url('//www.patsnap.com/hubfs/Academy/Images/AcademyLoginHeader.jpg');
+        background-size:cover;
+        color:#fff;
+        min-height:400px;
+        background-repeat:no-repeat;
+        }
+    </style>
+</head>
+<body>
+   <div class="jumbotron text-center jumbotron-fluid">
+    <div class="row">
+        <div class="col-md-6 mr-auto ml-auto">
+        <img width="620" class = "img-fluid academyLogo" src ="https://www.patsnap.com/hubfs/Academy/Logo/academy_rocket_logo_white.svg">
+        </div>
+    </div>
+    </div>
+
+<div class="container main-content">
+<div class="row justify-content-md-center" >
+<div class="col-md-6 ">
+
+    <h1>Login</h1>
+
+    <!-- show any messages that come back with authentication -->
+    <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+    <!-- LOGIN FORM -->
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" name="email">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">Login</button>
+    </form>
+
+    <hr>
+    <p>Need to Signup? <a href="/">Go here</a>.</p>
+
+</div>
+
+</div>
+</div>
+<%- include partials/footer.ejs%>
+</body>
+</html>
