@@ -126,11 +126,9 @@ function makeCourseProgress(c,p){
 	courseProgress.courseSize = courseSize;
 	courseProgress.courseCompleted = courseCompleted;
 	courseProgress.courseModulesCompleted = courseModulesCompleted;
-	console.log(courseProgress);
 
 	return courseProgress;
 }
-
 
 
 exports.putModuleProgress = function(req,res){
@@ -387,13 +385,18 @@ exports.postPasswordSetup = function(req,res){
 		
 				var email = {
 					to: user.local.email,
-					from: 'academy@patsnap.com',
+					from: 'Academy by PatSnap <academy@patsnap.com>',
 					subject: 'Academy by Patsnap - Password Reset',
 					text: 'You are receiving this message because someone has requested the reset of the password for your Academy account.\n\n' +
 						'To reset your password, please click on the following link (or paste it into your browser):\n\n' +
 						'http://' + req.headers.host + '/reset/' + token + '\n\n' +
 						'If you did not make this request ignore this email.\n'+
-						' The Academy Team\n'
+						' The Academy Team\n',
+					html: '<p>You are receiving this message because someone has requested the reset of the password for your Academy account.</p>' +
+						'<p>To reset your password, please click on the following link (or paste it into your browser):<br>' +
+						'<a href ="http://' + req.headers.host + '/reset/' + token + '">http://' + req.headers.host + '/reset/' + token + '</a></p>' +
+						'<p>If you did not make this request ignore this email.</p>'+
+						' <p>Thanks<br>The Academy Team</p>'
 				};
 	
 	
@@ -450,13 +453,18 @@ exports.postForgot = function(req,res){
 		
 				var email = {
 					to: user.local.email,
-					from: 'academy@patsnap.com',
-					subject: 'Academy by Patsnap - Setup Password',
+					from: 'Academy by PatSnap <academy@patsnap.com>',
+					subject: 'Academy by PatSnap - Setup Password',
 					text: 'You are receiving this message to set up the password for your Academy account.\n\n' +
 						'To set up your password, please click on the following link (or paste it into your browser):\n\n' +
 						'http://' + req.headers.host + '/reset/' + token + '\n\n' +
 						'If you did not make this request ignore this email.\n'+
-						'\n Thanks! \n The Academy Team\n'
+						'\n Thanks! \n The Academy Team\n',
+					html: '<p>You are receiving this message to set up the password for your Academy account.</p><p>'+
+						'To set up your password, please click on the following link (or paste it into your browser):<br>' +
+						'<a href="http://' + req.headers.host + '/reset/' + token + '">http://' + req.headers.host + '/reset/' + token + ' </a></br>' +
+						'If you did not make this request ignore this email.</p>'+
+						'<p>Thanks!<br> The Academy Team</p>',
 				};
 	
 	
@@ -522,7 +530,7 @@ exports.postReset = function(req,res){
 
 			var email = {
 				to: user.local.email,
-				from: 'academy@patsnap.com',
+				from: 'Academy by Patsnap <academy@patsnap.com>',
 				subject: 'Academy by Patsnap - Password Changed',
 				text: 'This is a confirmation that your Academy password has been changed.\n\n' +
 						'The Academy Team\n'

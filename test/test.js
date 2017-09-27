@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log(process.env.NODE_ENV);
 
 var Course = require('../app/models/course');
 var User = require('../app/models/user');
@@ -199,9 +198,6 @@ describe('API Routes', ()=>{
 // User Progress Routes
 
 
-
-
-
 describe('User Progress Routes', ()=>{
 
 	it('it should add the course to the user on /api/progress/:user_id/courses/:course_id PUT', (done) => {
@@ -328,4 +324,3 @@ describe('Admin Routes ', () =>{
 	});
 });
 
-console.log(createdCourseID)
