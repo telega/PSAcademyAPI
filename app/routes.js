@@ -9,6 +9,7 @@ const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
 const academyController = require('./controllers/academy-controller');
 
+
 module.exports = function(app,passport){
 
 	// Course Routes - API
@@ -70,10 +71,10 @@ module.exports = function(app,passport){
 		.delete(authController.isLoggedIn, authController.isAdmin, userController.deleteUser);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id/modules/:module_id')
-		.put(authController.isLoggedIn,userController.putModuleProgress);
+		.put(authController.isLoggedIn, userController.validatePutModuleProgress, userController.putModuleProgress);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id')
-		.put(authController.isLoggedIn, userController.addCourseToUser);
+		.put(authController.isLoggedIn, userController.validateAddCourseToUser, userController.addCourseToUser);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id')
 		.get(authController.isLoggedIn, userController.getUnitProgress);

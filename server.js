@@ -21,7 +21,6 @@ if(process.env.NODE_ENV !=='test'){
 
 const bluebird = require('bluebird');
  
-
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use('/public',express.static('public'));
 

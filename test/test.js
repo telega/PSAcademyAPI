@@ -2,6 +2,7 @@ require('dotenv').config();
 
 var Course = require('../app/models/course');
 var User = require('../app/models/user');
+const mongoose = require('mongoose');
 
 const test_email = process.env.TEST_EMAIL; 
 const test_pw = process.env.TEST_PW;
@@ -9,7 +10,7 @@ const request = require('supertest');
 // const superagent = require('superagent');
 const chaiHttp = require('chai-http');
 
-let createdCourseID = null;
+// let createdCourseID = null;
 
 // let agent = superagent.agent();
 let theAccount = {
@@ -228,7 +229,31 @@ describe('User Progress Routes', ()=>{
 
 	});
 
-	it('Respond 400 .../:user_id/courses/:course_id/units/:unit_id/modules/:module_id PUT', (done) => {
+	it('it should 422  with invalid course id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+
+		createTestUser( function(testUser){
+
+
+			createLoginCookie(server, theAccount, function(cookie) {
+				request(server)
+					.put('/api/progress/' + testUser._id + '/courses/' + mongoose.Types.ObjectId(null))
+					.set('cookie', cookie)
+					.end((err,res)=>{
+						res.should.have.status(422);
+						res.should.be.json;
+						//clean up
+						deleteTestUser(testUser._id);
+						done();
+					});
+			});	
+
+		
+
+		});
+
+	});
+
+	it('Respond 422 if missing data .../:user_id/courses/:course_id/units/:unit_id/modules/:module_id PUT', (done) => {
 
 		createTestUser( function(testUser){
 
@@ -236,14 +261,13 @@ describe('User Progress Routes', ()=>{
 				var testUnit = testCourse.units[0];
 				var testModule = testCourse.units[0].modules[0];
 
-
 				createLoginCookie(server, theAccount, function(cookie) {
 
 					request(server)
 						.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
 						.set('cookie', cookie)
 						.end((err,res)=>{
-							res.should.have.status(400);
+							res.should.have.status(422);
 							res.should.be.json;
 
 							//clean up
@@ -304,7 +328,6 @@ describe('User Progress Routes', ()=>{
 	});
 
 });
-
 
 // Academy Admin Routes
 

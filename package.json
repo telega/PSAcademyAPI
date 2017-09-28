@@ -1,6 +1,6 @@
 {
   "name": "psacademyapi",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "API server for PS Academy",
   "main": "server.js",
   "repository": {
@@ -24,6 +24,7 @@
     "express": "^4.15.3",
     "express-server": "^0.7.0",
     "express-session": "^1.15.3",
+    "express-validator": "^4.2.1",
     "freemail": "^1.5.0",
     "http": "0.0.0",
     "https": "^1.0.0",
