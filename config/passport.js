@@ -6,6 +6,7 @@ const hsPortalId = process.env.HS_PORTAL_ID || null;
 const hsFormID = process.env.HS_FORM_ID || null;
 const https = require('https');
 const querystring = require('querystring');
+const logger = require('../app/logger');
 
 module.exports = function(passport){
 	passport.serializeUser(function(user, done) {
@@ -47,7 +48,8 @@ module.exports = function(passport){
 						newUser.local.password = newUser.generateHash(password);
 						newUser.local.profile.firstName = req.body.firstname;
 						newUser.local.profile.lastName = req.body.lastname;
-	
+		
+						logger.info('New User Signup: ' + email );
 	
 						// HS Request
 						if(hsPortalId && hsFormID) {
@@ -72,21 +74,21 @@ module.exports = function(passport){
 									'Content-Type': 'application/x-www-form-urlencoded',
 									'Content-Length': postData.length
 								}
-							}
+							};
 							
 							// set up the request
 							
 							var request = https.request(options, function(response){
-								console.log("Status: " + response.statusCode);
-								console.log("Headers: " + JSON.stringify(response.headers));
+								logger.info("HS Form Status: " + response.statusCode);
+								logger.debug("HS FormHeaders: " + JSON.stringify(response.headers));
 								response.setEncoding('utf8');
 								response.on('data', function(chunk){
-									console.log('Body: ' + chunk)
+									logger.silly('Body: ' + chunk)
 								});
 							});
 							
 							request.on('error', function(e){
-								console.log("Problem with request " + e.message)
+								logger.warn("Problem with HS form request " + e.message)
 							});
 							
 							// post the data
@@ -95,7 +97,6 @@ module.exports = function(passport){
 							request.end();
 	
 						}
-	
 	
 						// end HS Request
 	
@@ -138,6 +139,7 @@ module.exports = function(passport){
 				return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
 			}
 			// all is well, return successful user
+			logger.info('User ' + user.local.email + ' logged into Academy' );
 			return done(null, user);
 		});
 	}));

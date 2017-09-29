@@ -5,42 +5,55 @@ var nodemailer = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
 const { check, validationResult } = require('express-validator/check');
 const sgKey = process.env.SENDGRID_API_KEY;
-//const sgUser = process.env.SENDGRID_USER;
+const logger = require('../logger');
 
-//const passport = require('passport');
 
-// exports.postUser = function(req,res){
-// 	var user = new User();
-// 	res.status(200);	
-// };
+exports.validateGetUnitProgress = [
+	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
+	check('course_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
+	check('unit_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
+	function (req,res,next){
+		let errors = validationResult(req);
+		if( !errors.isEmpty() ){
+			logger.debug('validateGetUnitProgress FAIL');
+			res.status(422).json({message: errors.mapped()});
+		} else {
+			next();
+		}
+	}
+];
+
 
 exports.getUnitProgress = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
-		var unit = course.units.id(req.params.unit_id);
-
-		var unitProgress = 0; 
-		var unitItem = req.user.local.academyProgress.filter(m => m.itemId == unit._id);
-		if(unitItem.length>0){
-			unitProgress = Math.round(unitItem[0].itemProgress);
-		}
-
-		res.json({progress: unitProgress});
+		if(!course){
+			logger.debug('getUnitProgress: No Course Found');
+			res.status(422).json({message: 'Invalid Course ID'});
+		} else {
+			var unit = course.units.id(req.params.unit_id);
+	
+			var unitProgress = 0; 
+			var unitItem = req.user.local.academyProgress.filter(m => m.itemId == unit._id);
+			if(unitItem.length>0){
+				unitProgress = Math.round(unitItem[0].itemProgress);
+			}
+	
+			res.status(200).json({progress: unitProgress});
+		}	
 	});
 };
 
 exports.getUsers = function(req,res){
 	User.find({}, function(err, users){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.json({users});
 	});
 };
-
-
 
 exports.validateAddCourseToUser =[
 	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be an Alphanumeric'),
@@ -48,6 +61,7 @@ exports.validateAddCourseToUser =[
 	function (req,res,next){
 		let errors = validationResult(req);
 		if( !errors.isEmpty() ){
+			logger.debug('validateAddCourseToUser FAIL');
 			res.status(422).json({message: errors.mapped()});
 		} else {
 			next();
@@ -60,7 +74,7 @@ exports.addCourseToUser = function(req,res){
 	// find the user that we want to update.
 	User.findById(req.params.user_id, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		if(!user){
@@ -70,7 +84,7 @@ exports.addCourseToUser = function(req,res){
 
 			Course.findById(req.params.course_id, function(err,course){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 				
 				if(!course){
@@ -91,7 +105,7 @@ exports.addCourseToUser = function(req,res){
 		
 						user.save(function(err){
 							if(err){
-								console.log(err);
+								logger.error(err);
 							}
 					
 							res.status(200).json({message: 'Course Added to User'});
@@ -153,11 +167,15 @@ function makeCourseProgress(c,p){
 }
 
 exports.validatePutModuleProgress = [
+	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
+	check('course_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
+	check('unit_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
 	check('itemProgress').exists().isInt().withMessage('Must exist and be an integer'),
 	check('itemCompleted').exists().withMessage('Must exist'),
 	function (req,res,next){
 		let errors = validationResult(req);
 		if( !errors.isEmpty() ){
+			logger.debug('validatePutModuleProgress FAIL');
 			res.status(422).json({message: errors.mapped()});
 		} else {
 			next();
@@ -169,7 +187,7 @@ exports.putModuleProgress = function(req,res){
 	// find the user that we want to update.
 	User.findById(req.params.user_id, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 	
 		// First, lets update the User's Progress for the module.
@@ -196,7 +214,7 @@ exports.putModuleProgress = function(req,res){
 	
 		Course.findById(req.params.course_id, function(err,course){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			
 			var unit = course.units.id(req.params.unit_id);
@@ -310,7 +328,7 @@ exports.putModuleProgress = function(req,res){
 
 			user.save(function(err){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}	
 				res.status(200).json({message: 'User Progress Updated', academyProgress: user.local.academyProgress});
 			});
@@ -324,7 +342,7 @@ exports.putModuleProgress = function(req,res){
 exports.putUser = function(req,res){
 	User.findById(req.params.user_id, function(err, user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		user.local.profile.firstName = req.body.firstName || user.local.profile.firstName;
@@ -335,7 +353,7 @@ exports.putUser = function(req,res){
 
 		user.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			res.status(200).json({message: 'User Updated'});
 		});
@@ -354,10 +372,9 @@ exports.getPasswordSetup = function(req,res){
 exports.postForgot = function(req,res){
 	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 			req.flash('loginMessage','An error occured.');
 			res.redirect('/forgot');
-
 		}
 
 		if(!user){
@@ -372,7 +389,7 @@ exports.postForgot = function(req,res){
 	
 			user.save(function(err){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 			
 				var sgOptions = {
@@ -404,9 +421,9 @@ exports.postForgot = function(req,res){
 	
 				sgClient.sendMail(email,function(err, info){
 					if(err){
-						console.log(err);
+						logger.error(err);
 					} else {
-						console.log('Message sent to ' + user.local.email);
+						logger.info('Message sent to ' + user.local.email);
 					}
 				});
 	
@@ -423,7 +440,7 @@ exports.postForgot = function(req,res){
 exports.postPasswordSetup = function(req,res){
 	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 			req.flash('loginMessage','An error occured.');
 			res.redirect('/password');
 
@@ -440,7 +457,7 @@ exports.postPasswordSetup = function(req,res){
 	
 			user.save(function(err){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 			
 				var sgOptions = {
@@ -472,9 +489,9 @@ exports.postPasswordSetup = function(req,res){
 	
 				sgClient.sendMail(email,function(err, info){
 					if(err){
-						console.log(err);
+						logger.error(err);
 					} else {
-						console.log('Message sent to ' + user.local.email);
+						logger.info('Message sent to ' + user.local.email);
 					}
 				});
 	
@@ -490,7 +507,7 @@ exports.postPasswordSetup = function(req,res){
 exports.getReset = function(req,res){
 	User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		if(!user){
 			req.flash('loginMessage','Password reset token is invalid or expired.');
@@ -505,7 +522,7 @@ exports.postReset = function(req,res){
 
 	User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err,user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		if(!user){
 			req.flash('loginMessage','Password reset token is invalid or expired.');
@@ -518,7 +535,7 @@ exports.postReset = function(req,res){
 
 		user.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 		
 			var sgOptions = {
@@ -541,9 +558,9 @@ exports.postReset = function(req,res){
 
 			sgClient.sendMail(email,function(err, info){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				} else {
-					console.log('Message sent to ' + user.local.email );
+					logger.info('Message sent to ' + user.local.email );
 				}
 			});	
 
@@ -560,13 +577,14 @@ exports.postReset = function(req,res){
 exports.deleteUser = function(req,res){
 	User.remove({ _id: req.params.user_id }, function(err){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
+		logger.warn('A user with id ' + req.params.user_id + ' was deleted.');
 		res.status(200).json({message: 'User Deleted'});
 	});
 };
 
 exports.verifyUser = function(req,res){
-	console.log('User Verified');
+	logger.info('User Verified');
 	res.status(200).json({ message: 'Verified'});
 };

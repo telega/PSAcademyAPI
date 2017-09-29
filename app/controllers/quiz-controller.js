@@ -1,9 +1,11 @@
 var Quiz = require('../models/quiz');
+const logger = require('../logger');
+
 
 exports.getQuizzes = function(req,res){
 	Quiz.find({}, function(err, quizzes){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.json({quizzes});
 	});
@@ -14,7 +16,7 @@ exports.postQuiz = function(req,res){
 	quiz.name = req.body.name;
 	quiz.save(function(err){
 		if(err){
-			console.log(err);
+			logger.error(err);
 			res.status(400).json({message: 'Error adding Quiz'});
 		} else {
 			res.status(200).json({message: 'Quiz Added', data: quiz});
@@ -26,7 +28,7 @@ exports.postQuiz = function(req,res){
 exports.putQuiz = function(req,res){
 	Quiz.findById(req.params.quiz_id, function(err,quiz){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		quiz.name = req.body.name || quiz.name;
@@ -35,7 +37,7 @@ exports.putQuiz = function(req,res){
 	
 		quiz.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			res.json(quiz);
 		});
@@ -46,7 +48,7 @@ exports.putQuiz = function(req,res){
 exports.deleteQuiz = function(req,res){
 	Quiz.remove({ _id: req.params.quiz_id }, function(err){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.status(200).json({message: 'Deleted Quiz'});
 	});
@@ -55,7 +57,7 @@ exports.deleteQuiz = function(req,res){
 exports.getQuiz = function(req,res){
 	Quiz.find({ _id: req.params.quiz_id}, function (err,quiz){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.json(quiz);
 	});
@@ -71,14 +73,14 @@ exports.postQuestion = function(req,res){
 
 	Quiz.findById(req.params.quiz_id, function(err,quiz){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		quiz.questions.push(question);
 
 		quiz.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			res.status(200).json({message: 'Question Added', data: quiz });
@@ -90,7 +92,7 @@ exports.getQuestion = function(req,res){
 
 	Quiz.findById(req.params.quiz_id, function(err, quiz){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		var question = quiz.questions.id(req.params.question_id);
@@ -103,19 +105,19 @@ exports.deleteQuestion = function(req,res){
 	
 	Quiz.findById(req.params.quiz_id, function(err, quiz){
 		if(err){
-			console.log(err);
+			logger.error(err);
 			res.json({error: err});
 		}
 		
 		if(quiz.questions.id(req.params.question_id) === null){
-			console.log('deleteCourseUnit: Unit Not Found');
-			res.json({message: 'deleteCourseUnit: Unit Not Found'});
+			logger.debug('deleteQuestion: Question Not Found');
+			res.json({message: 'deleteQuestion: Question Not Found'});
 		} else {
 			quiz.questions.id(req.params.question_id).remove();
 
 			quiz.save(function(err){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 
 				res.status(200).json({message: 'Question Deleted'});
@@ -128,7 +130,7 @@ exports.putQuestion = function(req,res){
 	Quiz.findById(req.params.quiz_id, function(err, quiz){
 
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		var question = quiz.questions.id(req.params.question_id);
@@ -144,7 +146,7 @@ exports.putQuestion = function(req,res){
 
 		quiz.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			res.json(question);

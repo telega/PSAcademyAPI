@@ -62,8 +62,8 @@ module.exports = function(app,passport){
 	apiRouter.route('/users')
 		.get(authController.isAuthenticated, authController.isAdmin, userController.getUsers);
 
-	apiRouter.route('/users/verify')
-		.get(authController.isAuthenticated, userController.verifyUser);
+	// apiRouter.route('/users/verify')
+	// 	.get(authController.isAuthenticated, userController.verifyUser);
 
 	apiRouter.route('/users/:user_id')
 		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser)
@@ -76,7 +76,7 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, userController.validateAddCourseToUser, userController.addCourseToUser);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id')
-		.get(authController.isLoggedIn, userController.getUnitProgress);
+		.get(authController.isLoggedIn, userController.validateGetUnitProgress,userController.getUnitProgress);
 
 	// admin Routes
 	

@@ -1,5 +1,6 @@
 var Course = require('../models/course');
 const { check, validationResult } = require('express-validator/check');
+const logger = require('../logger');
 
 
 
@@ -33,7 +34,7 @@ exports.postCourse = function(req,res){
 exports.getCourses = function(req,res){
 	Course.find({}, function(err, courses){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.status(200).json(courses);
 	});
@@ -42,7 +43,7 @@ exports.getCourses = function(req,res){
 exports.getCourse = function(req,res){
 	Course.find({ _id: req.params.course_id}, function (err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.json(course);
 	});
@@ -51,7 +52,7 @@ exports.getCourse = function(req,res){
 exports.putCourse = function(req,res){
 	Course.findById(req.params.course_id, function(err, course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		course.name = req.body.name || course.name;
 		course.description = req.body.description || course.description;
@@ -62,7 +63,7 @@ exports.putCourse = function(req,res){
 
 		course.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			res.json(course);
 		});
@@ -72,7 +73,7 @@ exports.putCourse = function(req,res){
 exports.deleteCourse = function(req,res){
 	Course.remove({ _id: req.params.course_id }, function(err){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.status(200).json({message: 'Deleted Course'});
 	});
@@ -81,7 +82,7 @@ exports.deleteCourse = function(req,res){
 exports.getCourseUnits = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		res.json(course.units);
 	});
@@ -96,14 +97,14 @@ exports.postCourseUnit = function(req,res){
 
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		course.units.push(unit);
 
 		course.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			res.json({message: 'Unit added', data: unit });
@@ -114,7 +115,7 @@ exports.postCourseUnit = function(req,res){
 exports.getCourseUnit = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 		res.json(unit);
@@ -124,7 +125,7 @@ exports.getCourseUnit = function(req,res){
 exports.putCourseUnit = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 
@@ -137,7 +138,7 @@ exports.putCourseUnit = function(req,res){
 
 		course.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			res.json(unit);
@@ -149,19 +150,19 @@ exports.deleteCourseUnit = function(req,res){
 	
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 			res.json({error: err});
 		}
 		
 		if(course.units.id(req.params.unit_id) === null){
-			console.log('deleteCourseUnit: Unit Not Found');
+			logger.warn('deleteCourseUnit: Unit Not Found');
 			res.json({message: 'deleteCourseUnit: Unit Not Found'});
 		} else {
 			course.units.id(req.params.unit_id).remove();
 
 			course.save(function(err){
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 
 				res.json({message: 'Unit Deleted'});
@@ -182,7 +183,7 @@ exports.postCourseUnitModule = function(req,res){
 
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		var unit = course.units.id(req.params.unit_id);
@@ -190,7 +191,7 @@ exports.postCourseUnitModule = function(req,res){
 		unit.modules.push(module);
 		course.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			res.json({message: 'Module Added', data: module });
 		});
@@ -200,7 +201,7 @@ exports.postCourseUnitModule = function(req,res){
 exports.getCourseUnitModules = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 		res.json(unit.modules);
@@ -210,7 +211,7 @@ exports.getCourseUnitModules = function(req,res){
 exports.getCourseUnitModule = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 		let module = unit.modules.filter( m => m._id == req.params.module_id);
@@ -221,7 +222,7 @@ exports.getCourseUnitModule = function(req,res){
 exports.putCourseUnitModule = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 		for (var i = 0; i < unit.modules.length; i++){
@@ -240,7 +241,7 @@ exports.putCourseUnitModule = function(req,res){
 
 				course.save(function(err){
 					if(err){
-						console.log(err);
+						logger.error(err);
 					}
 					res.json(module);
 				});
@@ -253,7 +254,7 @@ exports.putCourseUnitModule = function(req,res){
 exports.deleteCourseUnitModule = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 
@@ -263,7 +264,7 @@ exports.deleteCourseUnitModule = function(req,res){
 				
 				course.save(function(err){
 					if(err){
-						console.log(err);
+						logger.error(err);
 					}
 					res.json({message: 'Deleted Module'});
 				});

@@ -3,6 +3,8 @@ const passport = require('passport');
 //const BasicStrategy = require('passport-http').BasicStrategy;
 const User = require('../models/user.js');
 const { check, validationResult } = require('express-validator/check');
+const logger = require('../logger');
+
 
 
 exports.isLoggedIn = function(req,res,next){
@@ -23,7 +25,7 @@ exports.isAdmin= function(req,res,next) {
 		if (foundUser.local.role == 'Admin') {
 			return next();
 		}
-		console.log('isAdmin: Unauthorized API credentials')
+		logger.warn('Unauthorized API credentials: Not Admin');
 		//res.status(401).json({error: 'Unauthorized API credentials'});
 		res.status(401).redirect('/admin/login');
 	});
@@ -40,9 +42,11 @@ exports.validatePutProfile = [
 		let errors = validationResult(req);
 
 		if( !errors.isEmpty() ){
+			logger.debug('validatePutProfile FAIL')
 			res.status(422).json({message: errors.mapped()});
 		} 
 		if(req.params.user_id !== req.user._id.toString()){
+			logger.warn('validatePutProfile: Not Authorised')
 			res.status(401).json({message:'Not Authorised to update this user.'});
 		}
 		else {

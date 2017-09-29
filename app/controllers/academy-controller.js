@@ -2,8 +2,9 @@ var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var User = require('../models/user');
 var Academy = require('../models/academy');
-//var mongoose = require('mongoose');
+const logger = require('../logger');
 
+//var mongoose = require('mongoose');
 
 function getUserCourseItems(courses, academyProgress){
 	// This only gets Course level items, profile page requires longer version
@@ -24,7 +25,6 @@ function getUserCourseItems(courses, academyProgress){
 
 	return items;
 }
-
 
 function getUserUnitItems(course,academyProgress){
 	let items = [];
@@ -64,7 +64,7 @@ function getUserUnitModuleItems(unit, academyProgress){
 exports.getCourses = function(req,res){
 	Course.find({}, function(err, courses){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		let items = getUserCourseItems(courses, req.user.local.academyProgress);
@@ -102,7 +102,7 @@ exports.getHomepage = function(req,res){
 	if(req.user){
 		Course.find({}, function(err, courses){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 	
 			let items = getUserCourseItems(courses, req.user.local.academyProgress);
@@ -118,7 +118,7 @@ exports.getHomepage = function(req,res){
 
 			Academy.findOne({}, function(err,academyOptions){  
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 
 				res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions});	
@@ -129,12 +129,12 @@ exports.getHomepage = function(req,res){
 	} else {
 		Course.find({}, function(err, courses){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			Academy.findOne({}, function(err,academyOptions){  
 				if(err){
-					console.log(err);
+					logger.error(err);
 				}
 	
 				if(!academyOptions){
@@ -142,7 +142,7 @@ exports.getHomepage = function(req,res){
 	
 					academyOptions.save(function(err){
 						if(err){
-							console.log(err);
+							logger.error(err);
 						}
 	
 						res.status(200).render('index.ejs', { courses: courses, options:academyOptions, message: req.flash('loginMessage') });
@@ -160,7 +160,7 @@ exports.getHomepage = function(req,res){
 exports.getCourse = function(req,res){
 	Course.findById(req.params.course_id, function (err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		var courseProgress = 0; 
@@ -198,7 +198,7 @@ exports.getProfile = function(req,res){
 
 	Course.find({}, function(err, courses){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		let items = [];
@@ -270,7 +270,7 @@ exports.putProfile = function(req,res){
 
 	User.findById(req.user._id, function(err, user){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		user.local.profile.firstName = req.body.firstName || user.local.profile.firstName;
@@ -280,7 +280,7 @@ exports.putProfile = function(req,res){
 
 		user.save(function(err){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 			res.status(200).json({message: 'User Updated'});
 		});
@@ -291,7 +291,7 @@ exports.putProfile = function(req,res){
 exports.getCourseUnit = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 		var unit = course.units.id(req.params.unit_id);
 
@@ -323,12 +323,12 @@ exports.getCourseUnit = function(req,res){
 exports.getQuiz = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){
 		if(err){
-			console.log(err);
+			logger.error(err);
 		}
 
 		Quiz.findById({ _id: req.params.quiz_id}, function (err,quiz){
 			if(err){
-				console.log(err);
+				logger.error(err);
 			}
 
 			var unit = course.units.id(req.params.unit_id);

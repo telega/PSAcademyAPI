@@ -77,26 +77,6 @@ function createTestUser(accountDetails, done){
 
 }
 
-// function createAdminUser(done){
-
-// 	// create the test User
-// 	var testUser = new User();
-
-// 	testUser.local.email = 'myadminuser@mytestuser.com';
-// 	testUser.local.password = testUser.generateHash('testuserpassword');
-// 	testUser.local.profile.firstName = 'Test';
-// 	testUser.local.profile.lastName = 'User';
-// 	testUser.local.role = 'Admin';
-
-
-// 	testUser.save((err)=>{
-// 		if(err){
-// 			throw err;
-// 		}
-// 		done(testUser);
-// 	});
-
-// }
 
 function createTestCourse(done){
 
@@ -390,6 +370,38 @@ describe('User Routes', ()=>{
 								ap.forEach(function(item){
 									item.itemCompleted.should.equal(true);
 								});
+	
+								//clean up
+								deleteTestCourse(testCourse._id);
+								deleteTestUser(testUser._id);
+								done();
+							});
+					});	
+	
+				});
+	
+			});
+	
+		});
+
+		it('Gets the progress of the user api/progress/:user_id/courses/:course_id/units/:unit_id GET', (done) => {
+	
+			createTestUser( theUserAccount, function(testUser){
+	
+				createTestCourse(function(testCourse){
+					var testUnit = testCourse.units[0];
+					var testModule = testCourse.units[0].modules[0];
+	
+					createLoginCookie(server, theUserAccount, function(cookie) {
+	
+						request(server)
+							.get('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id )
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+	
+//								res.body.unitProgress.should.be.an('array');
 	
 								//clean up
 								deleteTestCourse(testCourse._id);
