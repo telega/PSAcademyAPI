@@ -1,7 +1,9 @@
 //const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
+//const BasicStrategy = require('passport-http').BasicStrategy;
 const User = require('../models/user.js');
+const { check, validationResult } = require('express-validator/check');
+
 
 exports.isLoggedIn = function(req,res,next){
 	if(req.isAuthenticated()){
@@ -32,26 +34,21 @@ exports.logOut = function(req,res){
 	res.redirect('/');
 };
 
-// passport.use(new BasicStrategy(
-// 	function(email, password, next){
-// 		User.findOne({ 'local.email' :  email }, function(err, user) {
-// 		// if there are any errors, return the error before anything else
-// 			if (err){
-// 				return done(err);
-// 			}
-// 			// if no user is found, return the message
-// 			if (!user){
-// 				return next(null, false); 
-// 			}
-// 			// if the user is found but the password is wrong
-// 			if (password !== user.local.password){
-// 				return next(null, false); 
-// 			}
+exports.validatePutProfile = [
+	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be an integer'),
+	function (req,res,next){
+		let errors = validationResult(req);
 
-// 			// all is well, return successful user
-// 			return next(null, user);
-// 		});
-// 	}
-// ));
+		if( !errors.isEmpty() ){
+			res.status(422).json({message: errors.mapped()});
+		} 
+		if(req.params.user_id !== req.user._id.toString()){
+			res.status(401).json({message:'Not Authorised to update this user.'});
+		}
+		else {
+			next();
+		}
+	}
+];
 
 exports.isAuthenticated = passport.authenticate('basic', { session: false});

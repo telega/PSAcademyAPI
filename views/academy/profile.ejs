@@ -115,7 +115,7 @@
         
       </div>
       <div class="modal-body">
-        <p>Your password has Been changed</p>
+        <p>Your password has been changed</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="passwordUpdatedConfirm" data-dismiss="modal">OK</button>
@@ -137,7 +137,7 @@ $(document).ready(function(){
   $("#updatePassword").on('click', function(e){
       e.preventDefault();
       if( $('#newPassword').val() == $('#newPasswordConfirm').val() ){
-      var url = "/api/users/" + $(this).data('userId');
+      var url = "/profile/" + $(this).data('userId');
       data = {
         password: $('#newPassword').val()
       }
@@ -154,7 +154,6 @@ $(document).ready(function(){
                 }
       });
     } else {
-        console.log('wfwefwe')
         $('#pwConfirmMessage').text('Passwords do not match.');
     }
 

@@ -63,41 +63,45 @@ exports.addCourseToUser = function(req,res){
 			console.log(err);
 		}
 
+		if(!user){
+			res.status(422).json({message: 'No User matches that ID'})
+		} else {
 		// Next, find the Course level information
 
-		Course.findById(req.params.course_id, function(err,course){
-			if(err){
-				console.log(err);
-			}
-			
-			if(!course){
-				res.status(422).json({message: 'No course matches that ID'});
-			} else {
-			// check if the course exists, if not Add it
-
-				let courses = user.local.academyProgress.filter( c => c.itemId == course._id);
-	
-				if(courses.length == 0){
-					var courseAcademyProgress = {
-						itemId: req.params.course_id,
-						itemProgress: 0,
-						itemCompleted: false
-					};
-	
-					user.local.academyProgress.push(courseAcademyProgress);
-	
-					user.save(function(err){
-						if(err){
-							console.log(err);
-						}
-				
-						res.status(200).json({message: 'Course Added to User'});
-					});
-				} else {
-					res.status(200).json({message: 'Course Already Exists'});
+			Course.findById(req.params.course_id, function(err,course){
+				if(err){
+					console.log(err);
 				}
-			}
-		});
+				
+				if(!course){
+					res.status(422).json({message: 'No course matches that ID'});
+				} else {
+				// check if the course exists, if not Add it
+	
+					let courses = user.local.academyProgress.filter( c => c.itemId == course._id);
+		
+					if(courses.length == 0){
+						var courseAcademyProgress = {
+							itemId: req.params.course_id,
+							itemProgress: 0,
+							itemCompleted: false
+						};
+		
+						user.local.academyProgress.push(courseAcademyProgress);
+		
+						user.save(function(err){
+							if(err){
+								console.log(err);
+							}
+					
+							res.status(200).json({message: 'Course Added to User'});
+						});
+					} else {
+						res.status(200).json({message: 'Course Already Exists'});
+					}
+				}
+			});
+		}
 	});
 
 };
@@ -105,7 +109,7 @@ exports.addCourseToUser = function(req,res){
 
 function makeCourseProgress(c,p){
     
-	let courseProgress = {}
+	let courseProgress = {};
 	let courseSize = 0;
 	let courseCompleted = false;
 	let courseModulesCompleted = 0;

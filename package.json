@@ -1,6 +1,6 @@
 {
   "name": "psacademyapi",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "API server for PS Academy",
   "main": "server.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/telega/PSAcademyAPI.git"
   },
   "scripts": {
-    "test": "NODE_ENV=test TEST_DB=mongodb://localhost:27017 mocha --timeout 12000"
+    "test": "NODE_ENV=test TEST_DB=mongodb://localhost:27017/psatest mocha --timeout 12000"
   },
   "author": "telega",
   "license": "ISC",

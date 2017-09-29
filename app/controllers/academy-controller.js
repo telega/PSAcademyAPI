@@ -191,7 +191,7 @@ exports.getLogin = function(req,res){
 
 	res.status(200).render('academy/login.ejs', { message: req.flash('loginMessage') });
 
-}
+};
 
 
 exports.getProfile = function(req,res){
@@ -263,6 +263,30 @@ exports.getProfile = function(req,res){
 		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, user: req.user});	
 	});
 };
+
+
+
+exports.putProfile = function(req,res){
+
+	User.findById(req.user._id, function(err, user){
+		if(err){
+			console.log(err);
+		}
+
+		user.local.profile.firstName = req.body.firstName || user.local.profile.firstName;
+		user.local.profile.lastName = req.body.lastName || user.local.profile.lastName;
+		user.local.email = req.body.email || user.local.email;
+		user.local.password = user.generateHash(req.body.password) || user.local.password;
+
+		user.save(function(err){
+			if(err){
+				console.log(err);
+			}
+			res.status(200).json({message: 'User Updated'});
+		});
+	});
+};
+
 
 exports.getCourseUnit = function(req,res){
 	Course.findById(req.params.course_id, function(err,course){

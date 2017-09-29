@@ -1,4 +1,20 @@
 var Course = require('../models/course');
+const { check, validationResult } = require('express-validator/check');
+
+
+
+exports.validatePostCourse = [
+	check('name').exists().isAlphanumeric().withMessage('Must exist and be an Alphanumeric'),
+	function (req,res,next){
+		let errors = validationResult(req);
+		if( !errors.isEmpty() ){
+			res.status(422).json({message: errors.mapped()});
+		} else {
+			next();
+		}
+	}
+];
+
 
 exports.postCourse = function(req,res){
 	var course = new Course();

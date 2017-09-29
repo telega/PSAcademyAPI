@@ -9,13 +9,12 @@ const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
 const academyController = require('./controllers/academy-controller');
 
-
 module.exports = function(app,passport){
 
 	// Course Routes - API
 	apiRouter.route('/courses')
 		.get(courseController.getCourses)
-		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourse);
+		.post(authController.isLoggedIn, authController.isAdmin, courseController.validatePostCourse, courseController.postCourse);
 
 	apiRouter.route('/courses/:course_id')
 		.get(courseController.getCourse)
@@ -110,7 +109,6 @@ module.exports = function(app,passport){
 	adminRouter.route('/courses')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourses);
 
-
 	adminRouter.route('/courses/:course_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getCourse);
 
@@ -174,7 +172,10 @@ module.exports = function(app,passport){
 
 	router.route('/profile')
 		.get(authController.isLoggedIn, academyController.getProfile);
-
+	
+	router.route('/profile/:user_id')
+		.put(authController.isLoggedIn, authController.validatePutProfile, academyController.putProfile);
+	
 	router.route('/logout')
 		.get(authController.logOut);
 
