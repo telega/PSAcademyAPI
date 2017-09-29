@@ -32,9 +32,14 @@ mongoose.connect(dbUrl, {
 require('./config/passport')(passport);
 
 app.use(cors());
-if(process.env.NODE_ENV !== 'test'){
+
+if((process.env.NODE_ENV !== 'test') && (process.env.NODE_ENV !== 'production')){
 	app.use(morgan('dev'));
 }
+if(process.env.NODE_ENV == 'production'){
+	app.use(morgan('combined'));
+}
+
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
 	extended: true
