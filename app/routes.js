@@ -76,7 +76,7 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, userController.validateAddCourseToUser, userController.addCourseToUser);
 
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id')
-		.get(authController.isLoggedIn, userController.validateGetUnitProgress,userController.getUnitProgress);
+		.get(authController.isLoggedIn, userController.validateGetUnitProgress, userController.getUnitProgress);
 
 	// admin Routes
 	

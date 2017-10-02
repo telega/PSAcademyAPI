@@ -31,14 +31,22 @@ exports.postCourse = function(req,res){
 	});
 };
 
+// exports.getCourses = function(req,res){
+// 	Course.find({}, function(err, courses){
+// 		if(err){
+// 			logger.error(err);
+// 		}
+// 		res.status(200).json(courses);
+// 	});
+// };
+
+
 exports.getCourses = function(req,res){
-	Course.find({}, function(err, courses){
-		if(err){
-			logger.error(err);
-		}
-		res.status(200).json(courses);
-	});
+	Course.find({}).exec()
+		.then((courses) => res.status(200).json(courses))
+		.catch((err) => logger.error(err));
 };
+
 
 exports.getCourse = function(req,res){
 	Course.find({ _id: req.params.course_id}, function (err,course){

@@ -16,7 +16,6 @@ if(process.env.NODE_ENV == 'test'){
 const logger = new winston.Logger({
 	transports: [
 		new winston.transports.Console({
-			colorize:true,
 			level: level
 		})
 	]

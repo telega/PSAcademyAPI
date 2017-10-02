@@ -4,21 +4,15 @@ var Course = require('../app/models/course');
 var User = require('../app/models/user');
 const mongoose = require('mongoose');
 
-// const test_email = process.env.TEST_EMAIL; 
-// const test_pw = process.env.TEST_PW;
+
 const request = require('supertest');
-// const superagent = require('superagent');
 const chaiHttp = require('chai-http');
 
-
-//drop stuff
+// clean db (drop stuff)
 
 Course.collection.drop();
 User.collection.drop();
 
-// let createdCourseID = null;
-
-// let agent = superagent.agent();
 let theAdminAccount = {
 	'email': 'myadminuser@mytestuser.com',
 	'password': 'testuserpassword',
@@ -30,7 +24,6 @@ let theUserAccount = {
 	'password': 'testuserpassword',
 	'role': 'Member'
 };
-
 
 // const courseController = require('../app/controllers/course-controller');
 
@@ -56,6 +49,8 @@ function createLoginCookie(s, loginDetails, done) {
 		});
 }
 
+
+
 function createTestUser(accountDetails, done){
 
 	// create the test User
@@ -76,6 +71,8 @@ function createTestUser(accountDetails, done){
 	});
 
 }
+
+
 
 
 function createTestCourse(done){
@@ -249,6 +246,28 @@ describe('API Backend Routes', ()=>{
 			});
 		});
 
+
+		it('it should render the All courses admin page on /admin/courses GET', (done) => {
+		
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/courses')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+		});
+
 	});
 
 });
@@ -305,6 +324,32 @@ describe('User Routes', ()=>{
 				});	
 	
 			
+	
+			});
+	
+		});
+
+		it('it should 422  with invalid user id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+	
+			createTestUser( theUserAccount, function(testUser){
+	
+				createTestCourse(function(testCourse){
+
+					createLoginCookie(server, theUserAccount, function(cookie) {
+						request(server)
+							.put('/api/progress/' + mongoose.Types.ObjectId(null) + '/courses/' + testCourse._id)
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(422);
+								res.should.be.json;
+								//clean up
+								deleteTestUser(testUser._id);
+								deleteTestCourse(testCourse._id);
+								done();
+							});
+					});	
+	
+				});
 	
 			});
 	
@@ -400,9 +445,7 @@ describe('User Routes', ()=>{
 							.end((err,res)=>{
 								res.should.have.status(200);
 								res.should.be.json;
-	
-//								res.body.unitProgress.should.be.an('array');
-	
+		
 								//clean up
 								deleteTestCourse(testCourse._id);
 								deleteTestUser(testUser._id);

@@ -69,56 +69,56 @@ exports.validateAddCourseToUser =[
 	}
 ];
 
+
 exports.addCourseToUser = function(req,res){
 
 	// find the user that we want to update.
-	User.findById(req.params.user_id, function(err,user){
-		if(err){
-			logger.error(err);
-		}
-
-		if(!user){
-			res.status(422).json({message: 'No User matches that ID'})
-		} else {
-		// Next, find the Course level information
-
-			Course.findById(req.params.course_id, function(err,course){
-				if(err){
-					logger.error(err);
-				}
-				
-				if(!course){
-					res.status(422).json({message: 'No course matches that ID'});
-				} else {
-				// check if the course exists, if not Add it
+	User.findById(req.params.user_id).exec()
+		.then( function(user){
+		
+			if(!user){
+				res.status(422).json({message: 'No User matches that ID'})
+			} else {
+				// Next, find the Course level information
 	
-					let courses = user.local.academyProgress.filter( c => c.itemId == course._id);
-		
-					if(courses.length == 0){
-						var courseAcademyProgress = {
-							itemId: req.params.course_id,
-							itemProgress: 0,
-							itemCompleted: false
-						};
-		
-						user.local.academyProgress.push(courseAcademyProgress);
-		
-						user.save(function(err){
-							if(err){
-								logger.error(err);
+				Course.findById(req.params.course_id).exec()
+					.then(function(course){				
+						if(!course){
+							res.status(422).json({message: 'No course matches that ID'});
+						} else {
+							// check if the course exists, if not Add it
+			
+							let userCourse = user.local.academyProgress.find( c => c.itemId == course._id);
+				
+							if(!userCourse){
+								var courseAcademyProgress = {
+									itemId: req.params.course_id,
+									itemProgress: 0,
+									itemCompleted: false
+								};
+				
+								user.local.academyProgress.push(courseAcademyProgress);
+				
+								user.save(function(){
+									res.status(200).json({message: 'Course Added to User'});
+								});
+							} else {
+								res.status(200).json({message: 'Course Already Exists'});
 							}
-					
-							res.status(200).json({message: 'Course Added to User'});
-						});
-					} else {
-						res.status(200).json({message: 'Course Already Exists'});
-					}
-				}
-			});
-		}
-	});
+						}
+					}).catch((err)=>{
+						logger.error(err);
+						res.status(500).json({message: err});
+					});
+			}
+		}).catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message: err});
+		});
 
 };
+
+
 
 
 function makeCourseProgress(c,p){
@@ -129,9 +129,9 @@ function makeCourseProgress(c,p){
 	let courseModulesCompleted = 0;
 
 	c.units.forEach(function(u){
-		let unit =p.filter( progressItem => progressItem.itemId == u._id.toString());
-		if(unit.length>0){
-			if(unit[0].itemCompleted == true){
+		let unit =p.find( progressItem => progressItem.itemId == u._id.toString());
+		if(unit){
+			if(unit.itemCompleted == true){
 				u.modules.forEach(function(m){
 					courseSize++;
 					courseModulesCompleted++;
@@ -139,9 +139,9 @@ function makeCourseProgress(c,p){
 			} else {
 				u.modules.forEach(function(m){
 					courseSize++;
-					let module =p.filter( progressItem => progressItem.itemId == m._id.toString());
-					if(module.length>0){
-						if(module[0].itemCompleted == true){
+					let module =p.find( progressItem => progressItem.itemId == m._id.toString());
+					if(module){
+						if(module.itemCompleted == true){
 							courseModulesCompleted++;
 						}
 					}
@@ -195,7 +195,7 @@ exports.putModuleProgress = function(req,res){
 		let modules = user.local.academyProgress.filter( m => m.itemId == req.params.module_id);
 		// check if the module exists, if not Add it
 		if(modules.length == 0){
-			var moduleAcademyProgress = {
+			let moduleAcademyProgress = {
 				itemId: req.params.module_id,
 				itemProgress: parseFloat(req.body.itemProgress),
 				itemCompleted: req.body.itemCompleted
@@ -203,7 +203,7 @@ exports.putModuleProgress = function(req,res){
 	
 			user.local.academyProgress.push(moduleAcademyProgress);
 		} else {
-			for(var i = 0; i<modules.length; i++){
+			for(let i = 0; i<modules.length; i++){
 				modules[i].itemProgress = parseFloat(req.body.itemProgress);
 				modules[i].itemCompleted = req.body.itemCompleted;
 			}
@@ -217,15 +217,15 @@ exports.putModuleProgress = function(req,res){
 				logger.error(err);
 			}
 			
-			var unit = course.units.id(req.params.unit_id);
-			var unitSize = 0;
-			var moduleIds = [];
-			var quizId = null;
+			let unit = course.units.id(req.params.unit_id);
+			let unitSize = 0;
+			let moduleIds = [];
+			let quizId = null;
 				
-			for(var m = 0; m < unit.modules.length; m++){
-				var l = unit.modules[m].length;
+			for(let m = 0; m < unit.modules.length; m++){
+				let l = unit.modules[m].length;
 				unitSize += l;
-				var moduleIdString = unit.modules[m]._id.toString();
+				let moduleIdString = unit.modules[m]._id.toString();
 				moduleIds.push(moduleIdString);
 				if(unit.modules[m].type == 'Quiz'){
 					quizId = moduleIdString;
@@ -233,7 +233,7 @@ exports.putModuleProgress = function(req,res){
 			}
 	
 			// nice object of unit data
-			var unitData = {
+			let unitData = {
 				unitSize: unitSize,
 				moduleIds: moduleIds
 			};
@@ -241,16 +241,16 @@ exports.putModuleProgress = function(req,res){
 			// now Compare unitData to user's Academy Progress
 
 			// filter all the modules from user progress that are part of the unit, and completed
-			var modulesCompleted = user.local.academyProgress.filter( function(m){
+			let modulesCompleted = user.local.academyProgress.filter( function(m){
 				if(unitData.moduleIds.indexOf(m.itemId)!== -1){
 					return m.itemCompleted == true;
 				}
 			});
 
-			var unitProgress = 0;
+			let unitProgress = 0;
 			// check if they passed the quiz
 
-			var quizCompletedItem = modulesCompleted.filter(function(m){
+			let quizCompletedItem = modulesCompleted.filter(function(m){
 				return m.itemId == quizId;
 			});
 
@@ -267,18 +267,18 @@ exports.putModuleProgress = function(req,res){
 			let units = user.local.academyProgress.filter( u => u.itemId == req.params.unit_id);
 
 			if(units.length == 0){
-				var unitCompleted = false;
+				let unitCompleted = false;
 				if(unitProgress >= 100){
 					unitCompleted = true;
 				}
-				var unitAcademyProgress = {
+				let unitAcademyProgress = {
 					itemId: req.params.unit_id,
 					itemProgress: unitProgress,
 					itemCompleted: unitCompleted
 				};
 				user.local.academyProgress.push(unitAcademyProgress);
 			} else {
-				for(var i = 0; i<units.length; i++){
+				for(let i = 0; i<units.length; i++){
 					units[i].itemProgress = unitProgress;
 					if(units[i].itemProgress >= 100){
 						units[i].itemCompleted = true;
@@ -294,19 +294,19 @@ exports.putModuleProgress = function(req,res){
 			// now we need to do something similar at the Course Level. 
 			// we dont worry about quizzes but we worry about some badges. 
 
-			var cp = makeCourseProgress(course,user.local.academyProgress);
+			let cp = makeCourseProgress(course,user.local.academyProgress);
 			
 	
-			var courseProgress = 100 * (cp.courseModulesCompleted / cp.courseSize);
+			let courseProgress = 100 * (cp.courseModulesCompleted / cp.courseSize);
 			// now we update the Course Progress.
 			// check if the course exists, if not Add it
 
 			let courses = user.local.academyProgress.filter( c => c.itemId == req.params.course_id);
 
 			if(courses.length == 0){
-				var courseCompleted = cp.courseCompleted;
+				let courseCompleted = cp.courseCompleted;
 				
-				var courseAcademyProgress = {
+				let courseAcademyProgress = {
 					itemId: req.params.course_id,
 					itemProgress: courseProgress,
 					itemCompleted: courseCompleted
@@ -314,7 +314,7 @@ exports.putModuleProgress = function(req,res){
 				user.local.academyProgress.push(courseAcademyProgress);
 
 			} else {
-				for(var j = 0; j<courses.length; j++){
+				for(let j = 0; j<courses.length; j++){
 					courses[j].itemProgress = courseProgress;
 					if(courses[j].itemProgress >= 100){
 						courses[j].itemCompleted = true;

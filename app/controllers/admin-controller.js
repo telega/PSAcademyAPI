@@ -17,19 +17,21 @@ exports.getAdminPage = function(req,res){
 
 // Courses
 
+
 exports.getCourses = function(req,res){
 	let pageInfo = {
 		title: 'Courses'
 	};
 
-	Course.find({}).sort({order:1}).exec(function(err, courses){
-		if(err){
-			logger.error(err);
-		}
-		
-		res.render('admin/courses.ejs', {user: req.user, courses: courses, page: pageInfo});
-	});
+	Course.find({}).sort({order:1}).exec()
+		.then((courses) =>{
+			res.status(200).render('admin/courses.ejs', {user: req.user, courses: courses, page: pageInfo});
+		})
+		.catch((err) => logger.error(err));
 };
+
+
+
 
 
 exports.getAcademyOptions = function(req,res){
