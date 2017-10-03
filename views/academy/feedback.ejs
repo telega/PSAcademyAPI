@@ -15,7 +15,9 @@
         </div>
           <div class="row">
       <div class="col-md-8 ml-auto mr-auto">
-            <% feedback.forEach(function(feedback){%>
+            <% feedback.forEach(function(feedback){
+                if(feedback.published){%>
+
                 <div class="card mb-4 mt-2">
                   <h3 class="card-header"><%=feedback.title%></h3>
                   <div class="card-block p-4">
@@ -39,7 +41,7 @@
                     <p class="card-text">Suggested by <%=feedback.suggestedBy%></p>
                   </div>
                 </div>
-            <%})%>
+            <%}})%>
           </div>
         </div>
                 <div class="row">
