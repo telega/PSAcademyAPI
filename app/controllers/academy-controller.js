@@ -2,6 +2,8 @@ var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var User = require('../models/user');
 var Academy = require('../models/academy');
+var Feedback = require('../models/feedback');
+const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
 //var mongoose = require('mongoose');
@@ -60,6 +62,91 @@ function getUserUnitModuleItems(unit, academyProgress){
 
 	return items;
 }
+
+exports.getFeedback = function(req,res){
+	Feedback.find({}).exec()
+		.then((feedback) =>{
+
+			let pageInfo = {
+				title: 'Feedback',
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'Feedback', url: '/feedback'}
+				],
+				activeNavItem: 'Feedback',
+			};
+			res.status(200).render('academy/feedback.ejs', {user: req.user, pageInfo: pageInfo, feedback: feedback});
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
+};
+
+
+exports.validatePostFeedback = [
+	check('title').exists().withMessage('Must exist.'),
+	check('description').exists().withMessage('Must exist.'),
+	function (req,res,next){
+		let errors = validationResult(req);
+		if( !errors.isEmpty() ){
+			res.status(422).json({message: errors.mapped()});
+		} else {
+			next();
+		}
+	}
+];
+
+
+exports.postFeedback = function(req,res){
+
+	let feedback = new Feedback();
+	feedback.title = req.body.title;
+	feedback.description = req.body.description;
+	feedback.suggestedBy = req.user.local.profile.firstName;
+	feedback.suggestedByEmail = req.user.local.email;
+	feedback.userVotes = [req.user._id.toString()];
+	feedback.save((err)=>{
+		if(err){
+			logger.error(err);
+		}
+		res.status(200).json({message: 'Feedback Added'});
+	});
+
+
+	
+};
+
+exports.validatePutFeedback = [
+	check('voteId').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric.'),
+	check('feedback_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric.'),
+	function (req,res,next){
+		let errors = validationResult(req);
+		if( !errors.isEmpty() ){
+			res.status(422).json({message: errors.mapped()});
+		} else {
+			next();
+		}
+	}
+];
+
+exports.putFeedback = function(req,res){
+	Feedback.findOne({_id: req.params.feedback_id}).exec()
+		.then((feedback)=>{
+			// make sure the user isnt voting again
+			if(feedback.userVotes.indexOf(req.body.voteId) == -1){
+				feedback.userVotes.push(req.body.voteId);
+				feedback.save(()=>{
+					res.status(200).json({message: 'Vote Added'});
+				});
+			}
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
+	
+};
 
 exports.getCourses = function(req,res){
 	Course.find({}, function(err, courses){
@@ -254,7 +341,7 @@ exports.getProfile = function(req,res){
 			title: 'Profile',
 			breadcrumbs: [
 				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
-				{title:'Profile', url: '/Profile'}
+				{title:'Profile', url: '/profile'}
 			],
 			activeNavItem: 'Profile',
 			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 

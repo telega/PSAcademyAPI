@@ -57,6 +57,12 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, authController.isAdmin, quizController.putQuestion)
 		.delete(authController.isLoggedIn, authController.isAdmin, quizController.deleteQuestion);
 	
+	// Feedback Routes
+
+	apiRouter.route('/feedback/:feedback_id')
+		.put(authController.isLoggedIn, authController.isAdmin, adminController.putFeedback)
+		.delete(authController.isLoggedIn, authController.isAdmin,adminController.deleteFeedback);
+
 	// User Routes
 
 	apiRouter.route('/users')
@@ -126,6 +132,9 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/quizzes/:quiz_id/questions/:question_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuestion);
+
+	adminRouter.route('/feedback')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getFeedback);
 	
 	//  Non API routers
 	router.route('/signup')
@@ -157,6 +166,13 @@ module.exports = function(app,passport){
 
 	router.route('/glossary')
 		.get(authController.isLoggedIn, academyController.getGlossary);
+
+	router.route('/feedback')
+		.get(authController.isLoggedIn, academyController.getFeedback)
+		.post(authController.isLoggedIn, academyController.validatePostFeedback, academyController.postFeedback);
+
+	router.route('/feedback/:feedback_id')
+		.put(authController.isLoggedIn, academyController.validatePutFeedback, academyController.putFeedback);
 
 	router.route('/courses')
 		.get(authController.isLoggedIn, academyController.getCourses);

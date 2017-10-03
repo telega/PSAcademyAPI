@@ -78,7 +78,6 @@
 
 <!-- Modals -->
 
-
 <div class="modal fade" id="updatePasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -92,9 +91,9 @@
         <div id="pwConfirmMessage" class=" text-danger"></div>
         <form id = "editPassword">
               <div class="form-group">
-                <label forid="newPassword">New Password</label>
+                <label for="newPassword">New Password</label>
                 <input required type="password" class="form-control" id="newPassword" placeholder="New Password">
-                <label forid="newPassword">Re-Enter New Password</label>
+                <label for="newPassword">Re-Enter New Password</label>
                 <input required type="password" class="form-control" id="newPasswordConfirm" placeholder="New Password">
               </div>
               <button type="submit" data-user-id = "<%=user._id%>" class="btn btn-warning" id="updatePassword">Update Password</button>

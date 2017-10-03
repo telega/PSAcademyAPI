@@ -2,6 +2,7 @@ var User = require('../models/user');
 var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var Academy = require('../models/academy');
+var Feedback = require('../models/feedback');
 const logger = require('../logger');
 
 
@@ -30,6 +31,18 @@ exports.getCourses = function(req,res){
 		.catch((err) => logger.error(err));
 };
 
+
+exports.getFeedback = function(req,res){
+	let pageInfo = {
+		title: 'Feedback'
+	};
+
+	Feedback.find({}).exec()
+		.then((feedback) =>{
+			res.status(200).render('admin/feedback.ejs', {user: req.user, feedback: feedback, page: pageInfo});
+		})
+		.catch((err) => logger.error(err));
+};
 
 
 
@@ -115,6 +128,37 @@ exports.getModule = function(req,res){
 		res.render('admin/module.ejs', {user: req.user, course: course, unit: unit, module: module[0] , page: pageInfo });
 
 	});
+};
+
+// Feedback 
+
+exports.putFeedback = function(req,res){
+	Feedback.findOne({_id: req.params.feedback_id}).exec()
+		.then((feedback)=>{
+			feedback.title = req.body.title  || feedback.title;
+			feedback.description = req.body.description || feedback.description;
+			feedback.published = req.body.published || feedback.published;				
+			feedback.save(()=>{
+				res.status(200).json({message: 'Vote Added'});
+			});			
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
+	
+};
+
+exports.deleteFeedback = function(req,res){
+	Feedback.remove({_id: req.params.feedback_id}).exec()
+		.then(()=>{
+			res.status(200).json({message:'feedback deleted'})
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
+	
 };
 
 // Quizzes 

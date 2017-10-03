@@ -40,32 +40,41 @@
 
     <div class = "row">
         <div class="col-md-12">
-            <h2>Courses </h2>
+            <h2>Feedback </h2>
         </div>
     </div>
     <div class = "row">
         <div class="col-md-12">
             <table width='100%' class="table table-striped">
             <thead>
-                <th>#</th>
-                <th>Course Name</th>
+                <th>Title</th>
+                <th>Votes</th>
+                <th>Description</th>
                 <th>Status</th>
                 <th>Actions</th>
             </thead>    
             <tbody>
-            <% courses.forEach(function(course){ %>
+            <% feedback.forEach(function(feedback){ %>
                 <tr>
-                    <td><%= course.order %></td>
-                    <td><%= course.name %></td>
-                    <td><% if(course.published==true){ %>
-                            <strong> Published </strong>
-                        <% } else { %>
-                            Draft
-                        <% } %>
+                    <td><%= feedback.title %><br>by <%=feedback.suggestedByEmail%></td>
+                    <td><%= feedback.userVotes.length %></td>
+
+                    <td><%= feedback.description %></td>
+                    <td><% if(feedback.published){%>
+                        <strong>Published</strong>
+                        <%} else {%>
+                        Unpublished
+                        <%}%>
                     </td>
                     <td>
-                    <a href = "/admin/courses/<%= course._id %>" data-course-id = "<%= course._id %>" class = "btn btn-secondary">Edit</a>
-                    <button  data-course-id = "<%= course._id %>" data-course-name = "<%= course.name %>" data-toggle="modal" data-target="#courseDeleteModal" class = "btn btn-danger deleteCourse">Delete</button>
+                        <button  data-feedback-id = "<%= feedback._id %>" data-feedback-name = "<%= feedback.title %>" data-toggle="modal" data-target="#feedbackDeleteModal" class = "btn btn-danger deleteCourse">Delete</button>
+                    
+                        <% if(feedback.published==true){ %>
+                          <button data-feedback-id = "<%= feedback._id %>" data-publish="<%=feedback.published%>" data-toggle= "modal" data-target="#updateStatusModal" class="btn btn-warning">Unpublish</button>
+                        <% } else { %>
+                          <button data-feedback-id = "<%= feedback._id %>"  data-publish="<%=feedback.published%>" data-toggle= "modal" data-target="#updateStatusModal"  class="btn btn-primary">Publish</button>
+                        <% } %>
+                      
                     </td>
                 </tr>
 
@@ -74,48 +83,13 @@
             </table>
         </div>
     </div>
-    <div class = "row">
-        <div class ="col-md-2">
-            <button data-toggle="modal" data-target="#courseAddModal" class = "btn btn-primary"><span class="fa fa-plus" aria-hidden="true"></span> Add a New Course</button>
-        </div>
-    </div>
+    
 </div>
 
 <!-- Modals -->
-<div class="modal fade" id="courseAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add a New Course</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id = "addCourse">
-            <div class="form-group">
-              <label for="courseName">Course Name*</label>
-              <input required type="text" class="form-control" id="courseName" placeholder="Name">
-            </div>
-            <div class="form-group">
-              <label for="courseDescription">Course Description</label>
-              <input type="textarea" class="form-control" id="courseDescription" placeholder="Course Description">
-            </div>
-            <div class="form-group">
-              <label for="courseOrder">Order</label>
-              <input type="number" class="form-control" id="courseOrder">
-            </div>
-            <button type="submit" class="btn btn-success">Add Course</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="modal fade" id="courseDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="feedbackDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -125,12 +99,32 @@
         </button>
       </div>
       <div class="modal-body">
-        <p id="courseToDeleteName"></p>
-        <strong>You are about to Delete this course. This cannot be undone.</strong>
+        <p id="feedbackToDeleteName"></p>
+        <strong>You are about to Delete this Idea. This cannot be undone.</strong>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="courseDeleteConfirm">Delete Course</button>
+        <button type="button" class="btn btn-danger" id="feedbackDeleteConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="updateStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <button class="btn btn-warning" id="toggleStatus"> Toggle Status </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
@@ -142,31 +136,13 @@
 <script>
 
 $(document).ready(function(){
-    
-    $("#addCourse").submit(function(e){
-        e.preventDefault();
-        var data = {}
-        data.name = $("#courseName").val();
-        data.description = $("#courseDescription").val();
-        data.order = $("#courseOrder").val()||99;
-        $.ajax({
-            type: "POST",
-            url: "/api/courses",
-            dataType: 'json',
-            async: true,
-            data: data,
-            success: function (){
-                    location.reload(true);                    
-                }
-            });
-    })
 
-    $('#courseDeleteModal').on('show.bs.modal', function(e){
+     $('#feedbackDeleteModal').on('show.bs.modal', function(e){
         var button = $(e.relatedTarget); 
         var modal = $(this);
-        modal.find('#courseToDeleteName').text(button.data('courseName'));
-        modal.find('#courseDeleteConfirm').on('click', function(e){
-            var url = "/api/courses/" + button.data('courseId');
+        modal.find('#feedbackToDeleteName').text(button.data('feedbackName'));
+        modal.find('#feedbackDeleteConfirm').on('click', function(e){
+            var url = "/api/feedback/" + button.data('feedbackId');
             $.ajax({
                   type: "DELETE",
                   url: url,
@@ -179,11 +155,34 @@ $(document).ready(function(){
         })
     });
 
-    $('#courseDeleteModal').on('hide.bs.modal', function(e){
+    $('#feedbackDeleteModal').on('hide.bs.modal', function(e){
         var modal = $(this);
-        modal.find('#courseDeleteConfirm').off('click');
+        modal.find('#feedbackDeleteConfirm').off('click');
     });
-    
+
+    $('#updateStatusModal').on('show.bs.modal', function(e){
+        var button = $(e.relatedTarget);
+        var modal = $(this)
+        modal.find('#toggleStatus').on('click', function(e){
+            var url = "/api/feedback/" + button.data('feedbackId');
+            data = {
+                published: !$(button).data('publish')
+            }
+            $.ajax({
+                type: "PUT",
+                url: url,
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (){
+                    location.reload(true);                    
+                }
+            });
+        })
+    })
+
+
+   
 })
 </script>
 </body>

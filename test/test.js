@@ -2,6 +2,7 @@ require('dotenv').config();
 
 var Course = require('../app/models/course');
 var User = require('../app/models/user');
+var Feedback = require('../app/models/feedback');
 const mongoose = require('mongoose');
 
 
@@ -12,6 +13,7 @@ const chaiHttp = require('chai-http');
 
 Course.collection.drop();
 User.collection.drop();
+Feedback.collection.drop();
 
 let theAdminAccount = {
 	'email': 'myadminuser@mytestuser.com',
@@ -73,6 +75,28 @@ function createTestUser(accountDetails, done){
 }
 
 
+function createTestFeedback(done){
+
+	var testFeedback = new Feedback();
+	testFeedback.title = ' A Test Feedback Item';
+	testFeedback.description = 'The feedback description';
+
+	testFeedback.save(function(err){
+		if(err){
+			throw err;
+		}
+		done(testFeedback);
+	});
+}
+
+function deleteTestFeedback(feedbackId){
+	Feedback.remove({_id:feedbackId}, (err)=>{
+		if(err){
+			throw err;
+		}
+	});
+}
+
 
 
 function createTestCourse(done){
@@ -128,7 +152,6 @@ function deleteTestUser(userId){
 /// Academy related routes
 
 describe('API Backend Routes', ()=>{
-
 	
 	describe('Courses', () =>{
 		it('Should list the courses on /api/courses GET', (done) => {
@@ -141,6 +164,24 @@ describe('API Backend Routes', ()=>{
 					done();
 				});
 		});
+
+
+		it('Should list the course with specified ID on /api/course/:course_id GET', (done) => {
+	
+			createTestCourse(function(course){
+				request(server)
+					.get('/api/courses/' + course._id)
+					.end((err,res)=>{
+						res.should.have.status(200);
+						res.body.should.be.an('array');
+
+						deleteTestCourse(course._id);
+						done();
+					});
+			
+			});
+		});
+
 
 		it('Should not accept the course without name on /api/courses POST', (done)=>{
 
@@ -265,6 +306,94 @@ describe('API Backend Routes', ()=>{
 							done();
 						});
 				});	
+			});
+		});
+
+	});
+
+	describe('Feedback Routes (Admin)', (done)=>{
+
+		it('it should render the feedback admin page on /feedback/courses GET', (done) => {
+		
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/feedback')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+		});
+
+		it('it should update feedback item on /api/feedback/:feedback_id PUT', (done) => {
+		
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createTestFeedback((feedBack)=>{
+
+					createLoginCookie(server, theAdminAccount, function(cookie) {
+			
+						request(server)
+							.put('/api/feedback/' + feedBack._id)
+							.set('cookie', cookie)
+							.send({
+								title: 'NEW',
+								description: 'NEW',
+								published: false
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								Feedback.findOne({}).exec()
+									.then((fb)=>{
+										fb.title.should.equal('NEW');
+									}).then(()=>{
+										Feedback.remove({_id: feedBack._id}).exec()
+											.catch((err)=>console.log(err));
+									});
+
+								//clean up
+	
+								deleteTestUser(testUser._id);
+	
+								done();
+							});
+					});	
+				});
+			});
+		});
+
+		it('it should delete feedback item  on /api/feedback/:feedback_id DELETE', (done) => {
+		
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createTestFeedback((feedBack)=>{
+
+					createLoginCookie(server, theAdminAccount, function(cookie) {
+			
+						request(server)
+							.delete('/api/feedback/' + feedBack._id)
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+	
+								deleteTestUser(testUser._id);
+	
+								done();
+							});
+					});	
+				});
 			});
 		});
 
@@ -515,5 +644,116 @@ describe('User Routes', ()=>{
 		});
 
 	});
+
+	
+	describe('Feedback Route', ()=>{
+		it('should get feedback on /feedback GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/feedback')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('should reject empty feedback on /feedback POST', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.post('/feedback')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(422);
+							res.should.be.json;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('should create feedback on /feedback POST', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.post('/feedback')
+						.set('cookie', cookie)
+						.send({
+							title: 'Test Feedback Item',
+							description: 'This is the description of the feedback Item'
+						})
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+							Feedback.remove({ title: 'Test Feedback Item' }).exec()
+								.catch((err)=>console.log(err));
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('should update the vote count /feedback/:feedback_id PUT', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createTestFeedback(function(testFeedback){
+					createLoginCookie(server, theUserAccount, function(cookie) {
+						request(server)
+							.put('/feedback/' + testFeedback._id )
+							.set('cookie', cookie)
+							.send({
+								voteId: testUser._id.toString()
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+								
+								Feedback.findOne({}).exec()
+									.then((fb)=>{
+										fb.userVotes.length.should.equal(1);
+									}).then(()=>{
+										Feedback.remove({_id: testFeedback._id}).exec()
+											.catch((err)=>console.log(err));
+	
+									});
+
+								//clean up
+								deleteTestUser(testUser._id);
+								
+								done();
+							});
+					});	
+				});
+			});
+		});
+	});
+
+
 
 });

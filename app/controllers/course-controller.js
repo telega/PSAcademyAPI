@@ -31,30 +31,23 @@ exports.postCourse = function(req,res){
 	});
 };
 
-// exports.getCourses = function(req,res){
-// 	Course.find({}, function(err, courses){
-// 		if(err){
-// 			logger.error(err);
-// 		}
-// 		res.status(200).json(courses);
-// 	});
-// };
-
 
 exports.getCourses = function(req,res){
 	Course.find({}).exec()
 		.then((courses) => res.status(200).json(courses))
-		.catch((err) => logger.error(err));
+		.catch((err) => {
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
 };
 
-
 exports.getCourse = function(req,res){
-	Course.find({ _id: req.params.course_id}, function (err,course){
-		if(err){
+	Course.find({ _id: req.params.course_id}).exec()
+		.then((course)=> res.status(200).json(course))
+		.catch((err)=>{
 			logger.error(err);
-		}
-		res.json(course);
-	});
+			res.status(500).json({message:err});
+		});
 };
 
 exports.putCourse = function(req,res){
