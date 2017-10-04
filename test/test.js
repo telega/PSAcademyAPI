@@ -27,6 +27,12 @@ let theUserAccount = {
 	'role': 'Member'
 };
 
+let theOtherUserAccount = {
+	'email': 'mytestuser2@mytestuser.com',
+	'password': 'testuserpassword',
+	'role': 'Member'
+};
+
 // const courseController = require('../app/controllers/course-controller');
 
 let chai = require('chai');
@@ -56,7 +62,7 @@ function createLoginCookie(s, loginDetails, done) {
 function createTestUser(accountDetails, done){
 
 	// create the test User
-	var testUser = new User();
+	let testUser = new User();
 
 	testUser.local.email = accountDetails.email;
 	testUser.local.password = testUser.generateHash(accountDetails.password);
@@ -77,7 +83,7 @@ function createTestUser(accountDetails, done){
 
 function createTestFeedback(done){
 
-	var testFeedback = new Feedback();
+	let testFeedback = new Feedback();
 	testFeedback.title = ' A Test Feedback Item';
 	testFeedback.description = 'The feedback description';
 
@@ -98,21 +104,20 @@ function deleteTestFeedback(feedbackId){
 }
 
 
-
 function createTestCourse(done){
 
-	var testModule = {
+	let testModule = {
 		name : 'TestModule',
 		description: 'Test Module'
 	};
 
-	var testUnit = {
+	let testUnit = {
 		name : 'TestUnit',
 		description: 'Test Unit',
 		modules: [testModule]
 	};
 
-	var testCourse = new Course();
+	let testCourse = new Course();
 	testCourse.name = 'TestCourse2';
 	testCourse.description = 'Test Course';
 	testCourse.published = true;
@@ -126,6 +131,49 @@ function createTestCourse(done){
 	});
 }
 
+function createBigTestCourse(done){
+
+	let testModule = {
+		name : 'Big TestModule',
+		description: 'Test Module'
+	};
+
+	let testModule2 = {
+		name : 'TestModule2',
+		description: 'Test Module 2',
+		type: 'Quiz'
+	};
+
+	let testModule3 = {
+		name : 'TestModule3',
+		description: 'Test Module 3'
+	};
+
+	let testUnit = {
+		name : 'Big TestUnit',
+		description: 'Test Unit',
+		modules: [testModule, testModule2]
+	};
+
+	let testUnit2 = {
+		name : 'TestUnit2',
+		description: 'Test Unit2',
+		modules: [testModule3]
+	};
+
+	let testCourse = new Course();
+	testCourse.name = 'TestCourse2';
+	testCourse.description = 'Test Course';
+	testCourse.published = true;
+	testCourse.units = [testUnit, testUnit2];
+
+	testCourse.save(function(err){
+		if(err){
+			throw err;
+		}
+		done(testCourse);
+	});
+}
 
 function deleteTestCourse(courseId){
 	Course.remove({_id:courseId}, (err)=>{
@@ -266,7 +314,7 @@ describe('API Backend Routes', ()=>{
 			});
 		});
 
-		it('it should render the All Users admin page on /admin/users GET', (done) => {
+		it('Should render the All Users admin page on /admin/users GET', (done) => {
 		
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -288,7 +336,7 @@ describe('API Backend Routes', ()=>{
 		});
 
 
-		it('it should render the All courses admin page on /admin/courses GET', (done) => {
+		it('Should render the All courses admin page on /admin/courses GET', (done) => {
 		
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -313,7 +361,7 @@ describe('API Backend Routes', ()=>{
 
 	describe('Feedback Routes (Admin)', (done)=>{
 
-		it('it should render the feedback admin page on /feedback/courses GET', (done) => {
+		it('Should render the feedback admin page on /feedback/courses GET', (done) => {
 		
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -334,7 +382,7 @@ describe('API Backend Routes', ()=>{
 			});
 		});
 
-		it('it should update feedback item on /api/feedback/:feedback_id PUT', (done) => {
+		it('Should update feedback item on /api/feedback/:feedback_id PUT', (done) => {
 		
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -406,7 +454,7 @@ describe('User Routes', ()=>{
 
 	describe('User Progress Routes', ()=>{
 	
-		it('it should add the course to the user on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+		it('Should add the course to the user on /api/progress/:user_id/courses/:course_id PUT', (done) => {
 	
 			createTestUser( theUserAccount, function(testUser){
 	
@@ -434,7 +482,7 @@ describe('User Routes', ()=>{
 	
 		});
 	
-		it('it should 422  with invalid course id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+		it('Should 422  with invalid course id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
 	
 			createTestUser( theUserAccount, function(testUser){
 	
@@ -458,7 +506,7 @@ describe('User Routes', ()=>{
 	
 		});
 
-		it('it should 422  with invalid user id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
+		it('Should 422  with invalid user id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
 	
 			createTestUser( theUserAccount, function(testUser){
 	
@@ -536,19 +584,119 @@ describe('User Routes', ()=>{
 							.end((err,res)=>{
 								res.should.have.status(200);
 								res.should.be.json;
+
+								User.findOne({_id: testUser._id.toString()}).exec()
+									.then((u)=>{
+										u.local.academyProgress.forEach((progressItem)=>{
+											progressItem.itemProgress.should.equal(100);
+											progressItem.itemCompleted.should.equal(true);
+										});
+									}).then(()=>{
+										User.remove({_id: testUser._id}).exec()
+											.then(()=>{
+												//cleanup
+												deleteTestCourse(testCourse._id);
+												done();
+
+											})
+											.catch((err)=>console.log(err));
+									});
+
+							});
+					});	
 	
+				});
+	
+			});
+	
+		});
+
+		it('Partially progress the user /progres/....modules/:module_id PUT', (done) => {
+	
+			createTestUser( theUserAccount, function(testUser){
+	
+				createBigTestCourse(function(testCourse){
+					var testUnit = testCourse.units[0];
+					var testModule = testCourse.units[0].modules[0];
+	
+	
+					createLoginCookie(server, theUserAccount, function(cookie) {
+	
+						request(server)
+							.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
+							.set('cookie', cookie)
+							.send({
+								itemProgress: 100,
+								itemCompleted: true
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								User.findOne({_id: testUser._id}).exec()
+									.then((u)=>{
+										u.local.academyProgress.forEach((progressItem)=>{
+											progressItem.itemProgress.should.be.above(10);
+										});
+									}).then(()=>{
+										User.remove({_id: testUser._id}).exec()
+											.then(()=>{
+												//cleanup
+												deleteTestCourse(testCourse._id);
+												done();
+											})
+											.catch((err)=>console.log(err));
+									});
 								
-								res.body.academyProgress.should.be.an('array');
+							});
+					});	
 	
-								let ap = res.body.academyProgress;
-								ap.forEach(function(item){
-									item.itemCompleted.should.equal(true);
-								});
+				});
 	
-								//clean up
-								deleteTestCourse(testCourse._id);
-								deleteTestUser(testUser._id);
-								done();
+			});
+	
+		});
+
+		it('Partially progress the user on completing quiz .../progress/ ...unit_id/modules/:module_id PUT', (done) => {
+	
+			createTestUser( theUserAccount, function(testUser){
+	
+				createBigTestCourse(function(testCourse){
+					var testUnit = testCourse.units[0];
+					var testModule = testCourse.units[0].modules[1];
+	
+	
+					createLoginCookie(server, theUserAccount, function(cookie) {
+	
+						request(server)
+							.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
+							.set('cookie', cookie)
+							.send({
+								itemProgress: 100,
+								itemCompleted: true
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								User.findOne({_id: testUser._id}).exec()
+									.then((u)=>{
+										u.local.academyProgress.forEach((progressItem)=>{
+											if(progressItem.itemId == (testUnit._id.toString() || testModule._id.toString() )){
+												progressItem.itemProgress.should.equal(100);
+											}
+																				
+										});
+									}).then(()=>{
+										User.remove({_id: testUser._id}).exec()
+											.then(()=>{
+												//cleanup
+												deleteTestCourse(testCourse._id);
+												done();
+											})
+											.catch((err)=>console.log(err));
+									});
+								
 							});
 					});	
 	

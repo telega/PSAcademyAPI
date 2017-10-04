@@ -24,27 +24,29 @@ exports.validateGetUnitProgress = [
 ];
 
 
+
 exports.getUnitProgress = function(req,res){
-	Course.findById(req.params.course_id, function(err,course){
-		if(err){
+	Course.findById(req.params.course_id).exec()
+		.then((course)=>{
+			if(!course){
+				logger.debug('getUnitProgress: No Course Found');
+				res.status(422).json({message: 'Invalid Course ID'});
+			} else {
+				let unit = course.units.id(req.params.unit_id);
+				let unitProgress = 0; 
+				let unitItem = req.user.local.academyProgress.find(m => m.itemId == unit._id);
+				if(unitItem){
+					unitProgress = Math.round(unitItem.itemProgress);
+				}
+				res.status(200).json({progress: unitProgress});
+			}	
+		})
+		.catch((err)=>{
 			logger.error(err);
-		}
-		if(!course){
-			logger.debug('getUnitProgress: No Course Found');
-			res.status(422).json({message: 'Invalid Course ID'});
-		} else {
-			var unit = course.units.id(req.params.unit_id);
-	
-			var unitProgress = 0; 
-			var unitItem = req.user.local.academyProgress.filter(m => m.itemId == unit._id);
-			if(unitItem.length>0){
-				unitProgress = Math.round(unitItem[0].itemProgress);
-			}
-	
-			res.status(200).json({progress: unitProgress});
-		}	
-	});
+			res.status(500).json({message:err});
+		});
 };
+
 
 exports.getUsers = function(req,res){
 	User.find({}, function(err, users){
@@ -68,7 +70,6 @@ exports.validateAddCourseToUser =[
 		}
 	}
 ];
-
 
 exports.addCourseToUser = function(req,res){
 
@@ -119,8 +120,6 @@ exports.addCourseToUser = function(req,res){
 };
 
 
-
-
 function makeCourseProgress(c,p){
     
 	let courseProgress = {};
@@ -129,7 +128,7 @@ function makeCourseProgress(c,p){
 	let courseModulesCompleted = 0;
 
 	c.units.forEach(function(u){
-		let unit =p.find( progressItem => progressItem.itemId == u._id.toString());
+		let unit = p.find( progressItem => progressItem.itemId == u._id.toString());
 		if(unit){
 			if(unit.itemCompleted == true){
 				u.modules.forEach(function(m){
@@ -162,8 +161,48 @@ function makeCourseProgress(c,p){
 	courseProgress.courseSize = courseSize;
 	courseProgress.courseCompleted = courseCompleted;
 	courseProgress.courseModulesCompleted = courseModulesCompleted;
-
+	courseProgress.courseProgress =  Math.min(Math.ceil(100 * (courseModulesCompleted / courseSize)), 100); 
 	return courseProgress;
+}
+
+function makeUnitProgress(u,p){
+    
+	let unitProgress = {};
+	let unitSize = 0;
+	let unitCompleted = false;
+	let quizCompleted = false;
+	let unitModulesCompleted = 0;
+
+	u.modules.forEach(function(m){
+		unitSize+=m.length;
+		let moduleProgress = p.find( progressItem => progressItem.itemId == m._id.toString());
+		if(moduleProgress){
+			if(moduleProgress.itemCompleted == true){	
+				unitModulesCompleted+=m.length;
+				if(m.type=='Quiz'){
+					quizCompleted = true;
+				}
+			} else {
+				unitModulesCompleted += Math.round(m.length*(moduleProgress.itemProgress/100));
+			}
+		} 
+	});
+
+	if(quizCompleted == true){
+		unitCompleted = true;
+		unitProgress.unitProgress = 100;
+	} else {
+		if(unitSize == unitModulesCompleted){
+			unitCompleted = true;
+		}
+		unitProgress.unitProgress = Math.min(100*(unitModulesCompleted/unitSize), 100);
+	}
+
+	unitProgress.unitSize = unitSize;
+	unitProgress.unitCompleted = unitCompleted;
+	unitProgress.unitModulesCompleted = unitModulesCompleted;
+	
+	return unitProgress;
 }
 
 exports.validatePutModuleProgress = [
@@ -182,162 +221,93 @@ exports.validatePutModuleProgress = [
 		}
 	}];
 
+
 exports.putModuleProgress = function(req,res){
+	let message = 'User Progress Updated';
 
-	// find the user that we want to update.
-	User.findById(req.params.user_id, function(err,user){
-		if(err){
-			logger.error(err);
-		}
-	
-		// First, lets update the User's Progress for the module.
-		// get the module we want to update
-		let modules = user.local.academyProgress.filter( m => m.itemId == req.params.module_id);
-		// check if the module exists, if not Add it
-		if(modules.length == 0){
-			let moduleAcademyProgress = {
-				itemId: req.params.module_id,
-				itemProgress: parseFloat(req.body.itemProgress),
-				itemCompleted: req.body.itemCompleted
-			};
-	
-			user.local.academyProgress.push(moduleAcademyProgress);
-		} else {
-			for(let i = 0; i<modules.length; i++){
-				modules[i].itemProgress = parseFloat(req.body.itemProgress);
-				modules[i].itemCompleted = req.body.itemCompleted;
-			}
-		}
-	
-		// Next, find the Unit information necessary to update the user's Academy Progress
-		// we will need to find Course level information later
-	
-		Course.findById(req.params.course_id, function(err,course){
-			if(err){
-				logger.error(err);
-			}
-			
-			let unit = course.units.id(req.params.unit_id);
-			let unitSize = 0;
-			let moduleIds = [];
-			let quizId = null;
-				
-			for(let m = 0; m < unit.modules.length; m++){
-				let l = unit.modules[m].length;
-				unitSize += l;
-				let moduleIdString = unit.modules[m]._id.toString();
-				moduleIds.push(moduleIdString);
-				if(unit.modules[m].type == 'Quiz'){
-					quizId = moduleIdString;
-				}
-			}
-	
-			// nice object of unit data
-			let unitData = {
-				unitSize: unitSize,
-				moduleIds: moduleIds
-			};
-			
-			// now Compare unitData to user's Academy Progress
+	Course.findById(req.params.course_id).exec()
+		.then((course)=>{
+		// find the user that we want to update.
+			return User.findById(req.params.user_id).exec()
+				.then((user)=>{
 
-			// filter all the modules from user progress that are part of the unit, and completed
-			let modulesCompleted = user.local.academyProgress.filter( function(m){
-				if(unitData.moduleIds.indexOf(m.itemId)!== -1){
-					return m.itemCompleted == true;
-				}
-			});
-
-			let unitProgress = 0;
-			// check if they passed the quiz
-
-			let quizCompletedItem = modulesCompleted.filter(function(m){
-				return m.itemId == quizId;
-			});
-
-			if(quizCompletedItem.length > 0){
-				unitProgress = 100;
-			} else {
-				// compare unit size to modules completed.
-				unitProgress = 100 * ( modulesCompleted.length / unitData.unitSize );
-			}
-
-			// now we update the Unit Progress.
-			// check if the unit exists, if not Add it
-
-			let units = user.local.academyProgress.filter( u => u.itemId == req.params.unit_id);
-
-			if(units.length == 0){
-				let unitCompleted = false;
-				if(unitProgress >= 100){
-					unitCompleted = true;
-				}
-				let unitAcademyProgress = {
-					itemId: req.params.unit_id,
-					itemProgress: unitProgress,
-					itemCompleted: unitCompleted
-				};
-				user.local.academyProgress.push(unitAcademyProgress);
-			} else {
-				for(let i = 0; i<units.length; i++){
-					units[i].itemProgress = unitProgress;
-					if(units[i].itemProgress >= 100){
-						units[i].itemCompleted = true;
-						units[i].itemProgress = 100;					
-					}else{
-						units[i].itemCompleted = false;
+					// First, lets update the User's Progress for the module.
+					// get the users progress for the module we want to update
+					let moduleProgressItem = user.local.academyProgress.find( m => m.itemId == req.params.module_id);
+		
+					// check if the module exists in the users academy progress, if not Add it
+					if(!moduleProgressItem){
+						let moduleAcademyProgress = {
+							itemId: req.params.module_id,
+							itemProgress: parseFloat(req.body.itemProgress),
+							itemCompleted: req.body.itemCompleted
+						};
+						user.local.academyProgress.push(moduleAcademyProgress);
+					} else {				
+						moduleProgressItem.itemProgress = parseFloat(req.body.itemProgress);
+						moduleProgressItem.itemCompleted = req.body.itemCompleted;
 					}
-				}
-			}
 
-			// filter units again because we have updated for new unit..
-			
-			// now we need to do something similar at the Course Level. 
-			// we dont worry about quizzes but we worry about some badges. 
+					// Next, Update Unit Progress
 
-			let cp = makeCourseProgress(course,user.local.academyProgress);
-			
-	
-			let courseProgress = 100 * (cp.courseModulesCompleted / cp.courseSize);
-			// now we update the Course Progress.
-			// check if the course exists, if not Add it
+					let unit = course.units.id(req.params.unit_id);
+					let unitProgress = makeUnitProgress(unit, user.local.academyProgress);
 
-			let courses = user.local.academyProgress.filter( c => c.itemId == req.params.course_id);
+					// check if the unit exists in users academy progress, if not Add it
 
-			if(courses.length == 0){
-				let courseCompleted = cp.courseCompleted;
-				
-				let courseAcademyProgress = {
-					itemId: req.params.course_id,
-					itemProgress: courseProgress,
-					itemCompleted: courseCompleted
-				};
-				user.local.academyProgress.push(courseAcademyProgress);
-
-			} else {
-				for(let j = 0; j<courses.length; j++){
-					courses[j].itemProgress = courseProgress;
-					if(courses[j].itemProgress >= 100){
-						courses[j].itemCompleted = true;
-						courses[j].itemProgress = 100;
-						// ToDo: put a badge on it 					
+					let unitProgressItem = user.local.academyProgress.find( u => u.itemId == req.params.unit_id);
+		
+					if(!unitProgressItem){
+						
+						let unitAcademyProgress = {
+							itemId: req.params.unit_id,
+							itemProgress: unitProgress.unitProgress,
+							itemCompleted: unitProgress.unitCompleted
+						};
+						user.local.academyProgress.push(unitAcademyProgress);
 					} else {
-						courses[j].itemCompleted = false;
-					}
-				}
-			}
+						unitProgressItem.itemProgress = unitProgress.unitProgress;
+						unitProgressItem.itemCompleted = unitProgress.unitCompleted;
+					}					
 
-			user.save(function(err){
-				if(err){
-					logger.error(err);
-				}	
-				res.status(200).json({message: 'User Progress Updated', academyProgress: user.local.academyProgress});
-			});
-	
+					//Finally, update the Course Progress.
+
+
+					let courseProgress = makeCourseProgress(course,user.local.academyProgress);
+					
+					// check if the course exists in users academy progress, if not Add it
+		
+					let courseProgressItem = user.local.academyProgress.find( c => c.itemId == req.params.course_id);
+		
+					if(!courseProgressItem){
+						let courseCompleted = courseProgress.courseCompleted;
+						
+						let courseAcademyProgress = {
+							itemId: req.params.course_id,
+							itemProgress: courseProgress.courseProgress,
+							itemCompleted: courseProgress.courseCompleted
+						};
+						user.local.academyProgress.push(courseAcademyProgress);
+		
+					} else {
+						courseProgressItem.itemProgress = courseProgress.courseProgress;
+						courseProgressItem.itemCompleted = courseProgress.courseCompleted;
+					}
+
+					return user.save();
+		
+				});
+		})
+		.then(()=>{
+			res.status(200).json({message: message});
+		})
+		.catch((err)=>{ 
+			logger.warn(err);
+			res.status(500).json({message:err});
 		});
 	
-	});
-	
 };
+
 
 exports.putUser = function(req,res){
 	User.findById(req.params.user_id, function(err, user){
@@ -362,10 +332,6 @@ exports.putUser = function(req,res){
 
 exports.getForgot = function(req,res){
 	res.status(200).render('forgot.ejs', { message: req.flash('loginMessage') });
-};
-
-exports.getPasswordSetup = function(req,res){
-	res.status(200).render('password.ejs', { message: req.flash('loginMessage') });
 };
 
 
@@ -399,7 +365,6 @@ exports.postForgot = function(req,res){
 					}
 				};
 				
-	
 				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
 		
 				var email = {
@@ -436,6 +401,12 @@ exports.postForgot = function(req,res){
 
 };
 
+// Password Setup is intended as temporary fix for converting existing academy users to new system 
+// please remove these functions & routes by 2018
+
+exports.getPasswordSetup = function(req,res){
+	res.status(200).render('password.ejs', { message: req.flash('loginMessage') });
+};
 
 exports.postPasswordSetup = function(req,res){
 	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
@@ -466,8 +437,7 @@ exports.postPasswordSetup = function(req,res){
 						api_key: sgKey
 					}
 				};
-				
-	
+
 				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
 		
 				var email = {
@@ -567,10 +537,7 @@ exports.postReset = function(req,res){
 			res.redirect('/login');
 		});
 
-
-
 	});
-
 
 };
 
