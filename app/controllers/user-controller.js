@@ -23,8 +23,6 @@ exports.validateGetUnitProgress = [
 	}
 ];
 
-
-
 exports.getUnitProgress = function(req,res){
 	Course.findById(req.params.course_id).exec()
 		.then((course)=>{

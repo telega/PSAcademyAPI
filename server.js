@@ -40,7 +40,7 @@ app.use('/public',express.static('public'));
 if(process.env.NODE_ENV!='production'){
 	app.use(robots({UserAgent: '*', Disallow: '/'}))
 } else {
-	app.use(robots({UserAgent: '*', Disallow: ['/forgot','/password','/reset']}));
+	app.use(robots({UserAgent: '*', Disallow: ['/forgot','/password','/reset', '/admin']}));
 }
 
 mongoose.promise = bluebird;

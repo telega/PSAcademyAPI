@@ -1,35 +1,6 @@
 <%- include partials/header.ejs %>
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <a class="navbar-brand"  href="/admin"><span class="fa fa-graduation-cap" aria-hidden="true"></span></a>
-   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-    <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class=" navbar-nav mr-auto">
-        <li class = "nav-item"><a href="/admin/courses" class = "nav-link active">Courses</a></li>
-        <li class = "nav-item"><a href="/admin/users" class = "nav-link">Users</a></li>
-        <li class = "nav-item"><a href="/admin/quizzes" class = "nav-link">Quizzes</a></li>
-        <li class = "nav-item"><a href="/admin/feedback" class = "nav-link">Feedback</a></li>
-        <li class = "nav-item"><a href="/admin/academy" class = "nav-link">Options</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class = "nav-item"><a href="/logout" class="nav-link">Logout</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-</nav>
-
 
 <div class="container">
-    <div class = row>
-        <div class = "col-md-12">
-            <ol class="breadcrumb">
-                <li  class="breadcrumb-item active">Home</li>
-            </ol>
-        </div>
-    </div>
     <div class = "row">
         <div class = "col-md-12">
             <h1>Academy Admin</h1>
@@ -41,12 +12,42 @@
         </div>
     </div>
     <div class = "row">
-        <div class="col-md-12">
-          <a href="/admin/courses" class = "btn btn-primary btn-lg"><span class="fa fa-book" aria-hidden ="true"></span> Manage Courses</a>
-          <a href="/admin/quizzes" class = "btn btn-primary btn-lg"><span class="fa fa-question-circle" aria-hidden=" true"></span> Manage Quizzes</a>
-          <a href="/admin/users" class = "btn btn-primary btn-lg"><span class="fa fa-users" aria-hidden="true"></span> Manage Users</a>
-          <a href="/admin/academy" class = "btn btn-primary btn-lg"><span class="fa fa-cogs" aria-hidden="true"></span> Academy Options</a>
-          <a href="/admin/feedback" class = "btn btn-primary btn-lg"><span class="fa fa-comment" aria-hidden="true"></span> Manage Feedback</a>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              Content
+            </div>
+            <div class="card-body">
+              <p class="card-text"><a href="/admin/courses" class = "btn btn-primary btn-lg"><span class="fa fa-book"          aria-hidden ="true"></span> Manage Courses</a></p>
+              <p><a href="/admin/quizzes" class = "btn btn-primary btn-lg"><span class="fa fa-question-circle"          aria-hidden=" true"></span> Manage Quizzes</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              Settings
+            </div>
+            <div class="card-body">
+              <p class="card-text"><a href="/admin/academy" class = "btn btn-primary btn-lg"><span class="fa fa-cogs" aria-hidden="true"></span> Academy Options</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              Community
+            </div>
+            <div class="card-body">
+              <p class="card-text"><a href="/admin/users" class = "btn btn-primary btn-lg"><span class="fa fa-users" aria-hidden="true"></span> Manage Users</a></p>
+              <p><a href="/admin/feedback" class = "btn btn-primary btn-lg"><span class="fa fa-comment" aria-hidden="true"></span> Manage Feedback</a></p>
+            </div>
+          </div>
+        </div>
+
+
+          
+          
 
 
 

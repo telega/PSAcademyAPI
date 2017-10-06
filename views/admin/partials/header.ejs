@@ -7,7 +7,45 @@
 <style>
   body{
     padding-top:65px;
-    background-color:azure;
+    min-height:100%;
+    padding-bottom:20px;
   }
 </style>
 </head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <a class="navbar-brand"  href="/admin"><span class="fa fa-graduation-cap" aria-hidden="true"></span></a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class=" navbar-nav mr-auto">
+        <li class = "nav-item"><a href="/admin/courses" class = "nav-link <% if(page.activeNavItem == 'Courses'){ %> active <%}%> ">Courses</a></li>
+        <li class = "nav-item"><a href="/admin/users" class = "nav-link <% if(page.activeNavItem == 'Users'){ %> active <%}%> ">Users</a></li>
+        <li class = "nav-item"><a href="/admin/quizzes" class = "nav-link <% if(page.activeNavItem == 'Quizzes'){ %> active <%}%> ">Quizzes</a></li>
+        <li class = "nav-item"><a href="/admin/feedback" class = "nav-link <% if(page.activeNavItem == 'Feedback'){ %> active <%}%> ">Feedback</a></li>
+        <li class = "nav-item"><a href="/admin/academy" class = "nav-link <% if(page.activeNavItem == 'Options'){ %> active <%}%> ">Options</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class = "nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+</nav>
+
+
+<div class="container">
+    <div class = row>
+        <div class = "col-md-12">
+            <ol class="breadcrumb">
+                <% var crumbsCount = page.breadcrumbs.length;
+                page.breadcrumbs.forEach(function(breadcrumb,i){
+                  if(i+1 == crumbsCount){%>
+                    <li class="breadcrumb-item active"><%-breadcrumb.title%></li>
+                  <%}else{%>
+                    <li class="breadcrumb-item"><a href="<%=breadcrumb.url%>"><%-breadcrumb.title%></a></li>
+                <%}})%>
+            </ol>
+        </div>
+    </div>
+</div>
