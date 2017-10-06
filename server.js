@@ -28,8 +28,9 @@ app.use((req, res, next)=>{
 	if (req.header('host') == 'academybypatsnap.herokuapp.com') {
 		logger.info('Redirecting Heroku host to academy.patsnap.com');
 		res.redirect(301,'https://academy.patsnap.com');
+	} else {
+		next();
 	}
-	next();
 });
 
 
