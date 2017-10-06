@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 const morgan = require('morgan');
+const robots = require('express-robots');
 const logger = require('./app/logger');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -22,9 +23,24 @@ if(process.env.NODE_ENV !=='test'){
 }
 
 const bluebird = require('bluebird');
- 
+
+app.use((req, res, next)=>{
+	if (req.header('host') == 'academybypatsnap.herokuapp.com') {
+		logger.info('Redirecting Heroku host to academy.patsnap.com');
+		res.redirect(301,'https://academy.patsnap.com');
+	}
+	next();
+});
+
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use('/public',express.static('public'));
+
+if(process.env.NODE_ENV!='production'){
+	app.use(robots({UserAgent: '*', Disallow: '/'}))
+} else {
+	app.use(robots({UserAgent: '*', Disallow: ['/forgot','/password','/reset']}));
+}
 
 mongoose.promise = bluebird;
 mongoose.connect(dbUrl, {

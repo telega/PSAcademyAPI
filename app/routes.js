@@ -104,7 +104,7 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/academy')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getAcademyOptions)
-		.put(authController.isLoggedIn, authController.isAdmin, adminController.putAcademyOptions);
+		.put(authController.isLoggedIn, authController.isAdmin, adminController.validatePutAcademyOptions, adminController.putAcademyOptions);
 
 	adminRouter.route('/users')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getUsers);

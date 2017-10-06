@@ -23,6 +23,7 @@
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "^4.15.3",
+    "express-robots": "^0.1.6",
     "express-server": "^0.7.0",
     "express-session": "^1.15.3",
     "express-validator": "^4.2.1",

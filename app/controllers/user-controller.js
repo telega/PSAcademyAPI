@@ -280,7 +280,6 @@ exports.putModuleProgress = function(req,res){
 					let courseProgressItem = user.local.academyProgress.find( c => c.itemId == req.params.course_id);
 		
 					if(!courseProgressItem){
-						let courseCompleted = courseProgress.courseCompleted;
 						
 						let courseAcademyProgress = {
 							itemId: req.params.course_id,
@@ -304,8 +303,7 @@ exports.putModuleProgress = function(req,res){
 		.catch((err)=>{ 
 			logger.warn(err);
 			res.status(500).json({message:err});
-		});
-	
+		});	
 };
 
 
@@ -482,9 +480,9 @@ exports.getReset = function(req,res){
 		if(!user){
 			req.flash('loginMessage','Password reset token is invalid or expired.');
 			res.redirect('/forgot');
+		} else {
+			res.status(200).render('reset.ejs', { message: req.flash('loginMessage') });
 		}
-
-		res.status(200).render('reset.ejs', { message: req.flash('loginMessage') });
 	});
 };
 

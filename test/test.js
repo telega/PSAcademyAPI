@@ -286,7 +286,6 @@ describe('API Backend Routes', ()=>{
 
 		});
 
-
 		it('Should delete a course on /api/courses/:course_id DELETE', (done)=>{
 
 			createTestUser(theAdminAccount,function(testUser){
@@ -358,6 +357,33 @@ describe('API Backend Routes', ()=>{
 		});
 
 	});
+	
+	describe('Academy Options Routes(Admin)', (done)=>{
+
+		it('Should render the Academy options  page on /feedback/courses GET', (done) => {
+
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/academy')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+
+		});
+
+	});
+
 
 	describe('Feedback Routes (Admin)', (done)=>{
 

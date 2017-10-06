@@ -3,6 +3,7 @@ var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
+const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
 
@@ -12,12 +13,10 @@ exports.getAdminPage = function(req,res){
 	let pageInfo = {
 		title: 'Admin'
 	};
-
 	res.render('admin/index.ejs', {user: req.user, page:pageInfo});	
 };
 
 // Courses
-
 
 exports.getCourses = function(req,res){
 	let pageInfo = {
@@ -44,22 +43,34 @@ exports.getFeedback = function(req,res){
 		.catch((err) => logger.error(err));
 };
 
-
-
-
 exports.getAcademyOptions = function(req,res){
 	let pageInfo = {
 		title: 'Academy Options'
 	};
 
-	Academy.findOne({}).sort({order:1}).exec(function(err, academyOptions){
-		if(err){
+	Academy.findOne({}).sort({order:1}).exec()
+		.then((academyOptions)=>{
+			res.status(200).render('admin/academy.ejs', {user: req.user, options: academyOptions, page: pageInfo});
+		})
+		.catch((err)=>{
 			logger.error(err);
-		}
-		
-		res.render('admin/academy.ejs', {user: req.user, options: academyOptions, page: pageInfo});
-	});
+		});
 };
+
+exports.validatePutAcademyOptions = [
+	check('academyIntroText').exists().withMessage('Must exist.'),
+	check('academyNewsHeadline').exists().withMessage('Must exist.'),
+	check('academyNewsText').exists().withMessage('Must exist.'),
+	check('academyHomeCta').exists().withMessage('Must exist.'),
+	function (req,res,next){
+		let errors = validationResult(req);
+		if( !errors.isEmpty() ){
+			res.status(422).json({message: errors.mapped()});
+		} else {
+			next();
+		}
+	}
+];
 
 exports.putAcademyOptions = function(req,res){
 	Academy.findOne({}, function(err, academyOptions){
