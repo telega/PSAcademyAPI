@@ -3,6 +3,7 @@ require('dotenv').config();
 var Course = require('../app/models/course');
 var User = require('../app/models/user');
 var Feedback = require('../app/models/feedback');
+var Academy = require('../app/models/academy');
 const mongoose = require('mongoose');
 
 
@@ -360,7 +361,7 @@ describe('API Backend Routes', ()=>{
 	
 	describe('Academy Options Routes(Admin)', (done)=>{
 
-		it('Should render the Academy options  page on /feedback/courses GET', (done) => {
+		it('Should render the Academy options  page on /admin/academy GET', (done) => {
 
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -376,6 +377,66 @@ describe('API Backend Routes', ()=>{
 							deleteTestUser(testUser._id);
 
 							done();
+						});
+				});	
+			});
+
+		});
+
+
+		it('Should reject empty request /admin/academy PUT', (done) => {
+
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.put('/admin/academy')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(422);
+							res.should.be.json;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+
+		});
+
+		it('Should update the options /feedback/courses PUT', (done) => {
+
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.put('/admin/academy')
+						.set('cookie', cookie)
+						.send({
+							academyIntroText:'testtitle',
+							academyNewsHeadline: 'testheadline',
+							academyNewsText:'testnewstext',
+							academyHomeCta:'testcta'
+						})
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+
+							Academy.findOne({}).exec()
+								.then((academyOptions)=>{ 
+									academyOptions.academyIntroText.should.equal('testtitle');
+									academyOptions.academyNewsHeadline.should.equal('testheadline');
+									academyOptions.academyNewsText.should.equal('testnewstext');
+									academyOptions.academyHomeCta.should.equal('testcta');
+									
+									deleteTestUser(testUser._id);
+									done();
+								})
+								.catch((err)=>{console.log(err);})
+
 						});
 				});	
 			});

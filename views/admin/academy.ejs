@@ -16,7 +16,7 @@
            <form id = "setOptions">
             <div class="form-group">
               <label for="academyIntroText">Academy Intro Text</label>
-              <textarea rows="5" class="form-control" id="academyIntroText" placeholder="Welcome" ><%=options.academyIntroText%></textarea>
+              <textarea rows="5" class="form-control summernote" id="academyIntroText" placeholder="Welcome" ><%=options.academyIntroText%></textarea>
             </div>
             <div class="form-group">
               <label for="academyNewsHeadline">News Headline</label>
@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
               <label for="academyNewsText">News Text</label>
-              <textarea rows="5" class="form-control" id="academyNewsText" placeholder="Lorem Ipsum Dolor" ><%=options.academyNewsText%></textarea>
+              <textarea rows="5" class="form-control summernote" id="academyNewsText" placeholder="Lorem Ipsum Dolor" ><%=options.academyNewsText%></textarea>
             </div>
             <div class="form-group">
                 <label for="academyHomeCta">Hubspot CTA Embed Code</label>
@@ -74,9 +74,20 @@ $(document).ready(function(){
     $("#setOptions").submit(function(e){
         e.preventDefault();
         var data = {}
-        data.academyIntroText = $("#academyIntroText").val();
+        data.academyIntroText = '';
+        data.academyNewsText = ''
+        var academyIntroText = $.parseHTML( $("#academyIntroText").summernote('code'));
+        $.each(academyIntroText, function(i,el){
+          $(el).addClass('lead');
+          data.academyIntroText += $(el)[0].outerHTML;
+        });
+        var academyNewsText = $.parseHTML( $("#academyNewsText").summernote('code'));
+        $.each(academyNewsText,function(i,el){
+          $(el).addClass('card-text');
+          data.academyNewsText += $(el)[0].outerHTML;
+        })
+
         data.academyNewsHeadline = $("#academyNewsHeadline").val();
-        data.academyNewsText = $("#academyNewsText").val();
         data.academyHomeCta = $("#academyHomeCta").val();
         $.ajax({
             type: "PUT",
@@ -89,6 +100,21 @@ $(document).ready(function(){
                 }
             });
     })
+
+    $('.summernote').summernote({
+      height:300,
+      minHeight:300,
+      maxHeight:300,
+      shortcuts: false,
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['misc', ['codeview']],
+        ['insert',['link']]
+      ]
+    });
+
+    $(".summernote").eq(1).css('background-color','azure');
 
 })
 </script>
