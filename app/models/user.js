@@ -5,6 +5,8 @@ mongoose.Promise = bluebird;
 
 var academyProgressSchema = mongoose.Schema({
 	itemId : String,
+	relatedItem:[{ type: mongoose.Schema.Types.ObjectId }],
+	itemType: String, 
 	itemProgress : {
 		type: Number,
 		default: 0
@@ -51,11 +53,77 @@ var userSchema = mongoose.Schema({
 			default: 'Member'
 		},
 		academyProgress: [academyProgressSchema],
-		academyBadges: [academyBadgesSchema]
+		academyBadges: [academyBadgesSchema],
+		academyScore: {
+			type: Number,
+			default: 0
+		}
 	},
 	resetPasswordToken: String,
 	resetPasswordExpires: Date
 });
+
+
+function flattenCourses(courses){
+	let flat = [];
+
+	courses.forEach(function(course){
+		course.units.forEach(function(unit){
+			unit.modules.forEach(function(module){
+				flat.push({
+					id: module._id,
+					itemType: module.type
+				});
+			});
+			flat.push({
+				id: unit._id,
+				itemType: unit.type
+			});
+		});
+		flat.push({
+			id: course._id,
+			itemType: course.type
+		});
+	});
+
+	return flat;
+}
+
+userSchema.methods.checkAcademyProgressItems = function(courses){
+
+	let flatCourses = flattenCourses(courses);
+
+	this.local.academyProgress.forEach(function(progressItem){
+		let academyItem = flatCourses.find(function(e){
+			return e.id.toString() == progressItem.itemId;
+		});
+		progressItem.itemType = academyItem.itemType;
+		progressItem.relatedItem = academyItem.id;
+	});
+
+	return this.local.academyProgress;
+};
+
+userSchema.methods.updateUserAcademyScore = function(){
+	let score = 0;
+	this.local.academyProgress.forEach(function(progressItem){
+		if(progressItem.itemCompleted){
+			if(progressItem.itemType == 'Video'){
+				score +=1;
+			}
+			if(progressItem.itemType == 'Quiz'){
+				score += 1;
+			}
+			if(progressItem.itemType == 'Unit'){
+				score += 3;
+			}
+			if(progressItem.itemType == 'Course'){
+				score += 2;
+			}
+		}
+	});
+	return score;
+};
 
 userSchema.methods.generateHash = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);

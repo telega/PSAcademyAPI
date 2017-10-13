@@ -1,6 +1,7 @@
 const passport = require('passport');
 const freemail = require('freemail');
 const User = require('../app/models/user');
+const Course = require('../app/models/course');
 const LocalStrategy = require('passport-local').Strategy;
 const hsPortalId = process.env.HS_PORTAL_ID || null;
 const hsFormID = process.env.HS_FORM_ID || null;
@@ -140,9 +141,22 @@ module.exports = function(passport){
 			}
 			// all is well, return successful user
 			logger.info('User ' + user.local.email + ' logged into Academy' );
-			return done(null, user);
+			
+			// refresh user scores & check academy progress 
+
+			Course.find({}).exec()
+				.then((courses)=>{
+					user.checkAcademyProgressItems(courses);
+					user.local.academyScore = user.updateUserAcademyScore();	
+					return user.save();
+				}).then(()=>{
+					return done(null, user);
+				})
+				.catch((err)=>{
+					logger.error(err);
+				});
+
 		});
 	}));
-
 
 };

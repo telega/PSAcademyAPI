@@ -7,7 +7,6 @@ const { check, validationResult } = require('express-validator/check');
 const sgKey = process.env.SENDGRID_API_KEY;
 const logger = require('../logger');
 
-
 exports.validateGetUnitProgress = [
 	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
 	check('course_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
@@ -37,14 +36,13 @@ exports.getUnitProgress = function(req,res){
 					unitProgress = Math.round(unitItem.itemProgress);
 				}
 				res.status(200).json({progress: unitProgress});
-			}	
+			}
 		})
 		.catch((err)=>{
 			logger.error(err);
 			res.status(500).json({message:err});
 		});
 };
-
 
 exports.getUsers = function(req,res){
 	User.find({}, function(err, users){
@@ -114,9 +112,7 @@ exports.addCourseToUser = function(req,res){
 			logger.error(err);
 			res.status(500).json({message: err});
 		});
-
 };
-
 
 function makeCourseProgress(c,p){
     
@@ -181,9 +177,11 @@ function makeUnitProgress(u,p){
 					quizCompleted = true;
 				}
 			} else {
-				unitModulesCompleted += Math.round(m.length*(moduleProgress.itemProgress/100));
+				if( m.type != 'Quiz'){
+					unitModulesCompleted += Math.round(m.length*(moduleProgress.itemProgress/100));
+				}
 			}
-		} 
+		}
 	});
 
 	if(quizCompleted == true){
@@ -230,6 +228,9 @@ exports.putModuleProgress = function(req,res){
 				.then((user)=>{
 
 					// First, lets update the User's Progress for the module.
+					// we need to get some information from the course's description of the module.
+					let unit = course.units.id(req.params.unit_id);
+					let module = unit.modules.find(m => m._id == req.params.module_id);
 					// get the users progress for the module we want to update
 					let moduleProgressItem = user.local.academyProgress.find( m => m.itemId == req.params.module_id);
 		
@@ -238,17 +239,20 @@ exports.putModuleProgress = function(req,res){
 						let moduleAcademyProgress = {
 							itemId: req.params.module_id,
 							itemProgress: parseFloat(req.body.itemProgress),
-							itemCompleted: req.body.itemCompleted
+							itemCompleted: req.body.itemCompleted,
+							itemType: module.type,
+							relatedItem: module._id
 						};
 						user.local.academyProgress.push(moduleAcademyProgress);
+						logger.info('User ' + user.local.email + ' has made progress in a module: ' + module.name);
 					} else {				
 						moduleProgressItem.itemProgress = parseFloat(req.body.itemProgress);
 						moduleProgressItem.itemCompleted = req.body.itemCompleted;
+						logger.info('User ' + user.local.email + ' has made progress in a module: ' + module.name);
 					}
 
 					// Next, Update Unit Progress
 
-					let unit = course.units.id(req.params.unit_id);
 					let unitProgress = makeUnitProgress(unit, user.local.academyProgress);
 
 					// check if the unit exists in users academy progress, if not Add it
@@ -260,7 +264,9 @@ exports.putModuleProgress = function(req,res){
 						let unitAcademyProgress = {
 							itemId: req.params.unit_id,
 							itemProgress: unitProgress.unitProgress,
-							itemCompleted: unitProgress.unitCompleted
+							itemCompleted: unitProgress.unitCompleted,
+							itemType:unit.type,
+							relatedItem: unit._id
 						};
 						user.local.academyProgress.push(unitAcademyProgress);
 					} else {
@@ -269,7 +275,6 @@ exports.putModuleProgress = function(req,res){
 					}					
 
 					//Finally, update the Course Progress.
-
 
 					let courseProgress = makeCourseProgress(course,user.local.academyProgress);
 					
@@ -282,7 +287,9 @@ exports.putModuleProgress = function(req,res){
 						let courseAcademyProgress = {
 							itemId: req.params.course_id,
 							itemProgress: courseProgress.courseProgress,
-							itemCompleted: courseProgress.courseCompleted
+							itemCompleted: courseProgress.courseCompleted,
+							itemType: course.type,
+							relatedItem: course._id
 						};
 						user.local.academyProgress.push(courseAcademyProgress);
 		
@@ -293,6 +300,10 @@ exports.putModuleProgress = function(req,res){
 
 					return user.save();
 		
+				})
+				.then((user)=>{
+					user.local.academyScore = user.updateUserAcademyScore();
+					return user.save();	
 				});
 		})
 		.then(()=>{
@@ -303,7 +314,6 @@ exports.putModuleProgress = function(req,res){
 			res.status(500).json({message:err});
 		});	
 };
-
 
 exports.putUser = function(req,res){
 	User.findById(req.params.user_id, function(err, user){
@@ -329,7 +339,6 @@ exports.putUser = function(req,res){
 exports.getForgot = function(req,res){
 	res.status(200).render('forgot.ejs', { message: req.flash('loginMessage') });
 };
-
 
 exports.postForgot = function(req,res){
 	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
@@ -520,7 +529,6 @@ exports.postReset = function(req,res){
 				text: 'This is a confirmation that your Academy password has been changed.\n\n' +
 						'The Academy Team\n'
 			};
-
 
 			sgClient.sendMail(email,function(err, info){
 				if(err){

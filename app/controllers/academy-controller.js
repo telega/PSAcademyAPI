@@ -190,7 +190,8 @@ exports.getHomepage = function(req,res){
 			if(err){
 				logger.error(err);
 			}
-	
+
+
 			let items = getUserCourseItems(courses, req.user.local.academyProgress);
 
 			let pageInfo = {
@@ -274,9 +275,7 @@ exports.getCourse = function(req,res){
 
 
 exports.getLogin = function(req,res){
-
 	res.status(200).render('academy/login.ejs', { message: req.flash('loginMessage') });
-
 };
 
 
@@ -349,8 +348,6 @@ exports.getProfile = function(req,res){
 		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, user: req.user});	
 	});
 };
-
-
 
 exports.putProfile = function(req,res){
 

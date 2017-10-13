@@ -137,6 +137,10 @@ module.exports = function(app,passport){
 	adminRouter.route('/feedback')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getFeedback);
 	
+	// Leaderboard Routes (Admin)
+	adminRouter.route('/leaderboard')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getLeaderboard);
+
 	//  Non API routers
 	router.route('/signup')
 		.post(passport.authenticate('local-signup',{
@@ -152,6 +156,7 @@ module.exports = function(app,passport){
 			failureRedirect:'/',
 			failureFlash: true
 		}));
+
 
 	router.route('/forgot')
 		.get(userController.getForgot)
@@ -208,4 +213,6 @@ module.exports = function(app,passport){
 	app.use(function(req, res) {
 		res.status(404).render('404.ejs');
 	});
+
+	return router;
 };

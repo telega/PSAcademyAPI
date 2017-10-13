@@ -16,6 +16,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 var dbUrl;
+
 if(process.env.NODE_ENV !=='test'){
 	dbUrl =  process.env.DB_URL;
 } else {

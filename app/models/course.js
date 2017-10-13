@@ -34,6 +34,10 @@ var UnitSchema = new Schema({
 		default: false
 	},
 	order: Number,
+	type:{
+		type: String,
+		default:'Unit'
+	},
 	modules: [ModuleSchema],
 	unitImageUrl:{
 		type: String,
@@ -51,6 +55,10 @@ var CourseSchema = new Schema({
 	published: {
 		type: Boolean,
 		default: false
+	},
+	type: {
+		type: String,
+		default:'Course'
 	},
 	order: Number,
 	units: [UnitSchema],

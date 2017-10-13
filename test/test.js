@@ -568,6 +568,64 @@ describe('User Routes', ()=>{
 			});
 	
 		});
+
+		it('Should check the academy progress and update the users score', (done) => {
+	
+			createTestUser( theUserAccount, function(testUser){
+	
+				createTestCourse(function(testCourse){
+					var testUnit = testCourse.units[0];
+					var testModule = testCourse.units[0].modules[0];
+	
+					createLoginCookie(server, theUserAccount, function(cookie) {
+	
+						request(server)
+							.put('/api/progress/' + testUser._id + '/courses/' + testCourse._id + '/units/' + testUnit._id + '/modules/' + testModule._id)
+							.set('cookie', cookie)
+							.send({
+								itemProgress: 100,
+								itemCompleted: true
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+								Course.find({}).exec()
+									.then((courses)=>{
+										User.findOne({_id: testUser._id.toString()}).exec()
+											.then((u)=>{
+												u.local.academyProgress = u.checkAcademyProgressItems(courses);
+												return u.save();
+											})
+											.then((u)=>{
+												u.local.academyScore = u.updateUserAcademyScore();
+												return u.save();
+											})
+											.then((u)=>{
+												u.local.academyProgress.forEach(function(ip){
+													ip.relatedItem[0].should.be.an('object');
+												});
+												u.local.academyScore.should.equal(6);
+											})
+											.then(()=>{
+												User.remove({_id: testUser._id}).exec()
+													.then(()=>{
+														//cleanup
+														deleteTestCourse(testCourse._id);
+														done();
+													});
+													
+											})
+											.catch((err)=>console.log(err));
+									});
+							});
+					});	
+	
+				});
+	
+			});
+	
+		});
+
 	
 		it('Should 422  with invalid course id on /api/progress/:user_id/courses/:course_id PUT', (done) => {
 	
@@ -657,7 +715,6 @@ describe('User Routes', ()=>{
 				createTestCourse(function(testCourse){
 					var testUnit = testCourse.units[0];
 					var testModule = testCourse.units[0].modules[0];
-	
 	
 					createLoginCookie(server, theUserAccount, function(cookie) {
 	

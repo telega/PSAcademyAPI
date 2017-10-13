@@ -1,0 +1,57 @@
+<%- include partials/header.ejs %>
+<body>
+
+<div class="container">
+    
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="fa fa-list" aria-hidden="true"> </span> Leaderboard </h1>
+        <div>
+    </div>
+
+    <div class = "row">
+        <div class="col-md-12">
+            <table width='100%' class="table table-striped">
+            <thead>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Score</th>
+            </thead>    
+            <tbody>
+            <%  let previousScore = 0;
+                let rank = 0;
+                users.forEach(function(user, i){
+                    let lastInitial = user.local.profile.lastName.substr(0,1);
+                    if( user.local.academyScore != previousScore){
+                        previousScore = user.local.academyScore;
+                        rank ++;
+                    }
+                 %>
+                <tr>
+                    <td><%=rank%></td>
+                    <td><%= user.local.profile.firstName%> <%=lastInitial%>.</td>
+                    <td><%= user.local.email %></td>                    
+                    <td><%= user.local.academyScore %></td>                    
+                </tr>
+            <% }); %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    
+<!-- Modals -->
+
+
+<!-- scripts -->
+<%- include partials/footer.ejs%>
+<script>
+
+$(document).ready(function(){
+
+
+    
+})
+</script>
+</body>
+</html>

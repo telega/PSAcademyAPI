@@ -343,7 +343,6 @@ exports.getUser = function(req,res){
 									}
 								}
 							}
-							
 						}
 					}
 			
@@ -354,4 +353,22 @@ exports.getUser = function(req,res){
 			});
 		})
 		.catch( (err)=>{ logger.error(err);} );
+};
+
+exports.getLeaderboard= function(req,res){
+
+	User.find({}).sort({'local.academyScore': -1}).exec()
+		.then((users)=>{
+
+			let pageInfo = {
+				title: 'Leaderboard',
+				breadcrumbs: [
+					{title:'Admin', url: '/admin'},
+					{title:'Leaderboard', url: '/admin/leaderboard'}			
+				],
+				activeNavItem: 'Leaderboard'
+			};
+			res.status(200).render('admin/leaderboard.ejs', {user:req.user, users:users, page: pageInfo});
+		})
+		.catch((err)=>{ logger.error(err);});
 };
