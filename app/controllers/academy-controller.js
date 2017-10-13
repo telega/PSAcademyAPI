@@ -191,8 +191,8 @@ exports.getHomepage = function(req,res){
 				logger.error(err);
 			}
 
-
 			let items = getUserCourseItems(courses, req.user.local.academyProgress);
+			let userCount = 0;
 
 			let pageInfo = {
 				title: 'Welcome',
@@ -203,14 +203,25 @@ exports.getHomepage = function(req,res){
 				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/AcademyWelcomeHeader.jpg' 
 			};
 
-			Academy.findOne({}, function(err,academyOptions){  
-				if(err){
-					logger.error(err);
-				}
+			User.find({}).sort({'local.academyScore': -1}).exec()
+				.then((users)=>{
+					userCount = users.length;
+					req.user.local.academyRank = req.user.updateAcademyRank(users);
+					return req.user.save();
+				})
+				.then(()=>{
 
-				res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions});	
-		
-			});
+					Academy.findOne({}, function(err,academyOptions){  
+						res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions, userCount: userCount});	
+					});
+
+				})
+				.catch((err)=>{
+					if(err){
+						logger.error(err);
+					}
+				});
+				
 		});
 
 	} else {

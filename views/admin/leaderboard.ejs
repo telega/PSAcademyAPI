@@ -21,7 +21,7 @@
             <tbody>
             <%  let previousScore = 0;
                 let rank = 0;
-                users.forEach(function(user, i){
+                users.forEach(function(user){
                     let lastInitial = user.local.profile.lastName.substr(0,1);
                     if( user.local.academyScore != previousScore){
                         previousScore = user.local.academyScore;

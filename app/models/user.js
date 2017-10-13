@@ -57,6 +57,10 @@ var userSchema = mongoose.Schema({
 		academyScore: {
 			type: Number,
 			default: 0
+		},
+		academyRank: {
+			type: Number,
+			default: 0
 		}
 	},
 	resetPasswordToken: String,
@@ -123,6 +127,24 @@ userSchema.methods.updateUserAcademyScore = function(){
 		}
 	});
 	return score;
+};
+
+userSchema.methods.updateAcademyRank = function(users){
+	let userId = this._id;
+	let rank = 0;
+	let userRank = 0;
+	let previousScore = 0;
+	users.forEach(function(user){
+		if(user.local.academyScore != previousScore){
+			previousScore = user.local.academyScore;
+			rank ++;
+		}
+		if(userId.equals(user._id)){
+			userRank = rank;
+		}
+	});
+
+	return userRank;
 };
 
 userSchema.methods.generateHash = function(password) {

@@ -9,7 +9,22 @@
       <div class="col-md-6 mt-2">
         <p class="lead">Welcome to Academy by PatSnap. To get started, click <a href='/courses'>Browse All Courses</a> and you will be on your way to learning about the worlds of intellectual property and innovation. </p>
         <h3>Learn</h3>
-        <a href = "/courses" class = "btn btn-primary" ><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Browse All Courses</a>
+        <p><a href = "/courses" class = "btn btn-primary" ><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Browse All Courses</a></p>
+        <h5> <%function ordinal_suffix_of(i) {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+} %>Your have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h5> <h6> You are currently ranked <%=ordinal_suffix_of(user.local.academyRank)%>
+         out of <%=userCount%> Academy users.</h6>
       </div>
       <div class="col-md-5 ml-auto mt-2">
         <div class="card">
