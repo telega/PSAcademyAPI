@@ -198,6 +198,9 @@ module.exports = function(app,passport){
 	
 	router.route('/profile/:user_id')
 		.put(authController.isLoggedIn, authController.validatePutProfile, academyController.putProfile);
+
+	router.route('/leaderboard')
+		.get(authController.isLoggedIn, academyController.updateUserRankingAndScore, academyController.getLeaderboard);
 	
 	router.route('/logout')
 		.get(authController.logOut);

@@ -360,6 +360,45 @@ exports.getProfile = function(req,res){
 	});
 };
 
+
+exports.updateUserRankingAndScore = function(req,res,next){
+	// todo update score
+	User.find({}).sort({'local.academyScore': -1}).exec()
+		.then((users) =>{	
+			req.user.local.academyRank = req.user.updateAcademyRank(users);	
+			return req.user.save();
+		})
+		.then(()=>{
+			return next();
+		})
+		.catch( err => { logger.error(err);} );
+
+};
+
+exports.getLeaderboard = function(req,res){
+
+	let leaderBoardItems =[];
+
+	User.find({}).sort({'local.academyScore': -1}).exec()
+		.then((users) =>{
+
+			users.forEach((user)=>{
+				if(user.local.academyRank <=10 ){
+					leaderBoardItems.push({
+						name : user.local.profile.firstName + ' ' + user.local.profile.lastName.slice(0,1),
+						rank : user.local.academyRank,
+						score: user.local.academyScore,
+
+					});
+				}
+
+			});
+
+			res.send(leaderBoardItems);
+		})
+		.catch( err => logger.error(err));
+};
+
 exports.putProfile = function(req,res){
 
 	User.findById(req.user._id, function(err, user){

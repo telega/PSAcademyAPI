@@ -335,6 +335,27 @@ describe('API Backend Routes', ()=>{
 			});
 		});
 
+		it('Should render the user details admin page on /admin/users/:user_id GET', (done) => {
+		
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/users/' + testUser._id)
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+		});
+
 
 		it('Should render the All courses admin page on /admin/courses GET', (done) => {
 		
