@@ -347,7 +347,7 @@ exports.getUser = function(req,res){
 						}
 				
 					});
-
+					console.log(items);
 					return items;
 				})
 				.then((items)=>{
