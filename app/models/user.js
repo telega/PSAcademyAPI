@@ -130,19 +130,25 @@ userSchema.methods.updateUserAcademyScore = function(){
 };
 
 userSchema.methods.updateAcademyRank = function(users){
+	
 	let userId = this._id;
 	let rank = 0;
 	let userRank = 0;
 	let previousScore = 0;
-	users.forEach(function(user){
-		if(user.local.academyScore != previousScore){
-			previousScore = user.local.academyScore;
-			rank ++;
-		}
-		if(userId.equals(user._id)){
-			userRank = rank;
-		}
-	});
+	
+	if(this.local.role != 'Admin'){
+	
+		users.forEach(function(user){
+			if(user.local.academyScore != previousScore){
+				previousScore = user.local.academyScore;
+				rank ++;
+			}
+			if(userId.equals(user._id)){
+				userRank = rank;
+			}
+		});
+
+	}
 
 	return userRank;
 };

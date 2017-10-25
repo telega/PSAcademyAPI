@@ -1,3 +1,10 @@
 # PS Academy API
 
-API server for version 2 of Academy. 
+Server for Academy by PatSnap.
+An online learning / MOOC platform. 
+Built with node/express & mongodb.
+
+## Check it out!
+
+Learn about IP, patents, and innovation.
+[Academy by PatSnap](https://academy.patsnap.com)

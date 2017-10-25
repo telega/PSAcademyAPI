@@ -194,7 +194,7 @@ module.exports = function(app,passport){
 		.get(authController.isLoggedIn, academyController.getQuiz);
 
 	router.route('/profile')
-		.get(authController.isLoggedIn, academyController.getProfile);
+		.get(authController.isLoggedIn, academyController.updateUserRankingAndScore, academyController.getProfile);
 	
 	router.route('/profile/:user_id')
 		.put(authController.isLoggedIn, authController.validatePutProfile, academyController.putProfile);

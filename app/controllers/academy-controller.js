@@ -377,24 +377,35 @@ exports.updateUserRankingAndScore = function(req,res,next){
 
 exports.getLeaderboard = function(req,res){
 
+	let pageInfo = {
+		title: 'Leaderboard',
+		breadcrumbs: [
+			{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+			{title:'Leaderboard', url: '/leaderboard'}
+		],
+		activeNavItem: 'Leaderboard',
+		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+	};
+
 	let leaderBoardItems =[];
 
-	User.find({}).sort({'local.academyScore': -1}).exec()
+	User.find({}).sort({'local.academyRank': 1}).exec()
 		.then((users) =>{
 
 			users.forEach((user)=>{
-				if(user.local.academyRank <=10 ){
+
+				if( (user.local.academyRank <=5 ) && ( user.local.academyRank != 0) ){
 					leaderBoardItems.push({
 						name : user.local.profile.firstName + ' ' + user.local.profile.lastName.slice(0,1),
 						rank : user.local.academyRank,
 						score: user.local.academyScore,
-
+						isUser: (req.user._id.equals(user._id) )
 					});
 				}
 
 			});
 
-			res.send(leaderBoardItems);
+			res.render('academy/leaderboard.ejs', {pageInfo:pageInfo, user: req.user, items: leaderBoardItems});	
 		})
 		.catch( err => logger.error(err));
 };
