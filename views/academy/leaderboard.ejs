@@ -1,12 +1,42 @@
 <%- include partials/header.ejs %>
+
+<%function suffix(i) {
+  var j = i % 10,
+      k = i % 100;
+  if (j == 1 && k != 11) {
+      return i + "st";
+  }
+  if (j == 2 && k != 12) {
+      return i + "nd";
+  }
+  if (j == 3 && k != 13) {
+      return i + "rd";
+  }
+  return i + "th";
+}%>
+
 <div class="container main-content">
     <div class = "row">
         <div class = "col-md-12">
-            <h1 class="display-4"><span class="fa fa-list" aria-hidden="true"></span> Academy Leaderboard</h1>
+            <h1 class="display-4"><span class="fa fa-trophy" aria-hidden="true"></span> Academy Leaderboard</h1>
         <div>
     </div>
 
-      <table width='100%' class="table table-striped">
+    <div class = "row">
+        <div class = "col-md-12">
+          <h5> <span class = 'fa fa-star'></span> Your have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h5> 
+          <h6> <span class="fa fa-trophy"></span> You are currently ranked <%if(user.local.academyRank == 0) {%> 
+          <%=suffix(userCount)%>
+          <%} else {%>
+          <%=suffix(user.local.academyRank)%>
+          <%}%> 
+         out of <%=userCount%> Academy Users.</h6>
+        </div>
+    </div>
+
+    <div class = "row">
+      <div class = "col-md-12">
+        <table width='100%' class="table table-striped">
                 <thead class='thead-default'>
                     <th>Rank</th>
                     <th>Name</th>
@@ -24,24 +54,20 @@
                     <%if (item.isUser){%>
                     <tr>
                         <td><strong> <%=currentRank%> </strong></td>
-                        <td><strong> <%=item.name%> </strong></td>
+                        <td><strong> <%=item.name%>. </strong></td>
                         <td><strong> <%=item.score%></strong></td>
                     </tr>
                     <%} else {%>
 
                     <tr>
                         <td> <%=currentRank%></td>
-                        <td> <%=item.name%></td>
+                        <td> <%=item.name%>.</td>
                         <td> <%=item.score%></td>
                     </tr>
-
-
 
                     <%}});%>
                 </tbody>
             </table>
-
-
       <div class="row">
       <div class="col-md-12">
       <p>
@@ -51,7 +77,8 @@
       </div>
       </div>
     </div>
-
+</div>
+</div>
 </div>
 
 </div>

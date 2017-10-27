@@ -292,72 +292,78 @@ exports.getLogin = function(req,res){
 
 exports.getProfile = function(req,res){
 
-	Course.find({}, function(err, courses){
-		if(err){
-			logger.error(err);
-		}
-
-		let items = [];
-		// cant use array.map 
-		courses.forEach(function(course){
-
-			var cidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course._id.toString());
-			if(cidx !== -1){
-				items.push({
-					name: course.name,
-					progress: req.user.local.academyProgress[cidx].itemProgress,
-					completed: req.user.local.academyProgress[cidx].itemCompleted,
-					type: 'Course', 
-					url: '/courses/' + course._id
-				});
-			}
-
-			if(course.units.length > 0){
-				for(var j = 0; j < course.units.length; j++){
-
-					var uidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j]._id.toString());
-					if(uidx !== -1){
-						items.push({
-							name: course.units[j].name,
-							progress: req.user.local.academyProgress[uidx].itemProgress,
-							completed: req.user.local.academyProgress[uidx].itemCompleted,
-							type: 'Unit',
-							url:'/courses/' + course._id + '/units/' + course.units[j]._id
-						});
-					}
-
-					if(course.units[j].modules.length > 0 ){
-						for(var k = 0; k < course.units[j].modules.length; k++){
-							var idx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j].modules[k]._id.toString());
-							if( idx !== -1){
-								items.push({
-									name: course.units[j].modules[k].name,
-									progress: req.user.local.academyProgress[idx].itemProgress,
-									completed: req.user.local.academyProgress[idx].itemCompleted,
-									type: 'Module',
-									url:'/courses/' + course._id + '/units/' + course.units[j]._id
-								});
+	Course.find({}).exec()
+		.then((courses)=>{
+			let items = [];
+			// cant use array.map 
+			courses.forEach(function(course){
+	
+				var cidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course._id.toString());
+				if(cidx !== -1){
+					items.push({
+						name: course.name,
+						progress: req.user.local.academyProgress[cidx].itemProgress,
+						completed: req.user.local.academyProgress[cidx].itemCompleted,
+						type: 'Course', 
+						url: '/courses/' + course._id
+					});
+				}
+	
+				if(course.units.length > 0){
+					for(var j = 0; j < course.units.length; j++){
+	
+						var uidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j]._id.toString());
+						if(uidx !== -1){
+							items.push({
+								name: course.units[j].name,
+								progress: req.user.local.academyProgress[uidx].itemProgress,
+								completed: req.user.local.academyProgress[uidx].itemCompleted,
+								type: 'Unit',
+								url:'/courses/' + course._id + '/units/' + course.units[j]._id
+							});
+						}
+	
+						if(course.units[j].modules.length > 0 ){
+							for(var k = 0; k < course.units[j].modules.length; k++){
+								var idx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j].modules[k]._id.toString());
+								if( idx !== -1){
+									items.push({
+										name: course.units[j].modules[k].name,
+										progress: req.user.local.academyProgress[idx].itemProgress,
+										completed: req.user.local.academyProgress[idx].itemCompleted,
+										type: 'Module',
+										url:'/courses/' + course._id + '/units/' + course.units[j]._id
+									});
+								}
 							}
 						}
+						
 					}
-					
 				}
-			}
-		
-		});
+			
+			});
+	
+			let pageInfo = {
+				title: 'Profile',
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'Profile', url: '/profile'}
+				],
+				activeNavItem: 'Profile',
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+			};
 
-		let pageInfo = {
-			title: 'Profile',
-			breadcrumbs: [
-				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
-				{title:'Profile', url: '/profile'}
-			],
-			activeNavItem: 'Profile',
-			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
-		};
+			return {pageInfo, items};
+		})
+		.then((data)=>{
 
-		res.render('academy/profile.ejs', {items:items, pageInfo:pageInfo, user: req.user});	
-	});
+			User.find({}).exec()
+				.then((users)=>{
+					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length});	
+				});
+
+		})	
+		.catch( (err) => { logger.error(err); });
 };
 
 
@@ -396,7 +402,7 @@ exports.getLeaderboard = function(req,res){
 
 			users.forEach((user)=>{
 
-				if( (user.local.academyRank <=10 ) && ( user.local.academyRank != 0) ){
+				if( (user.local.academyRank <=11 ) && ( user.local.academyRank != 0) ){
 					leaderBoardItems.push({
 						name : user.local.profile.firstName + ' ' + user.local.profile.lastName.slice(0,1),
 						rank : user.local.academyRank,
@@ -407,7 +413,7 @@ exports.getLeaderboard = function(req,res){
 
 			});
 
-			res.render('academy/leaderboard.ejs', {pageInfo:pageInfo, user: req.user, items: leaderBoardItems});	
+			res.render('academy/leaderboard.ejs', {pageInfo:pageInfo, user: req.user, items: leaderBoardItems, userCount: users.length});	
 		})
 		.catch( err => logger.error(err));
 };

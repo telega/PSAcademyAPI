@@ -26,7 +26,11 @@
         <h3>Learn</h3>
         <p><a href = "/courses" class = "btn btn-primary" ><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Browse All Courses</a></p>
         <h5> <span class = 'fa fa-star'></span> Your have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h5> 
-        <h6> <span class="fa fa-trophy"></span> You are currently ranked <%=suffix(user.local.academyRank)%> 
+        <h6> <span class="fa fa-trophy"></span> You are currently ranked <%if(user.local.academyRank == 0) {%> 
+          <%=suffix(userCount)%>
+          <%} else {%>
+          <%=suffix(user.local.academyRank)%>
+          <%}%> 
          out of <%=userCount%> Academy Users.</h6>
       </div>
       <div class="col-md-5 ml-auto mt-2">
