@@ -362,7 +362,9 @@ exports.getProfile = function(req,res){
 
 
 exports.updateUserRankingAndScore = function(req,res,next){
-	// todo update score
+
+	req.user.local.academyScore = req.user.updateAcademyScore();
+
 	User.find({}).sort({'local.academyScore': -1}).exec()
 		.then((users) =>{	
 			req.user.local.academyRank = req.user.updateAcademyRank(users);	

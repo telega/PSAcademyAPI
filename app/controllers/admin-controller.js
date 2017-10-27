@@ -39,7 +39,6 @@ exports.getCourses = function(req,res){
 		.catch((err) => logger.error(err));
 };
 
-
 exports.getFeedback = function(req,res){
 	let pageInfo = {
 		title: 'Feedback',
@@ -261,7 +260,7 @@ exports.getQuestion = function(req,res){
 			};
 			res.render('admin/question.ejs', { user: req.user, quiz: quiz, question: question, page:pageInfo });
 		})
-		.catch((err)=>{logger.error(err)});
+		.catch((err)=>{ logger.error(err); });
 };
 
 // Users
@@ -285,7 +284,6 @@ exports.getUsers = function(req,res){
 
 exports.getUser = function(req,res){
 	
-
 	User.findById({ _id: req.params.user_id }).exec()
 		.then((user) => {
 
@@ -354,6 +352,25 @@ exports.getUser = function(req,res){
 				});
 		})
 		.catch( (err)=>{ logger.error(err);} );
+};
+
+
+exports.refreshUsers = function(req,res){
+
+	User.find({}).sort({'local.academyScore': -1}).exec()
+		.then((users) =>{
+			users.forEach((user)=>{
+				user.local.academyScore = user.updateUserAcademyScore();
+				user.local.academyRank = user.updateAcademyRank(users);
+				user.save();
+			});
+		})
+		.then(()=>{
+			logger.info('Admin initiated user score refresh.');
+			res.status(200).json({message: 'Refreshed Users'});
+		})
+		.catch((err)=>{ logger.error(err);});
+
 };
 
 exports.getLeaderboard= function(req,res){

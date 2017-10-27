@@ -71,6 +71,11 @@ module.exports = function(app,passport){
 	// apiRouter.route('/users/verify')
 	// 	.get(authController.isAuthenticated, userController.verifyUser);
 
+
+
+	apiRouter.route('/users/refresh')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.refreshUsers);
+
 	apiRouter.route('/users/:user_id')
 		.put(authController.isLoggedIn, authController.isAdmin, userController.putUser)
 		.delete(authController.isLoggedIn, authController.isAdmin, userController.deleteUser);
