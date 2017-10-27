@@ -363,7 +363,7 @@ exports.getProfile = function(req,res){
 
 exports.updateUserRankingAndScore = function(req,res,next){
 
-	req.user.local.academyScore = req.user.updateAcademyScore();
+	req.user.local.academyScore = req.user.updateUserAcademyScore();
 
 	User.find({}).sort({'local.academyScore': -1}).exec()
 		.then((users) =>{	
@@ -396,7 +396,7 @@ exports.getLeaderboard = function(req,res){
 
 			users.forEach((user)=>{
 
-				if( (user.local.academyRank <=5 ) && ( user.local.academyRank != 0) ){
+				if( (user.local.academyRank <=10 ) && ( user.local.academyRank != 0) ){
 					leaderBoardItems.push({
 						name : user.local.profile.firstName + ' ' + user.local.profile.lastName.slice(0,1),
 						rank : user.local.academyRank,
