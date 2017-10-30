@@ -130,14 +130,12 @@ userSchema.methods.updateUserAcademyScore = function(){
 };
 
 userSchema.methods.updateAcademyRank = function(users){
-	
 	let userId = this._id;
 	let rank = 0;
 	let userRank = 0;
 	let previousScore = 0;
 	
 	if(this.local.role != 'Admin'){
-	
 		users.forEach(function(user){
 			if(user.local.role != 'Admin'){
 				if(user.local.academyScore != previousScore){
@@ -152,7 +150,6 @@ userSchema.methods.updateAcademyRank = function(users){
 		});
 
 	}
-
 	return userRank;
 };
 

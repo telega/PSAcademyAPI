@@ -97,6 +97,7 @@ exports.addCourseToUser = function(req,res){
 								user.local.academyProgress.push(courseAcademyProgress);
 				
 								user.save(function(){
+									logger.info('User ' + user.local.email + ' has added the course: ' + course.name);
 									res.status(200).json({message: 'Course Added to User'});
 								});
 							} else {
@@ -302,8 +303,12 @@ exports.putModuleProgress = function(req,res){
 		
 				})
 				.then((user)=>{
-					user.local.academyScore = user.updateUserAcademyScore();
-					return user.save();	
+					return User.find({}).exec()
+						.then((users)=>{
+							user.local.academyScore = user.updateUserAcademyScore();
+							req.user.local.academyRank = req.user.updateAcademyRank(users);	
+							return user.save();	
+						});					
 				});
 		})
 		.then(()=>{
