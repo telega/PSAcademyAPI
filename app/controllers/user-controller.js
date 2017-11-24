@@ -303,7 +303,7 @@ exports.putModuleProgress = function(req,res){
 		
 				})
 				.then((user)=>{
-					return User.find({}).exec()
+					return User.find({}).sort({'local.academyScore': -1}).exec()
 						.then((users)=>{
 							user.local.academyScore = user.updateUserAcademyScore();
 							req.user.local.academyRank = req.user.updateAcademyRank(users);	

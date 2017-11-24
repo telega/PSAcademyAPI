@@ -34,12 +34,11 @@ app.use((req, res, next)=>{
 	}
 });
 
-
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use('/public',express.static('public'));
 
 if(process.env.NODE_ENV!='production'){
-	app.use(robots({UserAgent: '*', Disallow: '/'}))
+	app.use(robots({UserAgent: '*', Disallow: '/'}));
 } else {
 	app.use(robots({UserAgent: '*', Disallow: ['/forgot','/password','/reset', '/admin']}));
 }

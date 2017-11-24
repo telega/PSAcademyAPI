@@ -20,6 +20,7 @@
         <div class="col-md-12">
             <table width='100%' class="table table-striped">
             <thead>
+                <th>User Name</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Actions</th>
@@ -27,6 +28,7 @@
             <tbody>
             <% users.forEach(function(user){ %>
                 <tr>
+                    <td><%= user.local.profile.userName %></td>
                     <td><%= user.local.email %></td>
                     <td><%= user.local.role %></td>
                     <td><a href = "/admin/users/<%= user._id %>" class = "btn btn-secondary"><span class="fa fa-pencil" aria-hidden="true"> </span></a>

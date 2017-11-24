@@ -70,14 +70,17 @@ function createTestUser(accountDetails, done){
 	testUser.local.profile.firstName = 'Test';
 	testUser.local.profile.lastName = 'User';
 	testUser.local.role = accountDetails.role;
+	testUser.generateUserName().then((un) =>{
+		testUser.local.profile.userName = un;
 
-
-	testUser.save((err)=>{
-		if(err){
-			throw err;
-		}
-		done(testUser);
+		testUser.save((err)=>{
+			if(err){
+				throw err;
+			}
+			done(testUser);
+		});
 	});
+
 
 }
 
@@ -632,6 +635,7 @@ describe('User Routes', ()=>{
 										User.findOne({_id: testUser._id.toString()}).exec()
 											.then((u)=>{
 												u.local.academyProgress = u.checkAcademyProgressItems(courses);
+
 												return u.save();
 											})
 											.then((u)=>{
@@ -668,7 +672,6 @@ describe('User Routes', ()=>{
 		it('Should check the users academy ranking, which should be greater than 0', (done) => {
 	
 			createTestUser( theUserAccount, function(testUser){
-	
 
 				createTestCourse(function(testCourse){
 					var testUnit = testCourse.units[0];
@@ -700,7 +703,7 @@ describe('User Routes', ()=>{
 											.then((u)=>{
 												User.find({}).exec()
 													.then(function(users){
-														u.local.academyRank =  u.updateAcademyRank(users);
+														u.local.academyRank = u.updateAcademyRank(users);
 														return u.save();
 													})
 													.then((u)=>{

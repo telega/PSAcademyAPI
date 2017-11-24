@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const bcrypt   = require('bcrypt-nodejs');
+const uniqueValidator = require('mongoose-unique-validator');
 mongoose.Promise = bluebird;
 
 var academyProgressSchema = mongoose.Schema({
@@ -44,7 +45,11 @@ var userSchema = mongoose.Schema({
 			},
 			lastName: { 
 				type: String, 
-				default:''
+				default:'Name'
+			},
+			userName: {
+				type: String,
+				unique: true
 			}
 		},
 		role		: {
@@ -67,6 +72,7 @@ var userSchema = mongoose.Schema({
 	resetPasswordExpires: Date
 });
 
+userSchema.plugin(uniqueValidator, { type: 'mongoose-unique-validator' });
 
 function flattenCourses(courses){
 	let flat = [];
@@ -109,6 +115,7 @@ userSchema.methods.checkAcademyProgressItems = function(courses){
 };
 
 userSchema.methods.updateUserAcademyScore = function(){
+
 	let score = 0;
 	this.local.academyProgress.forEach(function(progressItem){
 		if(progressItem.itemCompleted){
@@ -129,12 +136,36 @@ userSchema.methods.updateUserAcademyScore = function(){
 	return score;
 };
 
+// userSchema.methods.updateAcademyRank = function(users){
+// 	let userId = this._id;
+// 	let rank = 0;
+// 	let userRank = 0;
+// 	let previousScore = 0;
+	
+// 	if(this.local.role != 'Admin'){
+// 		users.forEach(function(user){
+// 			if(user.local.role != 'Admin'){
+// 				if(user.local.academyScore != previousScore){
+// 					previousScore = user.local.academyScore;
+// 					rank ++;
+// 				}
+	
+// 				if(userId.equals(user._id)){
+// 					userRank = rank;
+// 				}
+// 			}
+// 		});
+
+// 	}
+// 	return userRank;
+// };
+
 userSchema.methods.updateAcademyRank = function(users){
 	let userId = this._id;
 	let rank = 0;
 	let userRank = 0;
 	let previousScore = 0;
-	
+
 	if(this.local.role != 'Admin'){
 		users.forEach(function(user){
 			if(user.local.role != 'Admin'){
@@ -142,15 +173,43 @@ userSchema.methods.updateAcademyRank = function(users){
 					previousScore = user.local.academyScore;
 					rank ++;
 				}
-	
+
 				if(userId.equals(user._id)){
 					userRank = rank;
 				}
 			}
 		});
-
 	}
 	return userRank;
+};
+
+
+// generates username and checks it is unique
+function makeUserName(fn,ln,users){
+	let userName = '' + fn + ln + Math.floor(Math.random()*1000);
+	let isUnique = true;
+	users.forEach((user) => {
+		if(user.local.profile.userName == userName){
+			isUnique = false;
+		}
+	});	
+	if (isUnique == true){
+		return userName;
+	} else {
+		return makeUserName(fn,ln,users);
+	}
+}
+
+userSchema.methods.generateUserName = function(){
+
+	let firstInitial = this.local.profile.firstName.slice(0,1).toLowerCase();
+	let lastInitial = this.local.profile.lastName.slice(0,1).toLowerCase();
+
+	return User.find({}).exec()
+		.then((users) => {	
+			return makeUserName(firstInitial,lastInitial,users);
+		});
+
 };
 
 userSchema.methods.generateHash = function(password) {
@@ -162,5 +221,8 @@ userSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.local.password);
 };
 
+
 // create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+var User = mongoose.model('User', userSchema);
+
+module.exports = User;
