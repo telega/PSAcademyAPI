@@ -42,16 +42,9 @@ module.exports = function(passport){
 					if (user) {
 						return done(null, false, req.flash('loginMessage', 'That email is already taken.'));
 					} else {
-					// create the user
-						var newUser	= new User();
-	
-						newUser.local.email	= email;
-						newUser.local.password = newUser.generateHash(password);
-						newUser.local.profile.firstName = req.body.firstname;
-						newUser.local.profile.lastName = req.body.lastname;
-		
+
 						logger.info('New User Signup: ' + email );
-	
+
 						// HS Request
 						if(hsPortalId && hsFormID) {
 	
@@ -100,13 +93,27 @@ module.exports = function(passport){
 						}
 	
 						// end HS Request
+
+
+						// create the user
+						var newUser	= new User();
 	
-						newUser.save(function(err) {
-							if (err){
-								throw err;
-							}
+						newUser.local.email	= email;
+						newUser.local.password = newUser.generateHash(password);
+						newUser.local.profile.firstName = req.body.firstname;
+						newUser.local.profile.lastName = req.body.lastname;
+						newUser.local.profile.userName = newUser.generateUserName();
+		
+						newUser.generateUserName().then((un) =>{
+							newUser.local.profile.userName = un;
 	
-							return done(null, newUser);
+							newUser.save(function(err) {
+								if (err){
+									throw err;
+								}
+		
+								return done(null, newUser);
+							});
 						});
 					}
 				});   
