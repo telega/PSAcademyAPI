@@ -404,7 +404,7 @@ exports.getLeaderboard = function(req,res){
 
 				if( (user.local.academyRank <= 10 ) && ( user.local.academyRank != 0) ){
 					leaderBoardItems.push({
-						name : user.local.profile.firstName + ' ' + user.local.profile.lastName.slice(0,1),
+						name : user.local.profile.userName,
 						rank : user.local.academyRank,
 						score: user.local.academyScore,
 						isUser: (req.user._id.equals(user._id) )
@@ -429,12 +429,17 @@ exports.putProfile = function(req,res){
 		user.local.profile.lastName = req.body.lastName || user.local.profile.lastName;
 		user.local.email = req.body.email || user.local.email;
 		user.local.password = user.generateHash(req.body.password) || user.local.password;
+		user.local.profile.userName = req.body.userName || user.local.profile.userName;
 
 		user.save(function(err){
 			if(err){
-				logger.error(err);
+				logger.error(err.message);
+				if((err.name == 'ValidationError')){
+					res.status(400).json({message: 'User Name is not valid - should be unique'})
+				}
+			} else {
+				res.status(200).json({message: 'User Updated'});
 			}
-			res.status(200).json({message: 'User Updated'});
 		});
 	});
 };

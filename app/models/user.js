@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const bcrypt   = require('bcrypt-nodejs');
+const uniqueValidator = require('mongoose-unique-validator');
 mongoose.Promise = bluebird;
-
-
 
 var academyProgressSchema = mongoose.Schema({
 	itemId : String,
@@ -50,8 +49,7 @@ var userSchema = mongoose.Schema({
 			},
 			userName: {
 				type: String,
-				unique: true,
-				default: 'uc' + Math.floor(Math.random()*1000)
+				unique: true
 			}
 		},
 		role		: {
@@ -74,6 +72,7 @@ var userSchema = mongoose.Schema({
 	resetPasswordExpires: Date
 });
 
+userSchema.plugin(uniqueValidator, { type: 'mongoose-unique-validator' });
 
 function flattenCourses(courses){
 	let flat = [];
@@ -207,7 +206,7 @@ userSchema.methods.generateUserName = function(){
 	let lastInitial = this.local.profile.lastName.slice(0,1).toLowerCase();
 
 	return User.find({}).exec()
-		.then( (users) => {	
+		.then((users) => {	
 			return makeUserName(firstInitial,lastInitial,users);
 		});
 
