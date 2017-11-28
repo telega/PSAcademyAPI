@@ -2,7 +2,6 @@ const User = require('../app/models/user');
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 mongoose.promise = bluebird;
-const async = require('async');
 const colors = require('colors');
 const program = require('commander');
 
@@ -17,11 +16,16 @@ const generateUserNames = (dburl)=>{
 	User.find({}).cursor()
 		.eachAsync((user)=>{
 
+			if(user.local.profile.userName != null){
+				console.log(colors.green(user.local.profile.firstName + ' ' + user.local.profile.lastName + ' : ' + user.local.profile.userName))
+				return user.save();
+			} else {
 			return user.generateUserName().then((un)=>{
 					console.log(colors.cyan(user.local.profile.firstName + ' ' + user.local.profile.lastName + ' => ' + un));
 					user.local.profile.userName=un;
 					return user.save();
 				});
+		}
 
 		})
 		.then(()=>{

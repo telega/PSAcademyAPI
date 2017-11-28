@@ -1,6 +1,6 @@
 {
   "name": "psacademyapi",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "API server for PS Academy",
   "main": "server.js",
   "repository": {
@@ -13,7 +13,6 @@
   "author": "telega",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
