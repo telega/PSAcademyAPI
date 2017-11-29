@@ -183,7 +183,6 @@ userSchema.methods.updateAcademyRank = function(users){
 	return userRank;
 };
 
-
 // generates username and checks it is unique
 function makeUserName(fn,ln,users){
 	let userName = '' + fn + ln + Math.floor(Math.random()*1000);

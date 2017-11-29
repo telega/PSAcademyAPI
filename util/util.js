@@ -17,19 +17,19 @@ const generateUserNames = (dburl)=>{
 		.eachAsync((user)=>{
 
 			if(user.local.profile.userName != null){
-				console.log(colors.green(user.local.profile.firstName + ' ' + user.local.profile.lastName + ' : ' + user.local.profile.userName))
+				console.log(colors.green(user.local.profile.firstName + ' ' + user.local.profile.lastName + ' : ' + user.local.profile.userName));
 				return user.save();
 			} else {
-			return user.generateUserName().then((un)=>{
+				return user.generateUserName().then((un)=>{
 					console.log(colors.cyan(user.local.profile.firstName + ' ' + user.local.profile.lastName + ' => ' + un));
 					user.local.profile.userName=un;
 					return user.save();
 				});
-		}
+			}
 
 		})
 		.then(()=>{
-			console.log('done')
+			console.log('done');
 			mongoose.connection.close();
 		})
 		.catch((err)=>{

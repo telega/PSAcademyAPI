@@ -372,7 +372,8 @@ exports.updateUserRankingAndScore = function(req,res,next){
 	req.user.local.academyScore = req.user.updateUserAcademyScore();
 
 	User.find({}).sort({'local.academyScore': -1}).exec()
-		.then((users) =>{	
+		.then((users) =>{
+			req.user.local.academyScore = req.user.updateUserAcademyScore();	
 			req.user.local.academyRank = req.user.updateAcademyRank(users);	
 			return req.user.save();
 		})
@@ -435,9 +436,11 @@ exports.putProfile = function(req,res){
 			if(err){
 				logger.error(err.message);
 				if((err.name == 'ValidationError')){
-					res.status(400).json({message: 'User Name is not valid - should be unique'})
+					logger.error('User Name is not valid - should be unique');
+					res.status(400).json({message: 'User Name is not valid - should be unique'});
 				}
 			} else {
+				logger.info('User ' + user.local.email + ' updated their profile.');
 				res.status(200).json({message: 'User Updated'});
 			}
 		});
