@@ -148,25 +148,27 @@ exports.putFeedback = function(req,res){
 };
 
 exports.getCourses = function(req,res){
-	Course.find({}, function(err, courses){
-		if(err){
+	Course.find({}).sort({order:1}).exec()
+		.then((courses)=>{
+		
+			let items = getUserCourseItems(courses, req.user.local.academyProgress);
+	
+			let pageInfo = {
+				title: 'Courses',
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'Courses', url: '/courses'}
+				],
+				activeNavItem: 'Courses',
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/CoursePageHeaderGettyImages-658984379.jpg' 
+			};
+	
+			res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo});
+		})
+		.catch((err)=>{
 			logger.error(err);
-		}
-
-		let items = getUserCourseItems(courses, req.user.local.academyProgress);
-
-		let pageInfo = {
-			title: 'Courses',
-			breadcrumbs: [
-				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
-				{title:'Courses', url: '/courses'}
-			],
-			activeNavItem: 'Courses',
-			jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/CoursePageHeaderGettyImages-658984379.jpg' 
-		};
-
-		res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo});
-	});
+			res.status(500).json({message:err});
+		});
 };
 
 
