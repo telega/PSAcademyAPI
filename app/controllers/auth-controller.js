@@ -6,12 +6,12 @@ const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
 
-
 exports.isLoggedIn = function(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
-	res.redirect('/');
+	req.session.returnTo = req.url;
+	res.redirect('/login');
 };
 
 exports.isAdmin= function(req,res,next) {  

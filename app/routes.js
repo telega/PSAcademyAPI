@@ -155,11 +155,10 @@ module.exports = function(app,passport){
 	router.route('/login')
 		.get(academyController.getLogin)
 		.post(passport.authenticate('local-login', {
-			successRedirect:'/',
-			failureRedirect:'/',
+			successReturnToOrRedirect:'/',
+			failureRedirect:'/login',
 			failureFlash: true
 		}));
-
 
 	router.route('/forgot')
 		.get(userController.getForgot)
