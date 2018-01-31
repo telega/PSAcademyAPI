@@ -24,7 +24,7 @@
 
     <div class = "row">
         <div class = "col-md-12">
-          <h5> <span class = 'fa fa-star'></span> Your have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h5> 
+          <h5> <span class = 'fa fa-star'></span> You have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h5> 
           <h6> <span class="fa fa-trophy"></span> You are currently ranked <%if(user.local.academyRank == 0) {%> 
           <%=suffix(userCount)%>
           <%} else {%>

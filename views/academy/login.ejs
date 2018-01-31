@@ -36,7 +36,7 @@
     <% } %>
 
     <!-- LOGIN FORM -->
-    <form action="/login" method="post">
+    <form action="/login" method="post" id="loginForm">
         <div class="form-group">
             <label>Email</label>
             <input type="text" class="form-control" name="email">
@@ -57,5 +57,17 @@
 </div>
 </div>
 <%- include partials/footer.ejs%>
+<script>
+    var hashIndex = document.location.href.indexOf("#");
+    if(hashIndex != -1){
+        var hashCode = document.location.href.substr( hashIndex, document.location.href.length) 
+        var form = document.getElementById("loginForm");
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "hashCode";
+        input.value = hashCode;
+        form.appendChild( input );
+    }
+</script>
 </body>
 </html>
