@@ -3,6 +3,7 @@ var Course = require('../models/course');
 var Quiz = require('../models/quiz');
 var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
+var GlossaryTerm = require('../models/glossary');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
@@ -147,8 +148,8 @@ exports.getUnit = function(req,res){
 				breadcrumbs: [
 					{title:'Admin', url: '/admin'},
 					{title:'Courses', url: '/admin/courses'},
-					{title:course.name, url: '/admin/courses' + course._id },
-					{title:unit.name, url: '/admin/courses' + course._id + '/units/' + unit._id },
+					{title:course.name, url: '/admin/courses/' + course._id },
+					{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
 				],
 				activeNavItem: 'Courses'
 			};
@@ -167,9 +168,9 @@ exports.getModule = function(req,res){
 				breadcrumbs: [
 					{title:'Admin', url: '/admin'},
 					{title:'Courses', url: '/admin/courses'},
-					{title:course.name, url: '/admin/courses' + course._id },
-					{title:unit.name, url: '/admin/courses' + course._id + '/units/' + unit._id },
-					{title:module.name, url: '/admin/courses' + course._id + '/units/' + unit._id + '/modules/' + module._id },
+					{title:course.name, url: '/admin/courses/' + course._id },
+					{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
+					{title:module.name, url: '/admin/courses/' + course._id + '/units/' + unit._id + '/modules/' + module._id },
 				],
 				activeNavItem: 'Courses'
 			};
@@ -200,7 +201,7 @@ exports.putFeedback = function(req,res){
 exports.deleteFeedback = function(req,res){
 	Feedback.remove({_id: req.params.feedback_id}).exec()
 		.then(()=>{
-			res.status(200).json({message:'feedback deleted'})
+			res.status(200).json({message:'feedback deleted'});
 		})
 		.catch((err)=>{
 			logger.error(err);
@@ -262,6 +263,25 @@ exports.getQuestion = function(req,res){
 		})
 		.catch((err)=>{ logger.error(err); });
 };
+
+// Glossary Terms
+
+exports.getGlossary = function (req,res){
+	GlossaryTerm.find({}).exec()
+		.then((glossaryTerms)=>{
+			let pageInfo = {
+				title: 'Glossary',
+				breadcrumbs: [
+					{title:'Admin', url: '/admin'},
+					{title:'Glossary', url: '/admin/glossary'}			
+				],
+				activeNavItem: 'Glossary',
+			};
+			res.status(200).render('admin/glossary.ejs', {user: req.user, glossaryTerms: glossaryTerms, page: pageInfo});
+		})
+		.catch((err)=>{ logger.error(err); });
+};
+
 
 // Users
 exports.getUsers = function(req,res){

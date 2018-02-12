@@ -135,6 +135,10 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/quizzes/:quiz_id/questions/:question_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getQuestion);
+	
+	// Glossary Routes (Admin)
+	adminRouter.route('/glossary')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossary);
 
 	// Feedback Routes (Admin)
 	adminRouter.route('/feedback')

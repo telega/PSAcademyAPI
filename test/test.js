@@ -4,8 +4,9 @@ var Course = require('../app/models/course');
 var User = require('../app/models/user');
 var Feedback = require('../app/models/feedback');
 var Academy = require('../app/models/academy');
-const mongoose = require('mongoose');
+var GlossaryTerm = require('../app/models/glossary');
 
+const mongoose = require('mongoose');
 
 const request = require('supertest');
 const chaiHttp = require('chai-http');
@@ -57,8 +58,6 @@ function createLoginCookie(s, loginDetails, done) {
 			done(loginCookie);
 		});
 }
-
-
 
 function createTestUser(accountDetails, done){
 
@@ -485,6 +484,30 @@ describe('API Backend Routes', ()=>{
 		});
 
 	});
+
+	describe('Glossary Routes (Admin)', (done)=>{
+		it('Should render the glossary admin page on /admin/glossary GET', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/glossary')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+		})
+
+	})
 
 
 	describe('Feedback Routes (Admin)', (done)=>{

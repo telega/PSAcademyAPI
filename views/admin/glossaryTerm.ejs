@@ -1,0 +1,256 @@
+<%- include partials/header.ejs %>
+
+
+<div class="container">
+
+
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="fa fa-book" aria-hidden="true"> </span> Term: <%=term.termHeading%></h1>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class = "col-md-12">
+            <h2>Edit Glossary Term</h2>
+        </div>
+    </div>
+    
+    <div class = "row">
+        <div class = "col-md-12">
+        <table width='100%' class="table table-striped">
+            <thead>
+              <th></th>
+              <th></th>
+              <th>Edit</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Heading</strong></td>
+                    <td><%= term.heading %></td>
+                    <td><button data-toggle="modal" data-target="#updateHeadingModal" class="btn btn-secondary"><span class="fa fa-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>Definition</strong></td>
+                    <td><%= course.definition %></td>
+                    <td><button data-toggle="modal" data-target="#updateDefinitionModal" class="btn btn-secondary"><span class="fa fa-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>More Link</strong></td>
+                    <td><%= term.moreLink %></td>
+                    <td><button data-toggle="modal" data-target="#updateMoreLinkModal" class="btn btn-secondary"><span class="fa fa-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+                <tr>
+                    <td><strong>Anchor Link</strong></td>
+                    <td><%= term.anchorLink %></td>
+                    <td><button data-toggle="modal" data-target="#updateAnchorLinkModal" class="btn btn-secondary"><span class="fa fa-pencil" aria-hidden="true"></span></button></td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<!-- Modals -->
+
+<div class="modal fade" id="updateHeadingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Term Heading</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editHeading">
+              <div class="form-group">
+                <label forid="newTitle">New Heading</label>
+                <input required type="text" class="form-control" id="newHeading" value="<%=term.heading%>" placeholder="<%=term.heading%>">
+              </div>
+              <button type="submit" data-term-id = "<%=term._id%>"class="btn btn-warning" id="updateHeading">Update Heading</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateDefinitionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Definition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editDescription">
+              <div class="form-group">
+                <label forid="newTitle">New Definition</label>
+                <input required type="textfield" class="form-control" id="newDefinition" value="<%=term.definition%> placeholder="<%=term.definition%>">
+              </div>
+              <button type="submit" data-term-id = "<%=term._id%>" class="btn btn-warning" id="updateDefinition">Update Definition</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+
+<div class="modal fade" id="upadteMoreLinkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit More Link</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editOrder">
+              <div class="form-group">
+                <label forid="newOrder">New More Link</label>
+                <input required type="text" class="form-control" id="newMoreLink" placeholder="<%=term.moreLink%>" >
+              </div>
+              <button type="submit" data-term-id = "<%=term._id%>" class="btn btn-warning" id="updateMoreLink">Update More Link</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="updateAnchorLinkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Anchor Link</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "editOrder">
+              <div class="form-group">
+                <label forid="newOrder">New Anchor Link</label>
+                <input required type="text" class="form-control" id="newAnchorLink" placeholder="<%=term.anchorLink%>" >
+              </div>
+              <button type="submit" data-term-id= "<%=term._id%>" class="btn btn-warning" id="updateAnchorLink">Update Anchor Link</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- scripts -->
+<%- include partials/footer.ejs%>
+
+<script>
+
+$(document).ready(function(){
+    
+    $("#updateHeading").on('click', function(e){
+      e.preventDefault();
+      var url = "/api/courses/" + $(this).data('termId');
+      data = {
+        name: $('#newHeading').val()
+      }
+
+      console.log(data)
+
+      // $.ajax({
+      //           type: "PUT",
+      //           url: url,
+      //           dataType: 'json',
+      //           async: true,
+      //           data: data,
+      //           success: function (){
+      //             location.reload(true);                    
+      //           }
+      // });
+    })
+
+    $("#updateDefinition").on('click', function(e){
+      e.preventDefault();
+      var url = "/api/courses/" + $(this).data('termId');
+      data = {
+        description: $('#newDefinition').val()
+      }
+
+      console.log(data)
+      // $.ajax({
+      //           type: "PUT",
+      //           url: url,
+      //           dataType: 'json',
+      //           async: true,
+      //           data: data,
+      //           success: function (){
+      //                   location.reload(true);                    
+      //               }
+      // });
+    })
+
+    $("#updateMoreLink").on('click', function(e){
+      e.preventDefault();
+      var url = "/api/courses/" + $(this).data('termId');
+      data = {
+        description: $('#newMoreLink').val()
+      }
+
+      console.log(data)
+      // $.ajax({
+      //           type: "PUT",
+      //           url: url,
+      //           dataType: 'json',
+      //           async: true,
+      //           data: data,
+      //           success: function (){
+      //                   location.reload(true);                    
+      //               }
+      // });
+    })
+
+    $("#updateAnchorLink").on('click', function(e){
+      e.preventDefault();
+      var url = "/api/courses/" + $(this).data('termId');
+      data = {
+        description: $('#newAnchorLink').val()
+      }
+
+      console.log(data)
+      // $.ajax({
+      //           type: "PUT",
+      //           url: url,
+      //           dataType: 'json',
+      //           async: true,
+      //           data: data,
+      //           success: function (){
+      //                   location.reload(true);                    
+      //               }
+      // });
+    })
+    
+})
+</script>
+</body>
+</html>
