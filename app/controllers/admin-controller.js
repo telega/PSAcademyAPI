@@ -275,12 +275,30 @@ exports.getGlossary = function (req,res){
 					{title:'Admin', url: '/admin'},
 					{title:'Glossary', url: '/admin/glossary'}			
 				],
-				activeNavItem: 'Glossary',
+				activeNavItem: 'Glossary'
 			};
 			res.status(200).render('admin/glossary.ejs', {user: req.user, glossaryTerms: glossaryTerms, page: pageInfo});
 		})
 		.catch((err)=>{ logger.error(err); });
 };
+
+exports.getGlossaryTerm = function (req,res){
+	GlossaryTerm.findOne({ _id: req.params.term_id}).exec()
+		.then((term)=>{
+			let pageInfo = {
+				title: 'Glossary',
+				breadcrumbs: [
+					{title:'Admin', url: '/admin'},
+					{title:'Glossary', url: '/admin/glossary'},
+					{title:term.heading, url: '/admin/glossary/' + term._id}			
+				],
+				activeNavItem: 'Glossary'
+			};
+			res.status(200).render('admin/glossaryTerm.ejs', {user: req.user, term: term, page: pageInfo});
+		})
+		.catch((err)=>{ logger.error(err); });
+};
+
 
 
 // Users

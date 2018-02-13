@@ -27,8 +27,8 @@
                 <tr>
                     <td><%= term.heading%></td>
                     <td>
-                        <a  class = "btn btn-default deleteTerm">Edit Term</a>     
-                        <button  data-term-id = "<%= term._id %>" data-term-heading="<%=term.heading%>" data-toggle="modal" data-target="#termDeleteModal" class = "btn btn-danger deleteTerm">Delete Term</button>            
+                        <a  class = "btn btn-secondary" href="/admin/glossary/<%=term._id%>" >Edit</a>     
+                        <button  data-term-id = "<%= term._id %>" data-term-heading="<%=term.heading%>" data-toggle="modal" data-target="#termDeleteModal" class = "btn btn-danger deleteTerm">Delete</button>            
                     </td>
                 </tr>
             <% }); %>
@@ -45,7 +45,7 @@
 
 <!-- Modals -->
 
-<div class="modal fade" id="courseAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="termAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -57,12 +57,12 @@
       <div class="modal-body">
         <form id = "addGlossaryTerm">
             <div class="form-group">
-              <label for="courseName">Term Heading*</label>
-              <input required type="text" class="form-control" id="courseName" placeholder="Name">
+              <label for="termHeading">Term Heading*</label>
+              <input required type="text" class="form-control" id="termHeading" placeholder="Heading">
             </div>
             <div class="form-group">
               <label for="termDefinition">Term Definition</label>
-              <input type="textarea" class="form-control" id="termDefinition" placeholder="Lorem Ipsum Dolor">
+              <input type="textarea" class="form-control summernote" id="termDefinition" placeholder="Lorem Ipsum Dolor">
             </div>
             <div class="form-group">
               <label for="moreLink">More Link</label>
@@ -109,19 +109,19 @@ $(document).ready(function(){
         e.preventDefault();
         var data = {}
         data.heading = $("#termHeading").val();
-        data.definition = $("#termDefinition").val();
+        data.definition = $("#termDefinition").summernote('code');
         data.moreLink = $("#moreLink").val();
-        console.log(data);
-        //$.ajax({
-        //    type: "POST",
-        //    url: "/api/courses",
-        //    dataType: 'json',
-        //    async: true,
-        //    data: data,
-        //    success: function (){
-        //            location.reload(true);                    
-        //        }
-        //    });
+
+        $.ajax({
+           type: "POST",
+           url: "/admin/glossary",
+           dataType: 'json',
+           async: true,
+           data: data,
+           success: function (){
+                   location.reload(true);                    
+               }
+           });
     })
 
     $('#termDeleteModal').on('show.bs.modal', function(e){
@@ -129,17 +129,16 @@ $(document).ready(function(){
         var modal = $(this);
         modal.find('#termToDeleteHEading').text(button.data('termHeading'));
         modal.find('#termDeleteConfirm').on('click', function(e){
-            console.log(button.data('termId'));
-            // var url = "/api/users/" + button.data('userId');
-            // $.ajax({
-            //       type: "DELETE",
-            //       url: url,
-            //       dataType: 'json',
-            //       async: true,
-            //       success: function (){
-            //             location.reload(true);
-            //         }
-            // })
+            var url = "/admin/glossary/" + button.data('termId');
+            $.ajax({
+                  type: "DELETE",
+                  url: url,
+                  dataType: 'json',
+                  async: true,
+                  success: function (){
+                        location.reload(true);
+                    }
+            })
         })
     });
 
@@ -148,6 +147,20 @@ $(document).ready(function(){
         modal.find('#termDeleteConfirm').off('click');
     });
     
+    $('.summernote').summernote({
+      height:300,
+      minHeight:300,
+      dialogsInBody:true,
+      maxHeight:300,
+      shortcuts: false,
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['misc', ['codeview']],
+        ['insert',['link']]
+      ]
+    });
+
 })
 </script>
 </body>

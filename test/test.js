@@ -16,6 +16,7 @@ const chaiHttp = require('chai-http');
 Course.collection.drop();
 User.collection.drop();
 Feedback.collection.drop();
+GlossaryTerm.collection.drop();
 
 let theAdminAccount = {
 	'email': 'myadminuser@mytestuser.com',
@@ -186,7 +187,6 @@ function deleteTestCourse(courseId){
 	});
 }
 
-
 function deleteTestUser(userId){
 
 	User.remove({_id: userId}, (err)=>{
@@ -198,12 +198,39 @@ function deleteTestUser(userId){
 
 }
 
+function createTestGlossaryTerm(done){
+
+	let testGlossaryTerm = new GlossaryTerm();
+	testGlossaryTerm.heading = 'Test Term Heading';
+	testGlossaryTerm.definition = 'Test Term Definition';
+	testGlossaryTerm.moreLink = 'http://www.google.com';
+	testGlossaryTerm.anchorLink = testGlossaryTerm.generateDefaultAnchor();
+
+	testGlossaryTerm.save(function(err){
+		if(err){
+			throw err;
+		}
+		done(testGlossaryTerm);
+	});
+}
+
+function deleteTestGlossaryTerm(termId){
+	GlossaryTerm.remove({_id: termId}, (err)=>{
+		if(err){
+			console.log(err)
+		}
+	})
+
+}
+
 // Tests for API routes
 
 /// Academy related routes
 
 describe('API Backend Routes', ()=>{
 	
+// Courses	
+
 	describe('Courses', () =>{
 		it('Should list the courses on /api/courses GET', (done) => {
 	
@@ -260,7 +287,6 @@ describe('API Backend Routes', ()=>{
 
 		});
 
-
 		it('Should post a new course on /api/courses POST', (done)=>{
 
 			createTestUser(theAdminAccount,function(testUser){
@@ -315,6 +341,8 @@ describe('API Backend Routes', ()=>{
 				});
 			});
 		});
+
+// Users
 
 		it('Should render the All Users admin page on /admin/users GET', (done) => {
 		
@@ -398,7 +426,9 @@ describe('API Backend Routes', ()=>{
 		});
 
 	});
-	
+
+// Academy Options	
+
 	describe('Academy Options Routes(Admin)', (done)=>{
 
 		it('Should render the Academy options  page on /admin/academy GET', (done) => {
@@ -446,6 +476,8 @@ describe('API Backend Routes', ()=>{
 
 		});
 
+// Feedback
+
 		it('Should update the options /feedback/courses PUT', (done) => {
 
 			createTestUser(theAdminAccount, function(testUser){
@@ -485,6 +517,9 @@ describe('API Backend Routes', ()=>{
 
 	});
 
+
+// Glossary	
+
 	describe('Glossary Routes (Admin)', (done)=>{
 		it('Should render the glossary admin page on /admin/glossary GET', (done)=>{
 			
@@ -507,8 +542,134 @@ describe('API Backend Routes', ()=>{
 			});
 		})
 
+		it('Should respond 422 if heading is missing on /admin/glossary POST', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.post('/admin/glossary')
+						.set('cookie', cookie)
+						.send({})
+						.end((err,res)=>{
+							res.should.have.status(422);
+							res.should.be.json;
+
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+			});
+		})
+
+		it('Should greate a new glossary entry on /admin/glossary POST', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.post('/admin/glossary')
+						.set('cookie', cookie)
+						.send({
+							heading: 'Test Heading'
+						})
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+							deleteTestUser(testUser._id);
+							deleteTestGlossaryTerm(res.body.data._id)
+
+							done();
+						});
+				});	
+			});
+		})
+
+		it('Should render a single glossary term admin page on /admin/glossary/:term_id GET', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					
+					createTestGlossaryTerm(function(testGlossaryTerm){
+						request(server)
+							.get('/admin/glossary/' + testGlossaryTerm._id)
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.html;
+
+								deleteTestUser(testUser._id);
+								deleteTestGlossaryTerm(testGlossaryTerm._id);
+
+								done();
+							});
+					});
+				});	
+			});
+		})
+
+		it('Should delete a single glossary term admin page on /admin/glossary/:term_id DELETE', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					
+					createTestGlossaryTerm(function(testGlossaryTerm){
+						request(server)
+							.delete('/admin/glossary/' + testGlossaryTerm._id)
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								deleteTestUser(testUser._id);
+								deleteTestGlossaryTerm(testGlossaryTerm._id);
+								
+								done();
+							});
+					});
+				});	
+			});
+		})
+
+		it('Should update a single glossary term admin page on /admin/glossary/:term_id PUT', (done)=>{
+			
+			createTestUser(theAdminAccount, function(testUser){
+	
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					
+					createTestGlossaryTerm(function(testGlossaryTerm){
+						request(server)
+							.put('/admin/glossary/' + testGlossaryTerm._id)
+							.set('cookie', cookie)
+							.send({
+								headline: 'test',
+								description:'test',
+								moreLink:'test',
+								anchorLink:'test'
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								deleteTestUser(testUser._id);
+								deleteTestGlossaryTerm(testGlossaryTerm._id);
+								
+								done();
+							});
+					});
+				});	
+			});
+		})
+		
+
 	})
 
+// Feedback
 
 	describe('Feedback Routes (Admin)', (done)=>{
 

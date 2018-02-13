@@ -74,7 +74,7 @@ exports.addCourseToUser = function(req,res){
 		.then( function(user){
 		
 			if(!user){
-				res.status(422).json({message: 'No User matches that ID'})
+				res.status(422).json({message: 'No User matches that ID'});
 			} else {
 				// Next, find the Course level information
 	

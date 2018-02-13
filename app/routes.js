@@ -7,6 +7,7 @@ const userController = require('./controllers/user-controller');
 const authController = require('./controllers/auth-controller');
 const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
+const glossaryController = require('./controllers/glossary-controller');
 const academyController = require('./controllers/academy-controller');
 
 module.exports = function(app,passport){
@@ -138,8 +139,16 @@ module.exports = function(app,passport){
 	
 	// Glossary Routes (Admin)
 	adminRouter.route('/glossary')
-		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossary);
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossary)
+		.post(authController.isLoggedIn, authController.isAdmin, glossaryController.validatePostGlossaryTerm, glossaryController.postGlossaryTerm);
 
+
+	adminRouter.route('/glossary/:term_id')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossaryTerm)
+		.delete(authController.isLoggedIn, authController.isAdmin, glossaryController.deleteGlossaryTerm)
+		.put(authController.isLoggedIn, authController.isAdmin,  glossaryController.putGlossaryTerm);
+	
+		
 	// Feedback Routes (Admin)
 	adminRouter.route('/feedback')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getFeedback);

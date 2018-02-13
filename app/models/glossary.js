@@ -19,7 +19,7 @@ var glossarySchema = new Schema({
 	},
 	anchorLink:{
 		type: String,
-		required: true,
+		required: true
 	}
 });
 
