@@ -764,6 +764,124 @@ describe('API Backend Routes', ()=>{
 // User Routes
 describe('User Routes', ()=>{
 
+	// General rendering of pages
+
+	describe('General Page Rendering', ()=>{
+
+		it('Courses /courses GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/courses')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('Profile /profile GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/profile')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('Leaderboard /leaderboard GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/leaderboard')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+
+		it('Feedback /feedback GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/feedback')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+	
+		it('Glossary /glossary GET', (done)=>{
+
+			createTestUser( theUserAccount, function(testUser){
+				createLoginCookie(server, theUserAccount, function(cookie) {
+	
+					request(server)
+						.get('/glossary')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+						
+							//clean up
+							deleteTestUser(testUser._id);
+
+							done();
+						});
+				});	
+
+			});
+		});
+	
+	
+	})	
+
+	// Use Progress
 	describe('User Progress Routes', ()=>{
 	
 		it('Should add the course to the user on /api/progress/:user_id/courses/:course_id PUT', (done) => {
@@ -1228,28 +1346,7 @@ describe('User Routes', ()=>{
 
 	
 	describe('Feedback Route', ()=>{
-		it('should get feedback on /feedback GET', (done)=>{
-
-			createTestUser( theUserAccount, function(testUser){
-				createLoginCookie(server, theUserAccount, function(cookie) {
-	
-					request(server)
-						.get('/feedback')
-						.set('cookie', cookie)
-						.end((err,res)=>{
-							res.should.have.status(200);
-							res.should.be.html;
-						
-							//clean up
-							deleteTestUser(testUser._id);
-
-							done();
-						});
-				});	
-
-			});
-		});
-
+		
 		it('should reject empty feedback on /feedback POST', (done)=>{
 
 			createTestUser( theUserAccount, function(testUser){

@@ -3,6 +3,7 @@ var Quiz = require('../models/quiz');
 var User = require('../models/user');
 var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
+var GlossaryTerm = require('../models/glossary');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
@@ -173,17 +174,23 @@ exports.getCourses = function(req,res){
 
 
 exports.getGlossary = function(req,res){
-	let pageInfo = {
-		title: 'IP Glossary',
-		breadcrumbs: [
-			{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
-			{title:'IP Glossary', url: '/glossary'}
-		],
-		activeNavItem: 'Glossary',
-		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/IPGlossaryHeader.jpg' 
-	};
-	res.render('academy/glossary.ejs', { pageInfo: pageInfo});
-
+	GlossaryTerm.find({}).sort({heading:1}).exec()
+		.then((glossaryTerms)=> {	
+			let pageInfo = {
+				title: 'IP Glossary',
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'IP Glossary', url: '/glossary'}
+				],
+				activeNavItem: 'Glossary',
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/IPGlossaryHeader.jpg' 
+			};
+			res.render('academy/glossary.ejs', { pageInfo: pageInfo, glossaryTerms: glossaryTerms});
+		})
+		.catch((err)=>{
+			logger.error(err);
+			res.status(500).json({message:err});
+		});
 };
 
 exports.getHomepage = function(req,res){

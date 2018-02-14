@@ -24,9 +24,9 @@ var glossarySchema = new Schema({
 });
 
 glossarySchema.methods.generateDefaultAnchor = function(){
-	// default anchors use #g to preserve legacy inbound links
+	// default anchors use g to preserve legacy inbound links
 	let h = this.heading;
-	return '#g' + h.toLowerCase().replace(/ /g, '_'); 
+	return 'g' + h.toLowerCase().replace(/ /g, '_'); 
 };
 
 var GlossaryTerm = mongoose.model('GlossaryTerm', glossarySchema);
