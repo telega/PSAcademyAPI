@@ -779,14 +779,33 @@ describe('User Routes', ()=>{
 						.end((err,res)=>{
 							res.should.have.status(200);
 							res.should.be.html;
-						
 							//clean up
 							deleteTestUser(testUser._id);
-
 							done();
+													
 						});
 				});	
 
+			});
+		});
+
+		it('Course Page /courses/:course_id GET', (done) => {
+			createTestCourse(function(course){
+				createTestUser( theUserAccount, function(testUser){
+					createLoginCookie(server, theUserAccount, function(cookie) {
+						request(server)
+							.get('/courses/' + course._id)
+							.set('cookie',cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.html;
+							
+								deleteTestCourse(course._id);
+								deleteTestUser(testUser._id);
+								done();
+							});
+					});
+				});	
 			});
 		});
 
