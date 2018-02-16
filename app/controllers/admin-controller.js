@@ -267,7 +267,7 @@ exports.getQuestion = function(req,res){
 // Glossary Terms
 
 exports.getGlossary = function (req,res){
-	GlossaryTerm.find({}).exec()
+	GlossaryTerm.find({}).collation({locale:'en', caseLevel: true}).sort({heading:1}).exec()
 		.then((glossaryTerms)=>{
 			let pageInfo = {
 				title: 'Glossary',

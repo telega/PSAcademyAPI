@@ -174,7 +174,7 @@ exports.getCourses = function(req,res){
 
 
 exports.getGlossary = function(req,res){
-	GlossaryTerm.find({}).sort({heading:1}).exec()
+	GlossaryTerm.find({}).collation({locale:'en', caseLevel: true}).sort({heading:1}).exec()
 		.then((glossaryTerms)=> {	
 			let pageInfo = {
 				title: 'IP Glossary',
