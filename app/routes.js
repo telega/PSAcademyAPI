@@ -177,10 +177,6 @@ module.exports = function(app,passport){
 		.get(userController.getForgot)
 		.post(userController.postForgot);
 
-	router.route('/password')
-		.get(userController.getPasswordSetup)
-		.post(userController.postPasswordSetup);
-
 	router.route('/reset/:token')
 		.get(userController.getReset)
 		.post(userController.postReset);

@@ -2,10 +2,18 @@ var User = require('../models/user');
 var Course = require('../models/course');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
-var sgTransport = require('nodemailer-sendgrid-transport');
 const { check, validationResult } = require('express-validator/check');
-const sgKey = process.env.SENDGRID_API_KEY;
 const logger = require('../logger');
+const emailSettings = {
+	host: process.env.EMAIL_HOST,
+	port: process.env.EMAIL_PORT,
+	auth: {
+		user: process.env.EMAIL_USERNAME, 
+		pass: process.env.EMAIL_PASSWORD
+	},
+	secure: false,
+};
+
 
 exports.validateGetUnitProgress = [
 	check('user_id').exists().isAlphanumeric().withMessage('Must exist and be Alphanumeric'),
@@ -126,7 +134,7 @@ function makeCourseProgress(c,p){
 		let unit = p.find( progressItem => progressItem.itemId == u._id.toString());
 		if(unit){
 			if(unit.itemCompleted == true){
-				u.modules.forEach(function(m){
+				u.modules.forEach(function(){
 					courseSize++;
 					courseModulesCompleted++;
 				});
@@ -142,7 +150,7 @@ function makeCourseProgress(c,p){
 				});
 			}
 		} else {
-			u.modules.forEach(function(m){
+			u.modules.forEach(function(){
 				courseSize++;
 			});
 		}
@@ -367,15 +375,8 @@ exports.postForgot = function(req,res){
 				if(err){
 					logger.error(err);
 				}
-			
-				var sgOptions = {
-					auth: {
-						//api_user: sgUser,
-						api_key: sgKey
-					}
-				};
-				
-				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+							
+				var nodeMailerClient = nodemailer.createTransport(emailSettings);
 		
 				var email = {
 					to: user.local.email,
@@ -394,7 +395,7 @@ exports.postForgot = function(req,res){
 				};
 	
 	
-				sgClient.sendMail(email,function(err, info){
+				nodeMailerClient.sendMail(email,function(err){
 					if(err){
 						logger.error(err);
 					} else {
@@ -404,79 +405,6 @@ exports.postForgot = function(req,res){
 	
 				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Spam folder.');
 				res.redirect('/forgot');
-	
-			});
-		}
-	});
-
-};
-
-// Password Setup is intended as temporary fix for converting existing academy users to new system 
-// please remove these functions & routes by 2018
-
-exports.getPasswordSetup = function(req,res){
-	res.status(200).render('password.ejs', { message: req.flash('loginMessage') });
-};
-
-exports.postPasswordSetup = function(req,res){
-	User.findOne({ 'local.email' :  req.body.email }, function(err,user){
-		if(err){
-			logger.error(err);
-			req.flash('loginMessage','An error occured.');
-			res.redirect('/password');
-
-		}
-		if(!user){
-			req.flash('loginMessage','No Academy user found with that email address.');
-			res.redirect('/password');
-		} else {
-
-			var token = crypto.randomBytes(20).toString('hex');
-	
-			user.resetPasswordToken = token; 
-			user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-	
-			user.save(function(err){
-				if(err){
-					logger.error(err);
-				}
-			
-				var sgOptions = {
-					auth: {
-						//api_user: sgUser,
-						api_key: sgKey
-					}
-				};
-
-				var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
-		
-				var email = {
-					to: user.local.email,
-					from: 'Academy by PatSnap <academy@patsnap.com>',
-					subject: 'Academy by PatSnap - Setup Password',
-					text: 'You are receiving this message to set up the password for your Academy account.\n\n' +
-						'To set up your password, please click on the following link (or paste it into your browser):\n\n' +
-						'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-						'If you did not make this request ignore this email.\n'+
-						'\n Thanks! \n The Academy Team\n',
-					html: '<p>You are receiving this message to set up the password for your Academy account.</p><p>'+
-						'To set up your password, please click on the following link (or paste it into your browser):<br>' +
-						'<a href="http://' + req.headers.host + '/reset/' + token + '">http://' + req.headers.host + '/reset/' + token + ' </a></br>' +
-						'If you did not make this request ignore this email.</p>'+
-						'<p>Thanks!<br> The Academy Team</p>',
-				};
-	
-	
-				sgClient.sendMail(email,function(err, info){
-					if(err){
-						logger.error(err);
-					} else {
-						logger.info('Message sent to ' + user.local.email);
-					}
-				});
-	
-				req.flash('loginMessage', 'Message sent to ' + user.local.email + '. Please check your email. Be sure to check your Spam folder.');
-				res.redirect('/password');
 	
 			});
 		}
@@ -518,14 +446,7 @@ exports.postReset = function(req,res){
 				logger.error(err);
 			}
 		
-			var sgOptions = {
-				auth: {
-					//api_user: sgUser,
-					api_key: sgKey
-				}
-			};
-
-			var sgClient = nodemailer.createTransport(sgTransport(sgOptions));
+			var nodeMailerClient = nodemailer.createTransport(emailSettings);
 
 			var email = {
 				to: user.local.email,
@@ -535,7 +456,7 @@ exports.postReset = function(req,res){
 						'The Academy Team\n'
 			};
 
-			sgClient.sendMail(email,function(err, info){
+			nodeMailerClient.sendMail(email,function(err){
 				if(err){
 					logger.error(err);
 				} else {
