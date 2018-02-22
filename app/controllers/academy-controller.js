@@ -6,6 +6,7 @@ var Feedback = require('../models/feedback');
 var GlossaryTerm = require('../models/glossary');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
+const gravatar = require('gravatar');
 
 //var mongoose = require('mongoose');
 
@@ -368,7 +369,8 @@ exports.getProfile = function(req,res){
 
 			User.find({}).exec()
 				.then((users)=>{
-					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length});	
+					let	avatarUrl = gravatar.url(req.user.local.email, {s: '75', r: 'pg', d: 'mm'}); 
+					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length, avatarUrl: avatarUrl});	
 				});
 
 		})	

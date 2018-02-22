@@ -28,6 +28,7 @@
     "express-session": "^1.15.6",
     "express-validator": "^4.3.0",
     "freemail": "github:telega/freemail",
+    "gravatar": "^1.6.0",
     "http": "0.0.0",
     "https": "^1.0.0",
     "mongoose": "^4.13.11",
