@@ -875,7 +875,7 @@ describe('User Routes', ()=>{
 			});
 		});
 	
-		it('Glossary /glossary GET', (done)=>{
+		it('Glossary /glossary GET (logged in)', (done)=>{
 
 			createTestUser( theUserAccount, function(testUser){
 				createLoginCookie(server, theUserAccount, function(cookie) {
@@ -896,6 +896,20 @@ describe('User Routes', ()=>{
 
 			});
 		});
+
+		it('Glossary /glossary GET (not logged in)', (done)=>{
+
+			request(server)
+				.get('/glossary')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.should.be.html;
+			
+					done();
+				});
+		});	
+
+	
 	
 	
 	})	

@@ -182,7 +182,7 @@ module.exports = function(app,passport){
 		.post(userController.postReset);
 
 	router.route('/glossary')
-		.get(authController.isLoggedIn, academyController.getGlossary);
+		.get(/*authController.isLoggedIn,*/ academyController.getGlossary);
 
 	// eedback routes (Academy)
 	router.route('/feedback')

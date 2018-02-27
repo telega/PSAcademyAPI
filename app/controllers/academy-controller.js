@@ -65,6 +65,15 @@ function getUserUnitModuleItems(unit, academyProgress){
 	return items;
 }
 
+//using gravatars
+function getAvatarUrl(req){
+	if(req.user){
+		return	gravatar.url(req.user.local.email, {s: '75', r: 'pg', d: 'mm'}); 
+	} else {
+		return null;
+	}
+}
+
 exports.getFeedback = function(req,res){
 	Feedback.find({}).exec()
 		.then((feedback) =>{
@@ -77,7 +86,8 @@ exports.getFeedback = function(req,res){
 				],
 				activeNavItem: 'Feedback',
 			};
-			res.status(200).render('academy/feedback.ejs', {user: req.user, pageInfo: pageInfo, feedback: feedback});
+			let	avatarUrl = getAvatarUrl(req);
+			res.status(200).render('academy/feedback.ejs', {user: req.user, pageInfo: pageInfo, feedback: feedback, avatarUrl: avatarUrl});
 		})
 		.catch((err)=>{
 			logger.error(err);
@@ -164,8 +174,8 @@ exports.getCourses = function(req,res){
 				activeNavItem: 'Courses',
 				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/CoursePageHeaderGettyImages-658984379.jpg' 
 			};
-	
-			res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo});
+			let	avatarUrl = getAvatarUrl(req); 
+			res.render('academy/courses.ejs', {user: req.user, courses: courses, items: items, pageInfo: pageInfo, avatarUrl: avatarUrl});
 		})
 		.catch((err)=>{
 			logger.error(err);
@@ -186,7 +196,9 @@ exports.getGlossary = function(req,res){
 				activeNavItem: 'Glossary',
 				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/IPGlossaryHeader.jpg' 
 			};
-			res.render('academy/glossary.ejs', { pageInfo: pageInfo, glossaryTerms: glossaryTerms});
+			
+			let avatarUrl = getAvatarUrl(req);
+			res.render('academy/glossary.ejs', { pageInfo: pageInfo, glossaryTerms: glossaryTerms, user: req.user, avatarUrl: avatarUrl});
 		})
 		.catch((err)=>{
 			logger.error(err);
@@ -220,9 +232,9 @@ exports.getHomepage = function(req,res){
 					return req.user.save();
 				})
 				.then(()=>{
-
+					let	avatarUrl = getAvatarUrl(req);
 					Academy.findOne({}, function(err,academyOptions){  
-						res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions, userCount: userCount});	
+						res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions, userCount: userCount, avatarUrl: avatarUrl});	
 					});
 
 				})
@@ -252,11 +264,8 @@ exports.getHomepage = function(req,res){
 						if(err){
 							logger.error(err);
 						}
-	
 						res.status(200).render('index.ejs', { courses: courses, options:academyOptions, message: req.flash('loginMessage') });
-	
 					});
-	
 				} else {
 					res.status(200).render('index.ejs', { courses:courses, options:academyOptions, message: req.flash('loginMessage') });
 				}
@@ -289,8 +298,8 @@ exports.getCourse = function(req,res){
 			activeNavItem: 'Courses',
 			jumbotronImageUrl: course.courseImageUrl
 		};
-
-		res.status(200).render('academy/course.ejs', {user: req.user, items: items, pageInfo:pageInfo, course: course, courseProgress: courseProgress});
+		let	avatarUrl = getAvatarUrl(req);
+		res.status(200).render('academy/course.ejs', {user: req.user, items: items, pageInfo:pageInfo, course: course, courseProgress: courseProgress, avatarUrl:avatarUrl});
 	});
 };
 
@@ -369,7 +378,7 @@ exports.getProfile = function(req,res){
 
 			User.find({}).exec()
 				.then((users)=>{
-					let	avatarUrl = gravatar.url(req.user.local.email, {s: '75', r: 'pg', d: 'mm'}); 
+					let	avatarUrl = getAvatarUrl(req);
 					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length, avatarUrl: avatarUrl});	
 				});
 
@@ -424,8 +433,8 @@ exports.getLeaderboard = function(req,res){
 				}
 
 			});
-
-			res.render('academy/leaderboard.ejs', {pageInfo:pageInfo, user: req.user, items: leaderBoardItems, userCount: users.length});	
+			let	avatarUrl = gravatar.url(req.user.local.email, {s: '75', r: 'pg', d: 'mm'}); 
+			res.render('academy/leaderboard.ejs', {pageInfo:pageInfo, user: req.user, items: leaderBoardItems, userCount: users.length, avatarUrl:avatarUrl});	
 		})
 		.catch( err => logger.error(err));
 };
@@ -485,8 +494,8 @@ exports.getCourseUnit = function(req,res){
 		};
 
 		let items = getUserUnitModuleItems(unit,req.user.local.academyProgress);
-
-		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress, pageInfo: pageInfo, items: items});
+		let	avatarUrl = getAvatarUrl(req);
+		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress, pageInfo: pageInfo, items: items, avatarUrl:avatarUrl});
 	});
 };
 
@@ -516,7 +525,8 @@ exports.getQuiz = function(req,res){
 				activeNavItem: 'Courses',
 				jumbotronImageUrl: unit.unitImageUrl
 			};
-			res.render('academy/quiz.ejs', {user: req.user, pageInfo:pageInfo,course: course, unit: unit, quiz: JSON.stringify(quiz)});
+			let	avatarUrl = getAvatarUrl(req);
+			res.render('academy/quiz.ejs', {user: req.user, pageInfo:pageInfo,course: course, unit: unit, avatarUrl:avatarUrl, quiz: JSON.stringify(quiz)});
 		});
 
 	});
