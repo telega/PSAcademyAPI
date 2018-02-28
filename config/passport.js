@@ -1,5 +1,4 @@
-const passport = require('passport');
-const freemail = require('freemail');
+//const passport = require('passport');
 const User = require('../app/models/user');
 const Course = require('../app/models/course');
 const LocalStrategy = require('passport-local').Strategy;
@@ -27,98 +26,88 @@ module.exports = function(passport){
 	},
 	function(req, email, password, done) {
 		process.nextTick(function() {
-			//check it isnt a freemail address.
-			if( (freemail.isFree(email)) ||(freemail.isDisposable(email))){
-				return done(null, false, req.flash('loginMessage', 'Sorry, but free email providers are not allowed. Please us another email address.'));
-			}else{
-
 			// find a user whose email is the same as the forms email
 			// we are checking to see if the user trying to login already exists
-				User.findOne({ 'local.email' :  email }, function(err, user) {
-					if (err){
-						return done(err);
-					}
-					// check to see if theres user exists
-					if (user) {
-						return done(null, false, req.flash('loginMessage', 'That email is already taken.'));
-					} else {
+			User.findOne({ 'local.email' :  email }, function(err, user) {
+				if (err){
+					return done(err);
+				}
+				// check to see if theres user exists
+				if (user) {
+					return done(null, false, req.flash('loginMessage', 'That email is already taken.'));
+				} else {
+					logger.info('New User Signup: ' + email );
+					// HS Request
+					if(hsPortalId && hsFormID) {
 
-						logger.info('New User Signup: ' + email );
-
-						// HS Request
-						if(hsPortalId && hsFormID) {
-	
-							var postData = querystring.stringify({
-								'email': email,
-								'firstname': req.body.firstname,
-								'lastname': req.body.lastname,
-								'hs_context': JSON.stringify({
-									"ipAddress": req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-									"pageName": "Academy by PatSnap"
-								})
-							});
-							
-							// set the post options, changing out the HUB ID and FORM GUID variables.
-							
-							var options = {
-								hostname: 'forms.hubspot.com',
-								path: '/uploads/form/v2/'+ hsPortalId + '/' + hsFormID,
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded',
-									'Content-Length': postData.length
-								}
-							};
-							
-							// set up the request
-							
-							var request = https.request(options, function(response){
-								logger.info("HS Form Status: " + response.statusCode);
-								logger.debug("HS FormHeaders: " + JSON.stringify(response.headers));
-								response.setEncoding('utf8');
-								response.on('data', function(chunk){
-									logger.silly('Body: ' + chunk)
-								});
-							});
-							
-							request.on('error', function(e){
-								logger.warn("Problem with HS form request " + e.message)
-							});
-							
-							// post the data
-							
-							request.write(postData);
-							request.end();
-	
-						}
-	
-						// end HS Request
-
-
-						// create the user
-						var newUser	= new User();
-	
-						newUser.local.email	= email;
-						newUser.local.password = newUser.generateHash(password);
-						newUser.local.profile.firstName = req.body.firstname;
-						newUser.local.profile.lastName = req.body.lastname;
-						newUser.local.profile.userName = newUser.generateUserName();
-		
-						newUser.generateUserName().then((un) =>{
-							newUser.local.profile.userName = un;
-	
-							newUser.save(function(err) {
-								if (err){
-									throw err;
-								}
-		
-								return done(null, newUser);
+						var postData = querystring.stringify({
+							'email': email,
+							'firstname': req.body.firstname,
+							'lastname': req.body.lastname,
+							'hs_context': JSON.stringify({
+								'ipAddress': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+								'pageName': 'Academy by PatSnap'
+							})
+						});
+						
+						// set the post options, changing out the HUB ID and FORM GUID variables.
+						
+						var options = {
+							hostname: 'forms.hubspot.com',
+							path: '/uploads/form/v2/'+ hsPortalId + '/' + hsFormID,
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded',
+								'Content-Length': postData.length
+							}
+						};
+						
+						// set up the request
+						
+						var request = https.request(options, function(response){
+							logger.info('HS Form Status: ' + response.statusCode);
+							logger.debug('HS FormHeaders: ' + JSON.stringify(response.headers));
+							response.setEncoding('utf8');
+							response.on('data', function(chunk){
+								logger.silly('Body: ' + chunk);
 							});
 						});
+						
+						request.on('error', function(e){
+							logger.warn('Problem with HS form request ' + e.message);
+						});
+						
+						// post the data
+						
+						request.write(postData);
+						request.end();
+
 					}
-				});   
+
+					// end HS Request
+					// create the user
+					var newUser	= new User();
+
+					newUser.local.email	= email;
+					newUser.local.password = newUser.generateHash(password);
+					newUser.local.profile.firstName = req.body.firstname;
+					newUser.local.profile.lastName = req.body.lastname;
+					newUser.local.profile.userName = newUser.generateUserName();
+	
+					newUser.generateUserName().then((un) =>{
+						newUser.local.profile.userName = un;
+
+						newUser.save(function(err) {
+							if (err){
+								throw err;
+							}
+	
+							return done(null, newUser);
+						});
+					});
+				}
+			});   
 		
-			}
 		});
 
 	}));
