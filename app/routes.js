@@ -214,7 +214,7 @@ module.exports = function(app,passport){
 		.get(authController.isLoggedIn, academyController.updateUserRankingAndScore, academyController.getLeaderboard);
 	
 	router.route('/logout')
-		.get(authController.logOut);
+		.get(authController.isLoggedIn, authController.logOut);
 
 	router.route('/')
 		.get(academyController.getHomepage);

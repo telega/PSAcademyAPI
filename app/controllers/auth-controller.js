@@ -32,6 +32,7 @@ exports.isAdmin= function(req,res,next) {
 };
 
 exports.logOut = function(req,res){
+	logger.info('User ' + req.user.local.email + ' logged out.');
 	req.logout();
 	res.redirect('/');
 };
@@ -42,11 +43,11 @@ exports.validatePutProfile = [
 		let errors = validationResult(req);
 
 		if( !errors.isEmpty() ){
-			logger.debug('validatePutProfile FAIL')
+			logger.debug('validatePutProfile FAIL');
 			res.status(422).json({message: errors.mapped()});
 		} 
 		if(req.params.user_id !== req.user._id.toString()){
-			logger.warn('validatePutProfile: Not Authorised')
+			logger.warn('validatePutProfile: Not Authorised');
 			res.status(401).json({message:'Not Authorised to update this user.'});
 		}
 		else {
