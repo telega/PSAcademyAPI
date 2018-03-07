@@ -85,5 +85,4 @@ require('./app/routes')(app, passport);
 
 module.exports = app.listen(port, function(){
 	logger.info('Listening on ' + port);
-	console.log('port ' + port);
 });
