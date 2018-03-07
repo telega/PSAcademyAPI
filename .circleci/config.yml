@@ -5,7 +5,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:7.10
-      - image: mongo:3.4.4
+      - image: mongo:3.4.13
 
       
       # Specify service dependencies here if necessary
