@@ -12,27 +12,18 @@ const request = require('supertest');
 const chaiHttp = require('chai-http');
 
 
+// clean db (drop stuff)
+
 let dbUrl = process.env.TEST_DB;
 mongoose.connect(dbUrl, { useMongoClient:true}, function(err){
 	if(err){
 		console.log(err);
 	}
-
 	mongoose.connection.db.dropDatabase();
-
-})
-
-
-//console.log(mongoose.connection.db);
+});
 
 
-// clean db (drop stuff)
-
-//Course.collection.drop();
-//User.collection.drop();
-//Feedback.collection.drop();
-//GlossaryTerm.collection.drop();
-
+// test options
 let theAdminAccount = {
 	'email': 'myadminuser@mytestuser.com',
 	'password': 'testuserpassword',
@@ -95,7 +86,6 @@ function createTestUser(accountDetails, done){
 			done(testUser);
 		});
 	});
-
 
 }
 
