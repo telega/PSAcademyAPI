@@ -11,12 +11,27 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const chaiHttp = require('chai-http');
 
+
+let dbUrl = process.env.TEST_DB;
+mongoose.connect(dbUrl, { useMongoClient:true}, function(err){
+	if(err){
+		console.log(err);
+	}
+
+	mongoose.connection.db.dropDatabase();
+
+})
+
+
+//console.log(mongoose.connection.db);
+
+
 // clean db (drop stuff)
 
-Course.collection.drop();
-User.collection.drop();
-Feedback.collection.drop();
-GlossaryTerm.collection.drop();
+//Course.collection.drop();
+//User.collection.drop();
+//Feedback.collection.drop();
+//GlossaryTerm.collection.drop();
 
 let theAdminAccount = {
 	'email': 'myadminuser@mytestuser.com',
@@ -38,9 +53,9 @@ let theOtherUserAccount = {
 
 // const courseController = require('../app/controllers/course-controller');
 
-let chai = require('chai');
-
 let server = require('../server');
+
+let chai = require('chai');
 let should = chai.should();
 
 chai.use(chaiHttp);
