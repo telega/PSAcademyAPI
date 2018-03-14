@@ -5,7 +5,7 @@ const logger = require('../logger');
 
 
 exports.validatePostCourse = [
-	check('name').exists().isAlphanumeric().withMessage('Must exist and be an Alphanumeric'),
+	check('name').exists().withMessage('Must exist and be an Alphanumeric'),
 	function (req,res,next){
 		let errors = validationResult(req);
 		if( !errors.isEmpty() ){

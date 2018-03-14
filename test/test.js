@@ -236,16 +236,16 @@ describe('API Backend Routes', ()=>{
 // Courses	
 
 	describe('Courses', () =>{
-		// it('Should list the courses on /api/courses GET', (done) => {
+		it('Should list the courses on /api/courses GET', (done) => {
 	
-		// 	request(server)
-		// 		.get('/api/courses')
-		// 		.end((err,res)=>{
-		// 			res.should.have.status(200);
-		// 			res.body.should.be.an('array');
-		// 			done();
-		// 		});
-		// });
+			request(server)
+				.get('/api/courses')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.body.should.be.an('array');
+					done();
+				});
+		});
 
 
 		it('Should list the course with specified ID on /api/course/:course_id GET', (done) => {
