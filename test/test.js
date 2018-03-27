@@ -232,16 +232,51 @@ function deleteTestGlossaryTerm(termId){
 /// Academy related routes
 
 describe('API Backend Routes', ()=>{
+
+	// beforeEach(function(done) {
+	// 	var unhandledException = undefined;
+	// 	var unhandledExceptionCallback = function(err) {
+	// 		unhandledException = err;
+	// 	}
+	// 	process.on('uncaughtException', unhandledExceptionCallback);
+	   
+	// 	request(server)
+	// 	  .get('/api/courses')
+	// 	  .end((err, res) => {
+	// 		process.removeListener('uncaughtException', unhandledExceptionCallback);
+	// 		if (unhandledException !== undefined){
+	// 		  return done(unhandledException);
+	// 		} else if (err) {
+	// 		  return done(err);
+	// 		} 
+
+	// 		done();
+	// 	  });
+	//   }); 
+
 	
 // Courses	
 
 	describe('Courses', () =>{
+
 		it('Should list the courses on /api/courses GET', (done) => {
-	
+			var unhandledException = undefined;
+		var unhandledExceptionCallback = function(err) {
+			unhandledException = err;
+		}
+		process.on('uncaughtException', unhandledExceptionCallback);
 			request(server)
 				.get('/api/courses')
 				.end((err,res)=>{
-					console.log(err);
+					process.removeListener('uncaughtException', unhandledExceptionCallback);
+			if (unhandledException !== undefined){
+				console.log(unhandledException);
+			  return done(unhandledException);
+			} else if (err) {
+				console.log(err)
+			  return done(err);
+			} 
+				
 					res.should.have.status(200);
 					res.body.should.be.an('array');
 					done();
