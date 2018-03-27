@@ -241,6 +241,7 @@ describe('API Backend Routes', ()=>{
 			request(server)
 				.get('/api/courses')
 				.end((err,res)=>{
+					console.log(res.body);
 					res.should.have.status(200);
 					res.body.should.be.an('array');
 					done();
