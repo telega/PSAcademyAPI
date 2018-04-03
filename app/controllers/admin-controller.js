@@ -394,7 +394,7 @@ exports.getUser = function(req,res){
 
 
 exports.refreshUsers = function(req,res){
-
+	console.time('refresh_users');
 	User.find({}).sort({'local.academyScore': -1}).exec()
 		.then((users) =>{
 			users.forEach((user)=>{
@@ -406,6 +406,7 @@ exports.refreshUsers = function(req,res){
 		.then(()=>{
 			logger.info('Admin initiated user score refresh.');
 			res.status(200).json({message: 'Refreshed Users'});
+			console.timeEnd('refresh_users');
 		})
 		.catch((err)=>{ logger.error(err);});
 

@@ -99,7 +99,9 @@ exports.addCourseToUser = function(req,res){
 								var courseAcademyProgress = {
 									itemId: req.params.course_id,
 									itemProgress: 0,
-									itemCompleted: false
+									itemCompleted: false,
+									itemType: course.type,
+									relatedItem: course._id
 								};
 				
 								user.local.academyProgress.push(courseAcademyProgress);

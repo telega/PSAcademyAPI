@@ -114,34 +114,126 @@ userSchema.methods.checkAcademyProgressItems = function(courses){
 	return this.local.academyProgress;
 };
 
+
 userSchema.methods.updateUserAcademyScore = function(){
 
-	let score = 0;
-	this.local.academyProgress.forEach(function(progressItem){
-		if(progressItem.itemCompleted){
-			if(progressItem.itemType == 'Video'){
-				score +=1;
-			}
-			if(progressItem.itemType == 'Quiz'){
-				score += 1;
-			}
-			if(progressItem.itemType == 'Unit'){
-				score += 3;
-			}
-			if(progressItem.itemType == 'Course'){
-				score += 2;
-			}
-		}
+	let videos = this.local.academyProgress.filter((pi)=>{
+		return ((pi.itemCompleted == true) && (pi.itemType == 'Video'));
 	});
+	let quizes =  this.local.academyProgress.filter((pi)=>{
+		return ((pi.itemCompleted == true) && (pi.itemType == 'Quiz'));
+	});
+
+	let courses = this.local.academyProgress.filter((pi)=>{
+		return ((pi.itemCompleted == true) && (pi.itemType == 'Course'));
+	});
+
+	let units = this.local.academyProgress.filter((pi)=>{
+		return ((pi.itemCompleted == true) && (pi.itemType == 'Unit'));
+	});
+	let score = videos.length + quizes.length + (3 * units.length) + (2 * courses.length);	
 	return score;
 };
+
+
+
+// userSchema.methods.updateUserAcademyScore = function(){
+
+// 	let score = this.local.academyProgress.filter((progressItem)=>{
+// 		return progressItem.itemCompleted == true;
+// 	}).map((element)=>{
+// 		switch(element.itemType){
+// 		case 'Video':
+// 			return 1;
+// 		case 'Quiz':
+// 			return 1;   
+// 		case 'Unit':
+// 			return 3;
+// 		case 'Course':
+// 			return 2;
+// 		default:
+// 			return 0;
+// 		}
+		
+// 	}).reduce((accumulator, element)=>{
+// 		return accumulator + element;
+// 	},0);
+	
+// 	return score;
+// };
+
+// userSchema.methods.updateUserAcademyScore = function(){
+
+// 	let score = this.local.academyProgress.filter((progressItem)=>{
+// 		return progressItem.itemCompleted == true;
+// 	}).reduce((accumulator, progressItem)=>{
+// 		if(progressItem.itemType == 'Video'){
+// 			accumulator +=1;
+// 		}
+// 		if(progressItem.itemType == 'Quiz'){
+// 			accumulator += 1;
+// 		}
+// 		if(progressItem.itemType == 'Unit'){
+// 			accumulator += 3;
+// 		}
+// 		if(progressItem.itemType == 'Course'){
+// 			accumulator += 2;
+// 		}
+// 	},0);
+
+// 	return score;
+// };
+
+
+// userSchema.methods.updateUserAcademyScore = function(){
+
+// 	let score = 0;
+// 	this.local.academyProgress.forEach(function(progressItem){
+// 		if(progressItem.itemCompleted){
+// 			if(progressItem.itemType == 'Video'){
+// 				score +=1;
+// 			}
+// 			if(progressItem.itemType == 'Quiz'){
+// 				score += 1;
+// 			}
+// 			if(progressItem.itemType == 'Unit'){
+// 				score += 3;
+// 			}
+// 			if(progressItem.itemType == 'Course'){
+// 				score += 2;
+// 			}
+// 		}
+// 	});
+// 	return score;
+// };
+
+
+userSchema.methods.updateAcademyRank = function(users){
+
+	if(this.local.role == 'Admin'){
+		return 0;
+	}
+
+	let score = this.local.academyScore;
+	let pointsList = users.filter((user)=>{ 
+		return user.local.role != 'Admin';
+	}).map((user)=>{
+		return user.local.academyScore;
+	}).filter((elem,index,array)=>{
+		return array.indexOf(elem) === index;
+	}).sort().reverse();
+
+	return pointsList.indexOf(score)+1;
+
+};
+
 
 // userSchema.methods.updateAcademyRank = function(users){
 // 	let userId = this._id;
 // 	let rank = 0;
 // 	let userRank = 0;
 // 	let previousScore = 0;
-	
+
 // 	if(this.local.role != 'Admin'){
 // 		users.forEach(function(user){
 // 			if(user.local.role != 'Admin'){
@@ -149,39 +241,15 @@ userSchema.methods.updateUserAcademyScore = function(){
 // 					previousScore = user.local.academyScore;
 // 					rank ++;
 // 				}
-	
+
 // 				if(userId.equals(user._id)){
 // 					userRank = rank;
 // 				}
 // 			}
 // 		});
-
 // 	}
 // 	return userRank;
 // };
-
-userSchema.methods.updateAcademyRank = function(users){
-	let userId = this._id;
-	let rank = 0;
-	let userRank = 0;
-	let previousScore = 0;
-
-	if(this.local.role != 'Admin'){
-		users.forEach(function(user){
-			if(user.local.role != 'Admin'){
-				if(user.local.academyScore != previousScore){
-					previousScore = user.local.academyScore;
-					rank ++;
-				}
-
-				if(userId.equals(user._id)){
-					userRank = rank;
-				}
-			}
-		});
-	}
-	return userRank;
-};
 
 // generates username and checks it is unique
 function makeUserName(fn,ln,users){

@@ -309,6 +309,83 @@ exports.getLogin = function(req,res){
 };
 
 
+// exports.getProfile = function(req,res){
+
+// 	Course.find({}).exec()
+// 		.then((courses)=>{
+// 			let items = [];
+// 			// cant use array.map 
+// 			courses.forEach(function(course){
+	
+// 				var cidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course._id.toString());
+// 				if(cidx !== -1){
+// 					items.push({
+// 						name: course.name,
+// 						progress: req.user.local.academyProgress[cidx].itemProgress,
+// 						completed: req.user.local.academyProgress[cidx].itemCompleted,
+// 						type: 'Course', 
+// 						url: '/courses/' + course._id
+// 					});
+// 				}
+	
+// 				if(course.units.length > 0){
+// 					for(var j = 0; j < course.units.length; j++){
+	
+// 						var uidx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j]._id.toString());
+// 						if(uidx !== -1){
+// 							items.push({
+// 								name: course.units[j].name,
+// 								progress: req.user.local.academyProgress[uidx].itemProgress,
+// 								completed: req.user.local.academyProgress[uidx].itemCompleted,
+// 								type: 'Unit',
+// 								url:'/courses/' + course._id + '/units/' + course.units[j]._id
+// 							});
+// 						}
+	
+// 						if(course.units[j].modules.length > 0 ){
+// 							for(var k = 0; k < course.units[j].modules.length; k++){
+// 								var idx = req.user.local.academyProgress.map(function(e){return e.itemId;}).indexOf(course.units[j].modules[k]._id.toString());
+// 								if( idx !== -1){
+// 									items.push({
+// 										name: course.units[j].modules[k].name,
+// 										progress: req.user.local.academyProgress[idx].itemProgress,
+// 										completed: req.user.local.academyProgress[idx].itemCompleted,
+// 										type: 'Module',
+// 										url:'/courses/' + course._id + '/units/' + course.units[j]._id
+// 									});
+// 								}
+// 							}
+// 						}
+						
+// 					}
+// 				}
+			
+// 			});
+	
+// 			let pageInfo = {
+// 				title: 'Profile',
+// 				breadcrumbs: [
+// 					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+// 					{title:'Profile', url: '/profile'}
+// 				],
+// 				activeNavItem: 'Profile',
+// 				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/Academy_PatSnap.jpg' 
+// 			};
+
+// 			return {pageInfo, items};
+// 		})
+// 		.then((data)=>{
+
+// 			User.find({}).exec()
+// 				.then((users)=>{
+// 					let	avatarUrl = getAvatarUrl(req);
+// 					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length, avatarUrl: avatarUrl});	
+// 				});
+// 		})	
+// 		.catch( (err) => { logger.error(err); });
+// };
+
+
 exports.getProfile = function(req,res){
 
 	Course.find({}).exec()
@@ -381,28 +458,48 @@ exports.getProfile = function(req,res){
 					let	avatarUrl = getAvatarUrl(req);
 					res.render('academy/profile.ejs', {items:data.items, pageInfo:data.pageInfo, user: req.user, userCount:users.length, avatarUrl: avatarUrl});	
 				});
-
 		})	
 		.catch( (err) => { logger.error(err); });
 };
 
 
+
 exports.updateUserRankingAndScore = function(req,res,next){
 
 	req.user.local.academyScore = req.user.updateUserAcademyScore();
-
-	User.find({}).sort({'local.academyScore': -1}).exec()
-		.then((users) =>{
-			req.user.local.academyScore = req.user.updateUserAcademyScore();	
-			req.user.local.academyRank = req.user.updateAcademyRank(users);	
-			return req.user.save();
-		})
-		.then(()=>{
-			return next();
+	req.user.save()
+		.then((user)=>{
+			User.find({}).sort({'local.academyScore': -1}).exec()
+				.then((users) =>{
+					user.local.academyRank = req.user.updateAcademyRank(users);	
+					return user.save();
+				})
+				.then(()=>{
+					return next();
+				})
+				.catch( err => { logger.error(err);} );
 		})
 		.catch( err => { logger.error(err);} );
-
 };
+
+
+// exports.updateUserRankingAndScore = function(req,res,next){
+
+// 	// this is async and its causing trouble
+// 	req.user.local.academyScore = req.user.updateUserAcademyScore();
+
+// 	User.find({}).sort({'local.academyScore': -1}).exec()
+// 		.then((users) =>{
+// 			req.user.local.academyScore = req.user.updateUserAcademyScore();	
+// 			req.user.local.academyRank = req.user.updateAcademyRank(users);	
+// 			return req.user.save();
+// 		})
+// 		.then(()=>{
+// 			return next();
+// 		})
+// 		.catch( err => { logger.error(err);} );
+
+// };
 
 exports.getLeaderboard = function(req,res){
 
