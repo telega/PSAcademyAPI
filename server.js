@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const favicon = require('serve-favicon');
 const path = require('path');
+const buildSearch = require('./app/search');
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 3000;
@@ -83,6 +84,9 @@ app.use(flash());
 
 require('./app/routes')(app, passport);
 
+buildSearch();
+
 module.exports = app.listen(port, function(){
 	logger.info('Listening on ' + port);
+
 });

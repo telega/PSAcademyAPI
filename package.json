@@ -8,6 +8,7 @@
     "url": "https://github.com/telega/PSAcademyAPI.git"
   },
   "scripts": {
+    "dev": "nodemon server.js --ignore 'search/*'",
     "test": "NODE_ENV=test PORT=8080 SESSION_SECRET='test' TEST_DB=mongodb://localhost:27017/psatest mocha --timeout 12000"
   },
   "author": "telega",

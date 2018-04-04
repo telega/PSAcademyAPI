@@ -1,6 +1,8 @@
 var Course = require('../models/course');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
+const buildSearch = require('../search');
+
 
 
 
@@ -26,6 +28,7 @@ exports.postCourse = function(req,res){
 		if(err){
 			res.status(500).json({message: 'Error adding Course'});
 		} else {
+			buildSearch();
 			res.status(200).json({message: 'Course Added', course: course});
 		}
 	});
@@ -42,7 +45,7 @@ exports.getCourses = function(req,res){
 };
 
 exports.getCourse = function(req,res){
-	Course.find({ _id: req.params.course_id}).exec()
+	Course.findById(req.params.course_id).exec()
 		.then((course)=> res.status(200).json(course))
 		.catch((err)=>{
 			logger.error(err);
@@ -66,6 +69,7 @@ exports.putCourse = function(req,res){
 			if(err){
 				logger.error(err);
 			}
+			buildSearch();
 			res.json(course);
 		});
 	});
@@ -76,6 +80,7 @@ exports.deleteCourse = function(req,res){
 		if(err){
 			logger.error(err);
 		}
+		buildSearch();
 		res.status(200).json({message: 'Deleted Course'});
 	});
 };

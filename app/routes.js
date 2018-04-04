@@ -9,8 +9,18 @@ const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
 const glossaryController = require('./controllers/glossary-controller');
 const academyController = require('./controllers/academy-controller');
+const path = require('path');
+
 
 module.exports = function(app,passport){
+
+	apiRouter.route('/search')
+		.get(function(req,res){
+			res.setHeader('Cache-Control', 'public, max-age=3600000');
+			res.type('json');
+			res.status(200);
+			res.sendFile(path.join(__dirname, '../search', 'search.json'));
+		});
 
 	// Course Routes - API
 	apiRouter.route('/courses')

@@ -1,3 +1,4 @@
+/* eslint-disable */
 require('dotenv').config();
 
 var Course = require('../app/models/course');
@@ -234,6 +235,7 @@ function deleteTestGlossaryTerm(termId){
 describe('API Backend Routes', ()=>{
 
 	
+	
 // Courses	
 
 	describe('Courses', () =>{
@@ -256,8 +258,7 @@ describe('API Backend Routes', ()=>{
 					.get('/api/courses/' + course._id)
 					.end((err,res)=>{
 						res.should.have.status(200);
-						res.body.should.be.an('array');
-
+						res.should.be.json;
 						deleteTestCourse(course._id);
 						done();
 					});
@@ -347,67 +348,6 @@ describe('API Backend Routes', ()=>{
 			});
 		});
 
-// Users
-
-		it('Should render the All Users admin page on /admin/users GET', (done) => {
-		
-			createTestUser(theAdminAccount, function(testUser){
-	
-				createLoginCookie(server, theAdminAccount, function(cookie) {
-		
-					request(server)
-						.get('/admin/users')
-						.set('cookie', cookie)
-						.end((err,res)=>{
-							res.should.have.status(200);
-							res.should.be.html;
-
-							deleteTestUser(testUser._id);
-
-							done();
-						});
-				});	
-			});
-		});
-
-		it('Should render the user details admin page on /admin/users/:user_id GET', (done) => {
-		
-			createTestUser(theAdminAccount, function(testUser){
-
-				createTestCourse(function(testCourse){
-
-					let moduleAcademyProgress = {
-						itemId: testCourse._id,
-						itemProgress: 100,
-						itemCompleted: true,
-						itemType: 'Course',
-						relatedItem: testCourse._id
-					};
-	
-					testUser.local.academyProgress.push(moduleAcademyProgress);
-
-					testUser.save();
-
-					createLoginCookie(server, theAdminAccount, function(cookie) {
-			
-						request(server)
-							.get('/admin/users/' + testUser._id)
-							.set('cookie', cookie)
-							.end((err,res)=>{
-								res.should.have.status(200);
-								res.should.be.html;
-	
-								//cleanup
-								deleteTestUser(testUser._id);
-	
-								deleteTestCourse(testCourse._id);
-								done();
-							});
-					});	
-				});
-			});
-		});
-
 
 		it('Should render the All courses admin page on /admin/courses GET', (done) => {
 		
@@ -431,6 +371,87 @@ describe('API Backend Routes', ()=>{
 		});
 
 	});
+
+
+	// Users
+
+	describe('Users', () =>{
+
+	it('Should render the All Users admin page on /admin/users GET', (done) => {
+		
+		createTestUser(theAdminAccount, function(testUser){
+
+			createLoginCookie(server, theAdminAccount, function(cookie) {
+	
+				request(server)
+					.get('/admin/users')
+					.set('cookie', cookie)
+					.end((err,res)=>{
+						res.should.have.status(200);
+						res.should.be.html;
+
+						deleteTestUser(testUser._id);
+
+						done();
+					});
+			});	
+		});
+	});
+
+	it('Should render the user details admin page on /admin/users/:user_id GET', (done) => {
+	
+		createTestUser(theAdminAccount, function(testUser){
+
+			createTestCourse(function(testCourse){
+
+				let moduleAcademyProgress = {
+					itemId: testCourse._id,
+					itemProgress: 100,
+					itemCompleted: true,
+					itemType: 'Course',
+					relatedItem: testCourse._id
+				};
+
+				testUser.local.academyProgress.push(moduleAcademyProgress);
+
+				testUser.save();
+
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+		
+					request(server)
+						.get('/admin/users/' + testUser._id)
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+
+							//cleanup
+							deleteTestUser(testUser._id);
+
+							deleteTestCourse(testCourse._id);
+							done();
+						});
+				});	
+			});
+		});
+	});
+	})
+
+	// Search
+
+	describe('Search', () =>{
+
+		it('Should list the courses on /api/courses GET', (done) => {
+			request(server)
+				.get('/api/search')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.should.be.json;
+					done();
+				});
+		});
+	})
+
 
 // Academy Options	
 
