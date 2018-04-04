@@ -441,7 +441,7 @@ describe('API Backend Routes', ()=>{
 
 	describe('Search', () =>{
 
-		it('Should list the courses on /api/courses GET', (done) => {
+		it('Should return search JSON on /api/search GET', (done) => {
 			request(server)
 				.get('/api/search')
 				.end((err,res)=>{

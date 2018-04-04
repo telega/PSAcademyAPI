@@ -5,8 +5,6 @@
 .sass-cache
 data
 
-search/search.json
-
 # Logs
 logs
 *.log
