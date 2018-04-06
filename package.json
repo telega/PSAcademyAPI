@@ -1,6 +1,6 @@
 {
   "name": "psacademyapi",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "API server for PS Academy",
   "main": "server.js",
   "repository": {
@@ -29,6 +29,7 @@
     "express-session": "^1.15.6",
     "express-validator": "^4.3.0",
     "freemail": "github:telega/freemail",
+    "fuse.js": "^3.2.0",
     "gravatar": "^1.6.0",
     "http": "0.0.0",
     "https": "^1.0.0",

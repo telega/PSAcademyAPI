@@ -1,7 +1,7 @@
 var GlossaryTerm = require('../models/glossary');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
-const buildSearch = require('../search');
+const search = require('../search');
 
 
 
@@ -29,7 +29,7 @@ exports.postGlossaryTerm = function(req,res){
 			logger.error(err);
 			res.status(400).json({message: 'Error adding Glossary Term'});
 		} else {
-			buildSearch();
+			search.buildSearchJSON();
 			res.status(200).json({message: 'Term Added', data: term});
 		}
 	});
@@ -49,7 +49,7 @@ exports.putGlossaryTerm = function(req,res){
 			if(err){
 				logger.error(err);
 			}
-			buildSearch();
+			search.buildSearchJSON();
 			res.json(term);
 		});
 	});
@@ -60,7 +60,7 @@ exports.deleteGlossaryTerm = function(req,res){
 		if(err){
 			logger.error(err);
 		}
-		buildSearch();
+		search.buildSearchJSON();
 		res.status(200).json({message: 'Deleted Term'});
 		
 	});

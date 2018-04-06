@@ -89,7 +89,6 @@ function createTestUser(accountDetails, done){
 
 }
 
-
 function createTestFeedback(done){
 
 	let testFeedback = new Feedback();
@@ -447,6 +446,26 @@ describe('API Backend Routes', ()=>{
 				.end((err,res)=>{
 					res.should.have.status(200);
 					res.should.be.json;
+					done();
+				});
+		});
+
+		it('Should return search results page on /search GET', (done) => {
+			request(server)
+				.get('/search')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.should.be.html;
+					done();
+				});
+		});
+
+		it('Should return search results page /search POST', (done) => {
+			request(server)
+				.post('/search')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.should.be.html;
 					done();
 				});
 		});

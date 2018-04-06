@@ -1,7 +1,7 @@
 var Course = require('../models/course');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
-const buildSearch = require('../search');
+const search = require('../search');
 
 
 
@@ -28,7 +28,7 @@ exports.postCourse = function(req,res){
 		if(err){
 			res.status(500).json({message: 'Error adding Course'});
 		} else {
-			buildSearch();
+			search.buildSearchJSON();
 			res.status(200).json({message: 'Course Added', course: course});
 		}
 	});
@@ -69,7 +69,7 @@ exports.putCourse = function(req,res){
 			if(err){
 				logger.error(err);
 			}
-			buildSearch();
+			search.buildSearchJSON();
 			res.json(course);
 		});
 	});
@@ -80,7 +80,7 @@ exports.deleteCourse = function(req,res){
 		if(err){
 			logger.error(err);
 		}
-		buildSearch();
+		search.buildSearchJSON();
 		res.status(200).json({message: 'Deleted Course'});
 	});
 };
