@@ -27,7 +27,7 @@
 					<div class="typeahead__field">
 			 
 						<span class="typeahead__query">
-							<input class="js-typeahead-search" name="academy[query]" type="search" placeholder="Search" autocomplete="off">
+							<input class="js-typeahead-search" name="academy[query]" type="search" placeholder="Search Academy" autocomplete="off">
 						</span>
 						<span class="typeahead__button">
 							<button type="submit">
@@ -133,6 +133,29 @@ $(document).ready(function () {
         }); 
     });
 
+// this works but its not very elegant is it ? 
+function post(path, parameters) {
+    var form = $('<form></form>');
+
+    form.attr("method", "post");
+    form.attr("action", path);
+
+    $.each(parameters, function(key, value) {
+        var field = $('<input></input>');
+
+        field.attr("type", "hidden");
+        field.attr("name", key);
+        field.attr("value", value);
+
+        form.append(field);
+    });
+
+    $(document.body).append(form);
+    form.submit();
+}
+
+
+
 	$.typeahead({
     input: '.js-typeahead-search',
     minLength: 1,
@@ -175,9 +198,12 @@ $(document).ready(function () {
         onSubmit: function(node, form, item, event){
             event.preventDefault();
             if(item === null){
-                $('#search-error').fadeIn();
-            }
-            else{
+				
+        		let query = $(".js-typeahead-search").val();
+
+				post('/search', {query:query});
+				
+    	    } else {
                 window.open(item.link);
             }
         }
@@ -185,6 +211,7 @@ $(document).ready(function () {
 });
 
 });
+
 
 </script>
 

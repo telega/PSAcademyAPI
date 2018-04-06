@@ -1,6 +1,6 @@
 {
   "name": "psacademyapi",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "API server for PS Academy",
   "main": "server.js",
   "repository": {

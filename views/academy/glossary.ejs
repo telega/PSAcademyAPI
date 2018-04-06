@@ -11,7 +11,7 @@
 						<div class="typeahead__field">
 				 
 							<span class="typeahead__query">
-								<input class="js-typeahead-search" name="academy[query]" type="search" placeholder="Search" autocomplete="off">
+								<input class="js-typeahead-search" name="academy[query]" type="search" placeholder="Search Academy" autocomplete="off">
 							</span>
 							<span class="typeahead__button">
 								<button type="submit">
@@ -105,58 +105,84 @@
   <script>
 	$(document).ready(function () {
 
-		$.typeahead({
-		input: '.js-typeahead-search',
-		minLength: 1,
-		maxItem: 20,
-		order: "asc",
-		group: {
-			template: "{{group}}"
-		},
-		template: "{{display}} <small style='color:#999;'>{{group}}</small>",
-		source: {
-			glossary: {
-				ajax: {
-					url: "/api/search",
-					path: "data.glossary"
-				}
-			},
-			courses: {
-				ajax: {
-					url: "/api/search",
-					path: "data.courses"
-				}
-			},
-			
-		},
-		callback: {
-			onNavigateAfter: function (node, lis, a, item, query, event) {
-				if (~[38,40].indexOf(event.keyCode)) {
-					var resultList = node.closest("form").find("ul.typeahead__list"),
-						activeLi = lis.filter("li.active"),
-						offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
-	 
-					resultList.scrollTop(offsetTop);
-				}
-	 
-			},
-			onClickAfter: function (node, a, item, event) {
-				event.preventDefault();
-				window.location.href = item.link;
-			},
-			onSubmit: function(node, form, item, event){
-				event.preventDefault();
-				if(item === null){
-					$('#search-error').fadeIn();
-				}
-				else{
-					window.open(item.link);
-				}
-			}
-		}
-	});
-	
-	});
+		// this works but its not very elegant is it ? 
+	function post(path, parameters) {
+    var form = $('<form></form>');
+
+    form.attr("method", "post");
+    form.attr("action", path);
+
+    $.each(parameters, function(key, value) {
+        var field = $('<input></input>');
+
+        field.attr("type", "hidden");
+        field.attr("name", key);
+        field.attr("value", value);
+
+        form.append(field);
+    });
+
+    $(document.body).append(form);
+    form.submit();
+}
+
+
+
+	$.typeahead({
+    input: '.js-typeahead-search',
+    minLength: 1,
+    maxItem: 20,
+    order: "asc",
+    group: {
+        template: "{{group}}"
+    },
+    template: "{{display}} <small style='color:#999;'>{{group}}</small>",
+    source: {
+        glossary: {
+            ajax: {
+                url: "/api/search",
+                path: "data.glossary"
+            }
+        },
+        courses: {
+            ajax: {
+                url: "/api/search",
+                path: "data.courses"
+            }
+        },
+        
+    },
+    callback: {
+        onNavigateAfter: function (node, lis, a, item, query, event) {
+            if (~[38,40].indexOf(event.keyCode)) {
+                var resultList = node.closest("form").find("ul.typeahead__list"),
+                    activeLi = lis.filter("li.active"),
+                    offsetTop = activeLi[0] && activeLi[0].offsetTop - (resultList.height() / 2) || 0;
+ 
+                resultList.scrollTop(offsetTop);
+            }
+ 
+        },
+        onClickAfter: function (node, a, item, event) {
+            event.preventDefault();
+            window.location.href = item.link;
+        },
+        onSubmit: function(node, form, item, event){
+            event.preventDefault();
+            if(item === null){
+				
+        		let query = $(".js-typeahead-search").val();
+
+				post('/search', {query:query});
+				
+    	    } else {
+                window.open(item.link);
+            }
+        }
+    }
+});
+
+});
 	
 	</script>
   
