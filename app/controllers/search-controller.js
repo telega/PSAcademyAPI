@@ -51,7 +51,7 @@ exports.getSearchResults = function(req,res){
 			{title:'Search', url: '/search'}
 		],
 		activeNavItem: 'Search',
-		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Academy/Images/IPGlossaryHeader.jpg' 
+		jumbotronImageUrl:'https://www.patsnap.com/hubfs/Webinars/Guest%20speaker%20webinars%20/Roshan/Introduction%20to%20Markush/1519_Introduction-to-searching-using-Markush-structures-from-Patents_Header.jpg' 
 	};
 	
 	let avatarUrl = getAvatarUrl(req);

@@ -463,6 +463,9 @@ describe('API Backend Routes', ()=>{
 		it('Should return search results page /search POST', (done) => {
 			request(server)
 				.post('/search')
+				.send({
+					query:'test query'
+				})
 				.end((err,res)=>{
 					res.should.have.status(200);
 					res.should.be.html;
