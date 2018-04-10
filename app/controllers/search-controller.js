@@ -1,9 +1,9 @@
-const GlossaryTerm = require('../models/glossary');
-const Courses = require('../models/course');
-const { check, validationResult } = require('express-validator/check');
+//const GlossaryTerm = require('../models/glossary');
+//const Courses = require('../models/course');
+//const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 const path = require('path');
-const buildSearch = require('../search');
+//const buildSearch = require('../search');
 const gravatar = require('gravatar');
 const search = require('../search');
 
@@ -28,6 +28,7 @@ exports.sendSearchJSON =  function(req,res){
 
 exports.postSearch = function(req,res,next){
 	let query = req.body.query;
+	logger.info('Searched: ' + query);
 
 	search.fuseSearch(query).then((results)=>{
 		req.searchResults = results;

@@ -47,6 +47,7 @@ var UnitSchema = new Schema({
 		type: String,
 		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default_thumb.jpg'
 	},
+	tags:[String],
 });
 
 var CourseSchema = new Schema({
@@ -69,6 +70,10 @@ var CourseSchema = new Schema({
 	courseThumbImageUrl:{
 		type: String,
 		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default_thumb.jpg'
+	},
+	tags:{
+		type: [String],
+		default: [],
 	},
 });
 

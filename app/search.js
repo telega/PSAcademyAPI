@@ -1,10 +1,11 @@
 const fs = require('fs');
 const logger = require('./logger');
+const _ = require('lodash');
 
 const GlossaryTerm = require('./models/glossary');
 const Courses = require('./models/course');
 
-const Fuse = require('fuse.js')
+const Fuse = require('fuse.js');
 
 // search cache for serving to typeahead on client
 
@@ -46,8 +47,6 @@ exports.buildSearchJSON = function(){
 };
 
 exports.fuseSearch = function(query){
-
-	//console.log('query:' + query)
 	var options = {
 		shouldSort: true,
 		threshold: 0.6,
@@ -55,7 +54,7 @@ exports.fuseSearch = function(query){
 		distance: 100,
 		maxPatternLength: 32,
 		minMatchCharLength: 1,
-		keys: ['title']
+		keys: ['searchKey']
 	};
 
 	return Promise.all([
@@ -65,27 +64,35 @@ exports.fuseSearch = function(query){
 		.then(([glossaryTerms, courses])=>{
 			return Promise.resolve([
 				glossaryTerms.map((term)=>{
-					return {'title':term.heading,'type':'glossary', 'link': '/glossary#' + term.anchorLink };
-
+					return {'searchKey':term.heading, 'title':term.heading,'type':'glossary', 'link': '/glossary#' + term.anchorLink, 'id': term._id };
 				}),
 				courses.map((course)=>{
-					return {'title': course.name,'type':'course', 'link': '/courses/' + course._id };
-
+					return {'searchKey':course.name, 'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'id': course._id };
+				}),
+				courses.map((course)=>{
+					if(course.tags.length > 0 ){
+						return course.tags.map((tag)=>{
+							return {'searchKey':tag,'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'tag':tag, 'id': course._id };
+						});
+					} else {
+						return {};
+					}
 				})
 			]);
 		})
-		.then(([glossaryTerms,courses])=>{
-			let data = glossaryTerms.concat(courses)
-			//console.log(data)
-
+		.then(([glossaryTerms, courses, tags])=>{
+			let data = _.flatten(_.concat(glossaryTerms, courses, tags));
+			return data;
+		})
+		.then((data)=>{
 			let fuse = new Fuse(data, options);
-			let result = fuse.search(query)
-			//console.log(result)
+			let result = fuse.search(query);
+			// we want unique results
+			result = _.uniqBy(result,'id');
 			return result;
-
 		})
 		.catch((err)=>{
 			logger.error(err);
 		});
 
-}
+};

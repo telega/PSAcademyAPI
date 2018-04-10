@@ -115,21 +115,52 @@ function deleteTestFeedback(feedbackId){
 function createTestCourse(done){
 
 	let testModule = {
-		name : 'TestModule',
+		name : 'Test Module',
 		description: 'Test Module'
 	};
 
 	let testUnit = {
-		name : 'TestUnit',
+		name : 'Test Unit',
 		description: 'Test Unit',
 		modules: [testModule]
 	};
 
 	let testCourse = new Course();
-	testCourse.name = 'TestCourse2';
+	testCourse.name = 'Test Course';
 	testCourse.description = 'Test Course';
 	testCourse.published = true;
 	testCourse.units = [testUnit];
+
+	testCourse.save(function(err){
+		if(err){
+			throw err;
+		}
+		done(testCourse);
+	});
+}
+
+
+function createTestCourseWithTags(done){
+
+	let testModule = {
+		name : 'Test Module',
+		description: 'Test Module'
+	};
+
+	let testUnit = {
+		name : 'Test Unit with Tags',
+		description: 'Test Unit',
+		//tags:['innovation', 'ip strategy'],
+		modules: [testModule]
+	};
+
+	let testCourse = new Course();
+	testCourse.name = 'Test Course With Tags';
+	testCourse.description = 'Test Course';
+	testCourse.published = true;
+	testCourse.units = [testUnit];
+	testCourse.tags = ['innovation'];
+
 
 	testCourse.save(function(err){
 		if(err){
@@ -461,16 +492,20 @@ describe('API Backend Routes', ()=>{
 		});
 
 		it('Should return search results page /search POST', (done) => {
-			request(server)
-				.post('/search')
-				.send({
-					query:'test query'
-				})
-				.end((err,res)=>{
-					res.should.have.status(200);
-					res.should.be.html;
-					done();
-				});
+			createTestCourseWithTags(function(course){
+				request(server)
+					.post('/search')
+					.send({
+						query:'test query'
+					})
+					.end((err,res)=>{
+						res.should.have.status(200);
+						res.should.be.html;
+						//clean up
+						deleteTestCourse(course._id)
+						done();
+					});
+			});
 		});
 	})
 
