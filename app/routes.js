@@ -9,8 +9,7 @@ const adminController = require('./controllers/admin-controller');
 const quizController = require('./controllers/quiz-controller');
 const glossaryController = require('./controllers/glossary-controller');
 const academyController = require('./controllers/academy-controller');
-const searchController = require('./controllers/search-controller')
-const path = require('path');
+const searchController = require('./controllers/search-controller');
 
 
 module.exports = function(app,passport){
@@ -27,6 +26,11 @@ module.exports = function(app,passport){
 		.get(courseController.getCourse)
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
+
+	apiRouter.route('/courses/:course_id/tags')
+		.get()
+		.put()
+		.delete();
 		
 	apiRouter.route('/courses/:course_id/units')
 		.get(courseController.getCourseUnits)

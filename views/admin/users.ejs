@@ -65,36 +65,4 @@
 </div>
 
 
-<!-- scripts -->
 <%- include partials/footer.ejs%>
-<script>
-
-$(document).ready(function(){
-
-    $('#userDeleteModal').on('show.bs.modal', function(e){
-        var button = $(e.relatedTarget); 
-        var modal = $(this);
-        modal.find('#userToDeleteEmail').text(button.data('userEmail'));
-        modal.find('#userDeleteConfirm').on('click', function(e){
-            var url = "/api/users/" + button.data('userId');
-            $.ajax({
-                  type: "DELETE",
-                  url: url,
-                  dataType: 'json',
-                  async: true,
-                  success: function (){
-                        location.reload(true);
-                    }
-            })
-        })
-    });
-
-    $('#userDeleteModal').on('hide.bs.modal', function(e){
-        var modal = $(this);
-        modal.find('#userDeleteConfirm').off('click');
-    });
-    
-})
-</script>
-</body>
-</html>

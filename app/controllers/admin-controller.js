@@ -16,7 +16,8 @@ exports.getAdminPage = function(req,res){
 		breadcrumbs: [
 			{title:'Admin', url: '/admin'},
 		],
-		activeNavItem: null
+		activeNavItem: null,
+		pageUIType: 'ADMIN_HOME'
 	};
 	res.render('admin/index.ejs', {user: req.user, page:pageInfo});	
 };
@@ -30,7 +31,8 @@ exports.getCourses = function(req,res){
 			{title:'Admin', url: '/admin'},
 			{title:'Courses', url: '/admin/courses'}
 		],
-		activeNavItem: 'Courses'
+		activeNavItem: 'Courses',
+		pageUIType: 'ADMIN_COURSES'
 	};
 
 	Course.find({}).sort({order:1}).exec()
@@ -47,7 +49,8 @@ exports.getFeedback = function(req,res){
 			{title:'Admin', url: '/admin'},
 			{title:'Feedback', url: '/admin/feedback'}
 		],
-		activeNavItem: 'Feedback'
+		activeNavItem: 'Feedback',
+		pageUIType: 'ADMIN_FEEDBACK'
 	};
 
 	Feedback.find({}).exec()
@@ -64,7 +67,9 @@ exports.getAcademyOptions = function(req,res){
 			{title:'Admin', url: '/admin'},
 			{title:'Academy Options', url: '/admin/academy'}
 		],
-		activeNavItem: 'Options'
+		activeNavItem: 'Options',
+		pageUIType: 'ACADEMY_OPTIONS'
+
 	};
 
 	Academy.findOne({}).sort({order:1}).exec()
@@ -129,7 +134,8 @@ exports.getCourse = function(req,res){
 					{title:'Courses', url: '/admin/courses'},
 					{title:course.name, url: '/admin/courses' + course._id },
 				],
-				activeNavItem: 'Courses'
+				activeNavItem: 'Courses',
+				pageUIType: 'ADMIN_COURSE'
 			};
 	
 			res.render('admin/course.ejs', {user: req.user, course: course, page: pageInfo});
@@ -151,7 +157,8 @@ exports.getUnit = function(req,res){
 					{title:course.name, url: '/admin/courses/' + course._id },
 					{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
 				],
-				activeNavItem: 'Courses'
+				activeNavItem: 'Courses',
+				pageUIType: 'ADMIN_UNIT'
 			};
 			res.render('admin/unit.ejs', {user: req.user, course: course, unit: unit, page:pageInfo});
 		})
@@ -172,7 +179,8 @@ exports.getModule = function(req,res){
 					{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
 					{title:module.name, url: '/admin/courses/' + course._id + '/units/' + unit._id + '/modules/' + module._id },
 				],
-				activeNavItem: 'Courses'
+				activeNavItem: 'Courses',
+				pageUIType: 'ADMIN_MODULE'
 			};
 			res.render('admin/module.ejs', {user: req.user, course: course, unit: unit, module: module , page: pageInfo });
 		})
@@ -221,7 +229,8 @@ exports.getQuizzes = function(req,res){
 					{title:'Admin', url: '/admin'},
 					{title:'Quizzes', url: '/admin/quizzes'}
 				],
-				activeNavItem: 'Quizzes'
+				activeNavItem: 'Quizzes',
+				pageUIType: 'ADMIN_QUIZZES'
 			};
 			res.render('admin/quizzes.ejs', {user: req.user, quizzes: quizzes, page: pageInfo});
 		})
@@ -238,7 +247,8 @@ exports.getQuiz = function(req,res){
 					{title:'Quizzes', url: '/admin/quizzes'},
 					{title: quiz.name, url: '/admin/quizzes/' + quiz._id }
 				],
-				activeNavItem: 'Quizzes'
+				activeNavItem: 'Quizzes',
+				pageUIType: 'ADMIN_QUIZ'
 			};
 			res.render('admin/quiz.ejs', { user: req.user, quiz: quiz, page:pageInfo });
 		})
@@ -257,7 +267,8 @@ exports.getQuestion = function(req,res){
 					{title: quiz.name, url: '/admin/quizzes/' + quiz._id },
 					{title: quiz.name, url: '/admin/quizzes/' + quiz._id + '/questions/' + question._id}
 				],
-				activeNavItem: 'Quizzes'
+				activeNavItem: 'Quizzes',
+				pageUIType: 'ADMIN_QUESTIONS'
 			};
 			res.render('admin/question.ejs', { user: req.user, quiz: quiz, question: question, page:pageInfo });
 		})
@@ -275,7 +286,8 @@ exports.getGlossary = function (req,res){
 					{title:'Admin', url: '/admin'},
 					{title:'Glossary', url: '/admin/glossary'}			
 				],
-				activeNavItem: 'Glossary'
+				activeNavItem: 'Glossary',
+				pageUIType: 'ADMIN_GLOSSARY'
 			};
 			res.status(200).render('admin/glossary.ejs', {user: req.user, glossaryTerms: glossaryTerms, page: pageInfo});
 		})
@@ -292,7 +304,8 @@ exports.getGlossaryTerm = function (req,res){
 					{title:'Glossary', url: '/admin/glossary'},
 					{title:term.heading, url: '/admin/glossary/' + term._id}			
 				],
-				activeNavItem: 'Glossary'
+				activeNavItem: 'Glossary',
+				pageUIType: 'ADMIN_GLOSSARY_TERM'
 			};
 			res.status(200).render('admin/glossaryTerm.ejs', {user: req.user, term: term, page: pageInfo});
 		})
@@ -313,7 +326,8 @@ exports.getUsers = function(req,res){
 					{title:'Admin', url: '/admin'},
 					{title:'Users', url: '/admin/users'}			
 				],
-				activeNavItem: 'Users'
+				activeNavItem: 'Users',
+				pageUIType: 'ADMIN_USERS'
 			};
 			res.status(200).render('admin/users.ejs', {user:req.user, users:users, page: pageInfo});
 		})
@@ -332,7 +346,8 @@ exports.getUser = function(req,res){
 					{title:'Users', url: '/admin/users'},
 					{title: '' + user.local.profile.firstName + ' ' + user.local.profile.lastName , url: '/admin/users/' + user._id}				
 				],
-				activeNavItem: 'Users'
+				activeNavItem: 'Users',
+				pageUIType: 'ADMIN_USER'
 			};
 
 			Course.find({}).exec()
@@ -423,7 +438,8 @@ exports.getLeaderboard= function(req,res){
 					{title:'Admin', url: '/admin'},
 					{title:'Leaderboard', url: '/admin/leaderboard'}			
 				],
-				activeNavItem: 'Leaderboard'
+				activeNavItem: 'Leaderboard',
+				pageUIType: 'ADMIN_LEADERBOARD'
 			};
 			res.status(200).render('admin/leaderboard.ejs', {user:req.user, users:users, page: pageInfo});
 		})
