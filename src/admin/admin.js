@@ -1,8 +1,11 @@
 import 'bootstrap';
-import $ from 'jquery';
-import 'bs4-summernote';
+const $ = require( 'jquery' ); // make eslint happy
+import 'trumbowyg';
 
 $(document).ready(function(){ // eslint-disable-line no-undef 
+
+	$.trumbowyg.svgPath = '/public/icons.svg';
+
 
 	// pageUIType is appended to body by page template
 	// here it is used to determine which ui functions to load on the page
@@ -300,7 +303,6 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		data = {
 		  role: $("input[name=optionsModuleRoles]:checked","#editRole").val()
 		}
-		console.log(data);
 		$.ajax({
 				  type: "PUT",
 				  url: url,
@@ -362,9 +364,10 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 	  $("#updateDefinition").on('click', function(e){
 		e.preventDefault();
 		var url = "/admin/glossary/" + $(this).data('termId');
-		data = {
-		  definition: $('#newDefinition').summernote('code')
+		var data = {
+		  definition: $('#newDefinition').trumbowyg('html')
 		}
+
 		$.ajax({
 				  type: "PUT",
 				  url: url,
@@ -415,31 +418,20 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		});
 	  })
   
-	  $('.summernote').summernote({
-		height:300,
-		minHeight:300,
-		dialogsInBody:true,
-		maxHeight:300,
-		shortcuts: false,
-		toolbar: [
-		  ['style', ['bold', 'italic', 'underline', 'clear']],
-		  ['para', ['ul', 'ol', 'paragraph']],
-		  ['misc', ['codeview']],
-		  ['insert',['link']]
-		]
-	  });
+	  $('.trumbowyg').trumbowyg();
 
 
 		break;
 	case 'ADMIN_GLOSSARY':
 	$("#addGlossaryTerm").submit(function(e){
         e.preventDefault();
-        var data = {}
-        data.heading = $("#termHeading").val();
-        data.definition = $("#termDefinition").summernote('code');
-        data.moreLink = $("#moreLink").val();
+        var data = {
+			heading: 	$("#termHeading").val(),
+			definition: $("#termDefinition").trumbowyg('html'),
+			moreLink: 	$("#moreLink").val()
+		}
 
-        $.ajax({
+		$.ajax({
            type: "POST",
            url: "/admin/glossary",
            dataType: 'json',
@@ -474,19 +466,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
         modal.find('#termDeleteConfirm').off('click');
     });
     
-    $('.summernote').summernote({
-      height:300,
-      minHeight:300,
-      dialogsInBody:true,
-      maxHeight:300,
-      shortcuts: false,
-      toolbar: [
-        ['style', ['bold', 'italic', 'underline', 'clear']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['misc', ['codeview']],
-        ['insert',['link']]
-      ]
-	});
+    $('.trumbowyg').trumbowyg();
 	
 		break;
 	case 'ADMIN_QUESTIONS':
@@ -1085,22 +1065,14 @@ $('#deleteQuizModal').on('hide.bs.modal', function(e){
 	case 'ACADEMY_OPTIONS':
 		$('#setOptions').submit(function(e){
 			e.preventDefault();
-			var data = {};
-			data.academyIntroText = '';
-			data.academyNewsText = '';
-			var academyIntroText = $.parseHTML( $('#academyIntroText').summernote('code'));
-			$.each(academyIntroText, function(i,el){
-				$(el).addClass('lead');
-				data.academyIntroText += $(el)[0].outerHTML;
-			});
-			var academyNewsText = $.parseHTML( $('#academyNewsText').summernote('code'));
-			$.each(academyNewsText,function(i,el){
-				$(el).addClass('card-text');
-				data.academyNewsText += $(el)[0].outerHTML;
-			});
-	
-			data.academyNewsHeadline = $('#academyNewsHeadline').val();
-			data.academyHomeCta = $('#academyHomeCta').val();
+			var data = {
+				academyIntroText: $('#academyIntroText').trumbowyg('html'),
+				academyNewsText:  $('#academyNewsText').trumbowyg('html'),
+				academyNewsHeadline: $('#academyNewsHeadline').val(),
+				academyHomeCta: $('#academyHomeCta').val()
+			};
+			
+			console.log(data)
 			$.ajax({
 				type: 'PUT',
 				url: '/admin/academy',
@@ -1113,20 +1085,7 @@ $('#deleteQuizModal').on('hide.bs.modal', function(e){
 			});
 		});
 	
-		$('.summernote').summernote({
-			height:300,
-			minHeight:300,
-			maxHeight:300,
-			shortcuts: false,
-			toolbar: [
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['misc', ['codeview']],
-				['insert',['link']]
-			]
-		});
-
-		$('.summernote').eq(1).css('background-color','azure');
+		$('.trumbowyg').trumbowyg();
 
 		break;
 	default:

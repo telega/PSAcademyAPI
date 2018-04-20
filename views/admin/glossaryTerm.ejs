@@ -92,7 +92,7 @@
         <form id = "editDescription">
               <div class="form-group">
                 <label forid="newDefinition">New Definition</label>
-                <textarea required type="textfield" class="form-control summernote" id="newDefinition" value="<%= term.definition %>" ><%=term.definition %> </textarea>
+                <textarea required type="textfield" class="form-control trumbowyg" id="newDefinition" value="<%= term.definition %>" ><%-term.definition %> </textarea>
               </div>
               <button type="submit" data-term-id = "<%= term._id %>" class="btn btn-warning" id="updateDefinition">Update Definition</button>
         </form>

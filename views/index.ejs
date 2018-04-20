@@ -50,8 +50,9 @@
     <div class="col-md-5 "  >
     <h1 class="mt-4" >Academy by PatSnap</h1>
     <% if(options.academyIntroText){%>
-    <%-options.academyIntroText%>
-    <%}%>
+    <div class = 'lead'> <%-options.academyIntroText%></div>
+	<%}%>
+	<br>
     <h4>Available Topics</h4>
     <ul>
         <%courses.forEach(function(course){
