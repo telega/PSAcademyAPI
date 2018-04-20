@@ -16,9 +16,9 @@ module.exports = {
 	devtool:'inline-source-map',
 	plugins:[
 		new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        }),
+			$: 'jquery',
+			jQuery: 'jquery'
+		}),
 		new CleanWebpackPlugin(['public']),
 		new CopyWebpackPlugin([{from:'assets'}])
 	]
