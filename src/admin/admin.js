@@ -1,11 +1,13 @@
 import 'bootstrap';
 const $ = require( 'jquery' ); // make eslint happy
 import 'trumbowyg';
+import React from 'react';
+import ReactDOM from 'react-dom'
+import AdminHome from './pages/AdminHome';
 
 $(document).ready(function(){ // eslint-disable-line no-undef 
 
 	$.trumbowyg.svgPath = '/public/icons.svg';
-
 
 	// pageUIType is appended to body by page template
 	// here it is used to determine which ui functions to load on the page
@@ -241,6 +243,13 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		break;
 	case 'ADMIN_HOME':
 		// TODO
+
+		ReactDOM.render(
+			<AdminHome />,
+			document.getElementById('root')
+		  );
+		  
+
 		break;
 	case 'ADMIN_USER':
 

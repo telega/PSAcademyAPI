@@ -30,7 +30,7 @@ module.exports = {
 			jQuery: 'jquery'
 		}),
 		new CleanWebpackPlugin(['public']),
-		new CopyWebpackPlugin([{from:'assets'}]),
+		new CopyWebpackPlugin([{from:'assets'}], {ignore:['.DS_Store']}),
 		
 		//new BundleAnalyzerPlugin()
 

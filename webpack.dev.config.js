@@ -5,6 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 	mode:'development',
+	
 	entry: {
 		academy: './src/academy/academy.js',
 		admin: './src/admin/admin.js',
@@ -12,6 +13,11 @@ module.exports = {
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'public')
+	},
+	module: {
+		rules: [
+			{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+		]
 	},
 	devtool:'inline-source-map',
 	plugins:[
