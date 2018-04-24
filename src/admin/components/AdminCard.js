@@ -1,8 +1,13 @@
 import React from 'react';
-import classnames from 'classnames';
+// import classnames from 'classnames';
 import AcademyButton from './AcademyButton';
 
 export default class AdminCard extends React.Component{
+
+	renderButtons(){
+		return this.props.buttons.map((button, i)=>{
+			return	<AcademyButton key = {i} url ={ button.url } title = {button.title} iconName = {button.iconName} />
+	})}
 
 	render(){
 		return(
@@ -11,9 +16,7 @@ export default class AdminCard extends React.Component{
 					<div className="card-header">{this.props.cardTitle}</div>
 					<div className="card-body">
 						<div className="card-text">
-							<AcademyButton url='/admin/courses' iconName='fa-graduation-cap' title='Manage Courses' />
-							<AcademyButton url='/admin/quizzes' iconName='fa-question-circle' title= 'Manage Quizzes' />
-							<AcademyButton url='/admin/glossary' iconName='fa-book' title= 'Manage Glossary' />
+							{this.renderButtons()}
 						</div>
 					</div>
 				</div>
@@ -24,5 +27,6 @@ export default class AdminCard extends React.Component{
 }
 
 AdminCard.defaultProps = {
-	cardTitle: 'Default'
+	cardTitle: 'Card Name',
+	buttons: []
 };

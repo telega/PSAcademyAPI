@@ -17,6 +17,11 @@ module.exports = {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'public')
 	},
+	module: {
+		rules: [
+			{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+		]
+	},
 	devtool:'source-map',
 	plugins:[
 		new UglifyJSPlugin({

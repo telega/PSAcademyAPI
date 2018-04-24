@@ -4,6 +4,7 @@ import 'trumbowyg';
 import React from 'react';
 import ReactDOM from 'react-dom'
 import AdminHome from './pages/AdminHome';
+import AdminCourses from './pages/AdminCourses';
 
 $(document).ready(function(){ // eslint-disable-line no-undef 
 
@@ -18,46 +19,51 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		
 	case 'ADMIN_COURSES':
 
-		$('#addCourse').submit(function(e){
-			e.preventDefault();
-			var data = {};
-			data.name = $('#courseName').val();
-			data.description = $('#courseDescription').val();
-			data.order = $('#courseOrder').val()||99;
-			$.ajax({
-				type: 'POST',
-				url: '/api/courses',
-				dataType: 'json',
-				async: true,
-				data: data,
-				success: function (){
-					location.reload(true);  // eslint-disable-line no-undef                 
-				}
-			});
-		});
+	ReactDOM.render(
+		<AdminCourses />,
+		document.getElementById('root')// eslint-disable-line no-undef       
+	); 
 
-		$('#courseDeleteModal').on('show.bs.modal', function(e){
-			var button = $(e.relatedTarget); 
-			var modal = $(this);
-			modal.find('#courseToDeleteName').text(button.data('courseName'));
-			modal.find('#courseDeleteConfirm').on('click', function(){
-				var url = '/api/courses/' + button.data('courseId');
-				$.ajax({
-					type: 'DELETE',
-					url: url,
-					dataType: 'json',
-					async: true,
-					success: function (){
-						location.reload(true); // eslint-disable-line no-undef   
-					}
-				});
-			});
-		});
+		// $('#addCourse').submit(function(e){
+		// 	e.preventDefault();
+		// 	var data = {};
+		// 	data.name = $('#courseName').val();
+		// 	data.description = $('#courseDescription').val();
+		// 	data.order = $('#courseOrder').val()||99;
+		// 	$.ajax({
+		// 		type: 'POST',
+		// 		url: '/api/courses',
+		// 		dataType: 'json',
+		// 		async: true,
+		// 		data: data,
+		// 		success: function (){
+		// 			location.reload(true);  // eslint-disable-line no-undef                 
+		// 		}
+		// 	});
+		// });
 
-		$('#courseDeleteModal').on('hide.bs.modal', function(){
-			var modal = $(this);
-			modal.find('#courseDeleteConfirm').off('click');
-		});
+		// $('#courseDeleteModal').on('show.bs.modal', function(e){
+		// 	var button = $(e.relatedTarget); 
+		// 	var modal = $(this);
+		// 	modal.find('#courseToDeleteName').text(button.data('courseName'));
+		// 	modal.find('#courseDeleteConfirm').on('click', function(){
+		// 		var url = '/api/courses/' + button.data('courseId');
+		// 		$.ajax({
+		// 			type: 'DELETE',
+		// 			url: url,
+		// 			dataType: 'json',
+		// 			async: true,
+		// 			success: function (){
+		// 				location.reload(true); // eslint-disable-line no-undef   
+		// 			}
+		// 		});
+		// 	});
+		// });
+
+		// $('#courseDeleteModal').on('hide.bs.modal', function(){
+		// 	var modal = $(this);
+		// 	modal.find('#courseDeleteConfirm').off('click');
+		// });
 		break;
 
 	case 'ADMIN_COURSE':
@@ -242,13 +248,11 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 
 		break;
 	case 'ADMIN_HOME':
-		// TODO
 
 		ReactDOM.render(
 			<AdminHome />,
-			document.getElementById('root')
-		  );
-		  
+			document.getElementById('root')// eslint-disable-line no-undef       
+		); 
 
 		break;
 	case 'ADMIN_USER':

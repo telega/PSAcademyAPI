@@ -14,6 +14,9 @@ module.exports = {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'public')
 	},
+	watchOptions:{
+		poll:true
+	},
 	module: {
 		rules: [
 			{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
