@@ -1,8 +1,8 @@
 import React from 'react';
-import Modal from 'react-bootstrap4-modal';
 import EditButton from './EditButton';
 import DeleteCourseButton from './DeleteCourseButton';
 import axios from 'axios';
+import AddCourseModal from './AddCourseModal'
 
 class TableRow extends React.Component{
 
@@ -12,7 +12,7 @@ class TableRow extends React.Component{
 				<td>{this.props.order}</td>
 				<td>{this.props.name}</td>
 				<td>{this.props.published.toString()}</td>
-				<td><EditButton url = {'/admin/courses' + this.props._id}/> <DeleteCourseButton handleUpdate = {this.props.handleUpdate}/> </td>
+				<td><EditButton url = {'/admin/courses/' + this.props._id}/> <DeleteCourseButton url = {'/api/courses/' + this.props._id} name = {this.props.name} handleUpdate = {this.props.handleUpdate}/> </td>
 			</tr>
 		)
 	}
@@ -24,9 +24,12 @@ export default class CourseTable extends React.Component{
 		super(props);
 	
 		this.updateCourseList = this.updateCourseList.bind(this);
+		this.showAddCourseModal= this.showAddCourseModal.bind(this);
+		this.hideAddCourseModal = this.hideAddCourseModal.bind(this);
 
 		this.state = {
-			courses:[]
+			courses:[],
+			showAddCourseModal: false,
 		};
 	  }
 
@@ -37,15 +40,27 @@ export default class CourseTable extends React.Component{
 					return {
 						order: c.order,
 						name: c.name,
-						published: c.published
+						published: c.published,
+						_id: c._id
 					}
 				});
 				this.setState({
 					courses: courses
 				});
+			})
+			.catch((err)=>{
+				console.log(err);
 			});
 	}
 	
+	showAddCourseModal(){
+		this.setState({showAddCourseModal:true})
+	}
+
+	hideAddCourseModal(){
+		this.setState({showAddCourseModal:false})
+	}
+
 	componentDidMount(){
 		this.updateCourseList();
 	}
@@ -74,11 +89,8 @@ export default class CourseTable extends React.Component{
             			</tbody>
             		</table>
        			 </div>
-		
-				<a className = 'btn btn-primary '>
-          		Launch demo modal
-        		</a>
-
+				<button className = 'btn btn-primary ' onClick = {this.showAddCourseModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Course</button>
+				<AddCourseModal show = {this.state.showAddCourseModal} handleClose = {this.hideAddCourseModal} update={this.updateCourseList} />
     		</div>
 		);
 	}

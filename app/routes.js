@@ -27,10 +27,10 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
 
-	apiRouter.route('/courses/:course_id/tags')
-		.get()
-		.put()
-		.delete();
+	// apiRouter.route('/courses/:course_id/tags')
+	// 	.get()
+	// 	.put()
+	// 	.delete();
 		
 	apiRouter.route('/courses/:course_id/units')
 		.get(courseController.getCourseUnits)

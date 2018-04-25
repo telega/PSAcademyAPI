@@ -6,7 +6,6 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 //const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
-
 module.exports = {
 	mode:'production',
 	entry: {
