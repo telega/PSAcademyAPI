@@ -135,6 +135,7 @@ exports.getCourse = function(req,res){
 					{title:course.name, url: '/admin/courses' + course._id },
 				],
 				activeNavItem: 'Courses',
+				_id : course._id,
 				pageUIType: 'ADMIN_COURSE'
 			};
 	

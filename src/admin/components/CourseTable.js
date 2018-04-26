@@ -88,9 +88,9 @@ export default class CourseTable extends React.Component{
 							{this.renderRows()}
             			</tbody>
             		</table>
+					<button className = 'btn btn-primary ' onClick = {this.showAddCourseModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Course</button>
+					<AddCourseModal show = {this.state.showAddCourseModal} handleClose = {this.hideAddCourseModal} update={this.updateCourseList} />
        			 </div>
-				<button className = 'btn btn-primary ' onClick = {this.showAddCourseModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Course</button>
-				<AddCourseModal show = {this.state.showAddCourseModal} handleClose = {this.hideAddCourseModal} update={this.updateCourseList} />
     		</div>
 		);
 	}

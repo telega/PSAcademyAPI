@@ -1,6 +1,31 @@
 import React from 'react';
 
+class NavLink extends React.Component{
+	render(){
+
+		if(this.props.activeNavItem == this.props.title){
+			return(
+				<li className = "nav-item">
+					<a href={this.props.url} className = "nav-link active">{this.props.title}</a>
+				</li>
+			)
+		} else {
+			return(
+				<li className = "nav-item">
+					<a href={this.props.url} className = "nav-link">{this.props.title}</a>
+				</li>
+			)
+		}
+	}
+}
+
 export default class NavBar extends React.Component{
+
+	renderNavItems(){
+		return	this.props.navItems.map((navItem)=>{
+			return <NavLink url = {navItem.url} title = {navItem.title} activeNavItem = {this.props.activeNavItem} />
+		})
+	}
 
 	render(){
 		return(
@@ -11,13 +36,7 @@ export default class NavBar extends React.Component{
 				</button>
 				<div className="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul className=" navbar-nav mr-auto">
-						<li className = "nav-item"><a href="/admin/courses" className = "nav-link <% if(page.activeNavItem == 'Courses'){ %> active <%}%> ">Courses</a></li>
-						<li className = "nav-item"><a href="/admin/users" className = "nav-link <% if(page.activeNavItem == 'Users'){ %> active <%}%> ">Users</a></li>
-						<li className = "nav-item"><a href="/admin/leaderboard" className = "nav-link <% if(page.activeNavItem == 'Leaderboard'){ %> active <%}%> ">Leaderboard</a></li>
-						<li className = "nav-item"><a href="/admin/quizzes" className = "nav-link <% if(page.activeNavItem == 'Quizzes'){ %> active <%}%> ">Quizzes</a></li>
-						<li className = "nav-item"><a href="/admin/feedback" className = "nav-link <% if(page.activeNavItem == 'Feedback'){ %> active <%}%> ">Feedback</a></li>
-						<li className = "nav-item"><a href="/admin/academy" className = "nav-link <% if(page.activeNavItem == 'Options'){ %> active <%}%> ">Options</a></li>
-						<li className = "nav-item"><a href="/admin/glossary" className = "nav-link <% if(page.activeNavItem == 'Glossary'){ %> active <%}%> ">Glossary</a></li>
+						{this.renderNavItems()}	
 					</ul>
 					<ul className="nav navbar-nav navbar-right">
 						<li className = "nav-item"><a href="/logout" className="nav-link">Logout</a></li>
@@ -27,3 +46,36 @@ export default class NavBar extends React.Component{
 		);
 	}
 }
+
+NavBar.defaultProps = {
+	navItems:[
+		{
+			url:'/admin/courses',
+			title:'Courses'
+		},
+		{
+			url:'/admin/users',
+			title:'Users'
+		},
+		{
+			url:'/admin/leaderboard',
+			title:'Leaderboard'
+		},
+		{
+			url:'/admin/quizzes',
+			title:'Quizzes'
+		},
+		{
+			url:'/admin/feedback',
+			title:'Feedback'
+		},
+		{
+			url:'/admin/academy',
+			title:'Options'
+		},
+		{
+			url:'/admin/glossary',
+			title:'Glossary'
+		}
+	]
+};

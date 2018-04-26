@@ -39,12 +39,3 @@ export default class BreadCrumbs extends React.Component{
 		);
 	}
 }
-
-BreadCrumbs.defaultProps = {
-	breadCrumbs: [
-		{title:'test',
-		 url:'test' },
-		 {title:'testActive',
-		 url:'test' }
-	]
-}

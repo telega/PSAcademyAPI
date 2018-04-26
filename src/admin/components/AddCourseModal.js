@@ -26,7 +26,6 @@ export default class AddCourseModal extends React.Component{
 	}
 
 	handleConfirm(){
-		
 		axios.post('/api/courses', {
 			name: this.state.courseName,
 			description: this.state.courseDescription,
@@ -37,7 +36,6 @@ export default class AddCourseModal extends React.Component{
 			this.props.handleClose();
 		})
 		.catch((err)=>{console.log(err)})
-
 	}
 
 	render(){
