@@ -74,7 +74,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 
 	ReactDOM.render(
 		<AdminCourse breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}, 	{title:title, url: '/admin/courses/' + id },
-	]} activeNavItem = {'Courses'} />,
+	]} activeNavItem = {'Courses'} courseTitle = {title} _id={id} />,
 		document.getElementById('root')// eslint-disable-line no-undef       
 	); 
 

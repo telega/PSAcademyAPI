@@ -22,8 +22,8 @@ class NavLink extends React.Component{
 export default class NavBar extends React.Component{
 
 	renderNavItems(){
-		return	this.props.navItems.map((navItem)=>{
-			return <NavLink url = {navItem.url} title = {navItem.title} activeNavItem = {this.props.activeNavItem} />
+		return	this.props.navItems.map((navItem, i)=>{
+			return <NavLink key = {i} url = {navItem.url} title = {navItem.title} activeNavItem = {this.props.activeNavItem} />
 		})
 	}
 

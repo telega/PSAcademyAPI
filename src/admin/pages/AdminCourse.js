@@ -2,9 +2,9 @@ import React from 'react';
 import NavBar from '../components/NavBar';
 //import AcademyButton from '../components/AcademyButton';
 import BreadCrumbs from '../components/BreadCrumbs';
-import CourseTable from '../Components/CourseTable';
+import EditCourseTable from '../Components/EditCourseTable';
 
-export default class AdminCourses extends React.Component{
+export default class AdminCourse extends React.Component{
 
 	render(){
 		return (
@@ -14,19 +14,12 @@ export default class AdminCourses extends React.Component{
 				<div className="container">
 					<div className = "row">
 						<div className = "col-md-12">
-							<h1><span className="fa fa-graduation-cap" aria-hidden="true"> </span> Academy Courses</h1>
+							<h4><span className="fa fa-graduation-cap" aria-hidden="true"></span> Edit Course: </h4>
+							<h1>{this.props.courseTitle}</h1>
 							<hr/>
 							<div>
 							</div>
-
-							 <div className = "row">
-        						<div className="col-md-12">
-           			 				<h2>Courses </h2>
-        						</div>
-    						</div>
-
-							<CourseTable />
-							
+							<EditCourseTable _id={this.props._id} />
 						</div>
 					</div>
 				</div>
@@ -36,6 +29,6 @@ export default class AdminCourses extends React.Component{
 }
 
 
-AdminCourses.defaultProps = {
+AdminCourse.defaultProps = {
 
 }

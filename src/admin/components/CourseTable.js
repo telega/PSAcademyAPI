@@ -1,5 +1,5 @@
 import React from 'react';
-import EditButton from './EditButton';
+import EditCourseButton from './EditCourseButton';
 import DeleteCourseButton from './DeleteCourseButton';
 import axios from 'axios';
 import AddCourseModal from './AddCourseModal'
@@ -12,7 +12,7 @@ class TableRow extends React.Component{
 				<td>{this.props.order}</td>
 				<td>{this.props.name}</td>
 				<td>{this.props.published.toString()}</td>
-				<td><EditButton url = {'/admin/courses/' + this.props._id}/> <DeleteCourseButton url = {'/api/courses/' + this.props._id} name = {this.props.name} handleUpdate = {this.props.handleUpdate}/> </td>
+				<td><EditCourseButton url = {'/admin/courses/' + this.props._id}/> <DeleteCourseButton url = {'/api/courses/' + this.props._id} name = {this.props.name} handleUpdate = {this.props.handleUpdate}/> </td>
 			</tr>
 		)
 	}
