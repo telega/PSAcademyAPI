@@ -61,7 +61,11 @@ exports.putCourse = function(req,res){
 		course.name = req.body.name || course.name;
 		course.description = req.body.description || course.description;
 		course.order = req.body.order || course.order;
-		course.published = req.body.published || course.published;
+		
+		if(typeof(req.body.published) !== 'undefined'){
+			course.published = req.body.published
+		}
+		
 		course.courseImageUrl = req.body.courseImageUrl || course.courseImageUrl;
 		course.courseThumbImageUrl = req.body.courseThumbImageUrl || course.courseThumbImageUrl;
 

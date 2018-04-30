@@ -19,6 +19,33 @@ class EditButton extends React.Component{
 	}
 }
 
+class PublishToggleRow extends React.Component{
+
+	render(){
+		console.log('render')
+	if(this.props.published == true){
+		return(
+			<tr>
+				<td><strong>Status</strong></td>
+				<td>Published</td>
+				<td><button onClick={this.props.togglePublished}  className="btn btn-warning">Unpublish</button></td>
+			</tr>
+		)
+	}
+	else {
+		return(
+			<tr>
+				<td><strong>Status</strong></td>
+				<td>Unpublished</td>
+				<td><button  onClick={this.props.togglePublished} className="btn btn-danger">Publish</button></td>
+			</tr>
+		)
+	}
+}
+	
+
+}
+
 export default class EditCourseTable extends React.Component{
 	constructor(props){
 		super(props)
@@ -26,14 +53,17 @@ export default class EditCourseTable extends React.Component{
 		this.updateCourseInfo = this.updateCourseInfo.bind(this);
 		this.showEditModal = this.showEditModal.bind(this);
 		this.hideEditModal = this.hideEditModal.bind(this);
+		this.togglePublished = this.togglePublished.bind(this);
 
 		this.state = {
 			course: {},
 			showModals:{
 				name:false,
-				description:false
+				description:false,
+				order:false,
+				courseImageUrl:false,
+				courseThumbImageUrl:false
 			},
-			showModal:false
 		}
 	}
 
@@ -49,6 +79,17 @@ export default class EditCourseTable extends React.Component{
 
 	componentDidMount(){
 		this.updateCourseInfo();
+	}
+
+	togglePublished(){
+
+		axios.put('/api/courses/' + this.state.course._id, {
+			published: !this.state.course.published
+		})
+		.then((res)=>{
+			this.updateCourseInfo();
+		})
+		.catch((err)=>{console.log(err)})
 	}
 
 	updateCourseInfo(){
@@ -75,53 +116,42 @@ export default class EditCourseTable extends React.Component{
                 <tr>
                     <td><strong>Course Name</strong></td>
                     <td>{this.state.course.name}</td>
-                     <td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} name={'name'} title = {this.state.course.name} handleClose={this.hideEditModal} fieldTitle={'Course Name'} fieldName = {'name'} show = {this.state.showModals.name}/>
+                     <td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} fieldType={'text'} title = {this.state.course.name} handleClose={this.hideEditModal} fieldTitle={'Course Name'} fieldName = {'name'} show = {this.state.showModals.name}/>
 						<EditButton name = {'name'} handleClick = {this.showEditModal} />
 					</td>
 				</tr>
                 <tr>
                     <td><strong>Description</strong></td>
                     <td>{this.state.course.description}</td>
-                    <td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} name={'description'} title = {this.state.course.description} handleClose={this.hideEditModal} fieldTitle={'Course Description'} fieldName = {'description'} show = {this.state.showModals.description}/>
+                    <td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} fieldType={'textarea'} title = {this.state.course.description} handleClose={this.hideEditModal} fieldTitle={'Course Description'} fieldName = {'description'} show = {this.state.showModals.description}/>
 						<EditButton name = {'description'} handleClick = {this.showEditModal} /></td>
                 </tr>
                 <tr>
                     <td><strong>Order</strong></td>
                     <td>{this.state.course.order}</td>
-                    <td><button data-toggle="modal" data-target="#updateOrderModal" className="btn btn-secondary"><span className="fa fa-pencil" aria-hidden="true"></span></button></td>
-                </tr>
-                <tr>
-                    <td><strong>Course Images</strong></td>
-                    <td>
-                      <table className="table" >
-                        <thead className='thead-default'>
-							<tr>
-                          	<th>Main</th>
-                          	<th>Thumbnail</th>
-						  </tr>
-                        </thead>
-                        <tbody>
-                          	<tr >
-                            	<td className = 'courseImages'><img src = {this.state.course.courseImageUrl} className="img-fluid" /></td>
-                           	 	<td className = 'courseImages'><img src = {this.state.course.courseThumbImageUrl} className="img-fluid" /></td>
-                          	</tr>
-						  </tbody>
-                      </table>
-                    </td>
-                    <td><button data-toggle="modal" data-target="#updateImageModal" className="btn btn-secondary"><span className="fa fa-pencil" aria-hidden="true"></span></button></td>
-                </tr>
-    
-                <tr>
-                    <td><strong>Status</strong></td>
-                    <td>{String(this.state.course.published)}           </td>
-                    <td>
-                          <button data-toggle= "modal" data-target="#updateStatusModal"  className="btn btn-primary">Publish</button>
-                    </td>
-                </tr>
-            </tbody>
+					<td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} fieldType={'number'} title = {String(this.state.course.order)} handleClose={this.hideEditModal} fieldTitle={'Order'} fieldName = {'order'} show = {this.state.showModals.order}/>
+						<EditButton name = {'order'} handleClick = {this.showEditModal} />
+						</td> 
+				</tr>
+				<tr>
+                    <td><strong>Main Image</strong></td>
+                    <td className = 'courseImages'><img src = {this.state.course.courseImageUrl} className="img-fluid" /></td>
+					<td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} fieldType={'text'} title = {String(this.state.course.courseImageUrl)} handleClose={this.hideEditModal} fieldTitle={'Course Image'} fieldName = {'courseImageUrl'} show = {this.state.showModals.courseImageUrl}/>
+						<EditButton name = {'courseImageUrl'} handleClick = {this.showEditModal} />
+						</td> 
+				</tr>
+				<tr>
+                    <td><strong>Thumbnail Image </strong></td>
+					<td className = 'courseImages'><img src = {this.state.course.courseThumbImageUrl} className="img-fluid" /></td>	
+					<td><EditCourseInfoModal update = {this.updateCourseInfo} _id = {this.state.course._id} fieldType={'text'} title = {String(this.state.course.courseThumbImageUrl)} handleClose={this.hideEditModal} fieldTitle={'Thumbnail Image'} fieldName = {'courseThumbImageUrl'} show = {this.state.showModals.courseThumbImageUrl}/>
+						<EditButton name = {'courseThumbImageUrl'} handleClick = {this.showEditModal} />
+						</td> 
+				</tr>
 
-
-					</table>
+					<PublishToggleRow published = {this.state.course.published} togglePublished={this.togglePublished}  />
+               
+           	 	</tbody>
+				</table>
 				</div>
 			</div>
 		);

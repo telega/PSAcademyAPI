@@ -36,7 +36,7 @@ export default class EditCourseInfoModal extends React.Component{
    }
 
    closeModal(){
-	   this.props.handleClose(this.props.name)
+	   this.props.handleClose(this.props.fieldName)
    }
 
 	handleConfirm(){
@@ -64,7 +64,7 @@ export default class EditCourseInfoModal extends React.Component{
 				<form id = "updateCourse">
         		    <div className="form-group">
         		      <label htmlFor="newValue">New {this.props.fieldTitle}:</label>
-        		      <input required type="text" className="form-control" id="newValue" name='newValue' placeholder={this.state.title} value={this.state.newValue} onChange = {this.handleFormChange} />
+        		      <input required type={this.props.fieldType} className="form-control" id="newValue" name='newValue' placeholder={this.state.title} value={this.state.newValue} onChange = {this.handleFormChange} />
         		    </div>
         		</form>
 
