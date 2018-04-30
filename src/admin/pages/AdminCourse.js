@@ -27,8 +27,3 @@ export default class AdminCourse extends React.Component{
 		);
 	}
 }
-
-
-AdminCourse.defaultProps = {
-
-}

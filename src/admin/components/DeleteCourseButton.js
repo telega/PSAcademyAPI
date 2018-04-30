@@ -28,7 +28,6 @@ export default class DeleteCourseButton extends React.Component{
 			axios.delete(this.props.url)
 			.then(()=>{
 				this.props.handleUpdate();
-		  		//this.setState({ show: false});
 			})
 			.catch((err)=>{
 				console.log(err);

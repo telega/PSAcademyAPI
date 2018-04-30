@@ -109,9 +109,7 @@ exports.postCourseUnit = function(req,res){
 		if(err){
 			logger.error(err);
 		}
-
 		course.units.push(unit);
-
 		course.save(function(err){
 			if(err){
 				logger.error(err);

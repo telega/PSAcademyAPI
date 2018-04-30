@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import EditCourseInfoModal from './EditCourseInfoModal'
+import EditCourseInfoModal from './EditCourseInfoModal';
+import AddCourseUnitModal from './AddCourseUnitModal';
+import ConfirmModal from './ConfirmModal';
 
 class EditButton extends React.Component{
 	constructor(props){
@@ -19,10 +21,100 @@ class EditButton extends React.Component{
 	}
 }
 
+class UnitTableRow extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.deleteUnit = this.deleteUnit.bind(this);
+		this.showConfirmModal = this.showConfirmModal.bind(this);
+		this.hideConfirmModal = this.hideConfirmModal.bind(this);
+
+		this.state = {
+			showConfirmModal: false
+		}
+	}
+
+	deleteUnit(){
+		axios.delete('/api/courses/' + this.props.courseId + '/units/' + this.props.unitId)
+		.then(()=>{
+			this.props.update();
+		})
+		.catch((err)=>{console.log(err)});
+	}
+
+	showConfirmModal(){
+		this.setState({showConfirmModal:true});
+	}
+
+	hideConfirmModal(){
+		this.setState({showConfirmModal:false});
+	}
+
+	render(){
+		return(
+				<tr>
+					<td>{this.props.order}</td>
+					<td>{this.props.name}</td>
+					<td>{this.props.published ? 'Published' : 'Draft'} </td>
+					<td>
+					<a href = {"/admin/courses/" + this.props.courseId +  "/units/"  + this.props.unitId } className = "btn btn-secondary"> <span className="fa fa-pencil" aria-hidden="true"></span> </a> &nbsp;
+					<button onClick = {this.showConfirmModal} className = "btn btn-danger">Delete</button>
+					<ConfirmModal children={<p>Really delete <strong>{this.props.name} ?</strong></p>} visible = {this.state.showConfirmModal} onOK = {this.deleteUnit} onCancel = {this.hideConfirmModal} />
+					</td>
+				</tr>
+		)
+	}
+}
+
+class UnitTable extends React.Component{
+	constructor(props){
+		super(props);
+	
+		this.renderUnitTableRows = this.renderUnitTableRows.bind(this);
+	}
+
+	renderUnitTableRows(){
+		return(this.props.units.map((unit,i)=>{
+					return	<UnitTableRow key={i} update={this.props.update} order = {unit.order} name = {unit.name} published={unit.published} unitId = {unit._id} courseId = {this.props.courseId}/>
+				})
+		)
+	}
+
+	render(){
+
+		if(this.props.units.length > 0){
+			return(
+
+				<div className = "row">
+				<div className = "col-md-12">
+				<h3>Course Units</h3>
+				<table width='100%' className="table table-striped">
+					<thead className = 'thead-default' >
+						<tr>
+							<th>#</th>
+							<th>Unit Name</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>    
+					<tbody>
+						{this.renderUnitTableRows()}
+					</tbody>
+					</table>
+				</div>
+			</div>
+
+			);
+		}
+		
+		return null;
+		
+	}
+}
+
 class PublishToggleRow extends React.Component{
 
 	render(){
-		console.log('render')
 	if(this.props.published == true){
 		return(
 			<tr>
@@ -54,17 +146,32 @@ export default class EditCourseTable extends React.Component{
 		this.showEditModal = this.showEditModal.bind(this);
 		this.hideEditModal = this.hideEditModal.bind(this);
 		this.togglePublished = this.togglePublished.bind(this);
+		this.showAddCourseUnitModal = this.showAddCourseUnitModal.bind(this);
+		this.hideAddCourseUnitModal = this.hideAddCourseUnitModal.bind(this);
 
 		this.state = {
-			course: {},
+			course: {
+				units:[]
+			},
 			showModals:{
 				name:false,
 				description:false,
 				order:false,
 				courseImageUrl:false,
-				courseThumbImageUrl:false
+				courseThumbImageUrl:false,
+				addCourseUnitModal:false
 			},
 		}
+	}
+
+	showAddCourseUnitModal(){
+		let showModals = {...this.state.showModals, addCourseUnitModal:true };
+		this.setState({showModals:showModals})
+	}
+
+	hideAddCourseUnitModal(){
+		let showModals = {...this.state.showModals, addCourseUnitModal:false };
+		this.setState({showModals:showModals})
 	}
 
 	showEditModal(modalName){
@@ -93,14 +200,17 @@ export default class EditCourseTable extends React.Component{
 	}
 
 	updateCourseInfo(){
+
 		axios.get('/api/courses/' + this.props._id)
 			.then((response)=>{			
 				this.setState({course:response.data})
 			})
+			.catch((err)=>{console.log(err)})
 	}
 
 	render(){
 		return (
+			<div>
 			<div className = "row">
         		<div className = "col-md-12">
        			<table width='100%' className="table table-striped">
@@ -153,6 +263,17 @@ export default class EditCourseTable extends React.Component{
            	 	</tbody>
 				</table>
 				</div>
+			</div>
+
+			<UnitTable units = {this.state.course.units} courseId = {this.state.course._id} update = {this.updateCourseInfo}/>
+
+			<div className = "row">
+        		<div className="col-md-12">
+					<button className = 'btn btn-primary ' onClick = {this.showAddCourseUnitModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Unit</button>
+					<AddCourseUnitModal courseId = {this.state.course._id}show = {this.state.showModals.addCourseUnitModal} handleClose = {this.hideAddCourseUnitModal} update={this.updateCourseInfo} />
+       			 </div>
+    		</div>
+			
 			</div>
 		);
 	}
