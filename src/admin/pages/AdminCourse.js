@@ -1,6 +1,5 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
-//import AcademyButton from '../components/AcademyButton';
 import BreadCrumbs from '../components/BreadCrumbs';
 import EditCourseTable from '../Components/EditCourseTable';
 
