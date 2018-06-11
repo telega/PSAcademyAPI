@@ -3,7 +3,6 @@
 //var Quiz = require('../models/quiz');
 //var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
-const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 
 
@@ -24,9 +23,12 @@ exports.putFeedback = function(req,res){
 		.then((feedback)=>{
 			feedback.title = req.body.title  || feedback.title;
 			feedback.description = req.body.description || feedback.description;
-			feedback.published = req.body.published || feedback.published;				
-			feedback.save(()=>{
-				res.status(200).json({message: 'Vote Added'});
+			if(typeof(req.body.published) !== 'undefined'){
+				feedback.published = req.body.published;
+			}
+			
+			return feedback.save(()=>{
+				res.status(200).json({message: 'feedback updated'});
 			});			
 		})
 		.catch((err)=>{

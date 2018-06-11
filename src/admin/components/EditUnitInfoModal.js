@@ -32,23 +32,23 @@ export default class EditUnitInfoModal extends React.Component{
 
 		this.setState({
 			[name]: value
-		})
-   }
+		});
+	}
 
-   closeModal(){
-	   this.props.handleClose(this.props.fieldName)
-   }
+	closeModal(){
+		this.props.handleClose(this.props.fieldName)
+	}
 
 	handleConfirm(){
 
 		axios.put('/api/courses/' + this.props.courseId + '/units/' + this.props.unitId, {
 			[this.props.fieldName]: this.state.newValue,
 		})
-		.then(()=>{
-			this.props.update();
-			this.closeModal();
-		})
-		.catch((err)=>{console.log(err)})
+			.then(()=>{
+				this.props.update();
+				this.closeModal();
+			})
+			.catch((err)=>{console.log(err)})
 	}
 
 	render(){
@@ -61,7 +61,7 @@ export default class EditUnitInfoModal extends React.Component{
       		  	</button>				 
       		  </div>
       		  <div className="modal-body">
-				<form id = "updateCourse">
+					<form id = "updateCourse">
         		    <div className="form-group">
         		      <label htmlFor="newValue">New {this.props.fieldTitle}:</label>
         		      <input required type={this.props.fieldType} className="form-control" id="newValue" name='newValue' placeholder={this.state.title} value={this.state.newValue} onChange = {this.handleFormChange} />
@@ -70,7 +70,7 @@ export default class EditUnitInfoModal extends React.Component{
 
       		  </div>
       		  <div className="modal-footer">
-				<button type="button" className="btn btn-secondary" onClick={this.closeModal}>
+					<button type="button" className="btn btn-secondary" onClick={this.closeModal}>
       		      Cancel
       		    </button>
       		    <button type="button" className="btn btn-success" onClick={this.handleConfirm}>

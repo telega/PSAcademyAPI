@@ -11,10 +11,33 @@ export default class AdminFeedback extends React.Component{
 	constructor(props){
 		super(props);
 
+		this.togglePublished = this.togglePublished.bind(this);
+		this.deleteFeedback = this.deleteFeedback.bind(this);
+
 		this.state={
 			feedbackItems:[]
 		};
 	}
+
+	togglePublished(id, published){
+		axios.put('/api/feedback/' + id, {
+			published: !published
+		})
+			.then(()=>{
+				this.updateFeedbackList();
+			})
+			.catch((err)=>{console.log(err);});
+		
+	}
+
+	deleteFeedback(id){
+		axios.delete('/api/feedback/' + id)
+			.then(()=>{
+				this.updateFeedbackList();
+			})
+			.catch((err)=>{console.log(err);});
+	}
+		
 
 	updateFeedbackList(){
 		axios.get('/api/feedback')
@@ -24,7 +47,8 @@ export default class AdminFeedback extends React.Component{
 						title:f.title,
 						votes: f.userVotes.length,
 						description : f.description,
-						publisheds: f.published,
+						published: f.published,
+						_id: f._id
 					};
 				});
 				this.setState({
@@ -59,7 +83,10 @@ export default class AdminFeedback extends React.Component{
 								</div>
 							</div>
 
-							<FeedbackTable feedbackItems = {this.state.feedbackItems}/>
+							<FeedbackTable feedbackItems = {this.state.feedbackItems} 
+								togglePublished = {this.togglePublished}
+								deleteFeedback = {this.deleteFeedback}
+							/>
 						</div>
 					</div>
 				</div>
