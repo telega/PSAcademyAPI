@@ -188,37 +188,6 @@ exports.getModule = function(req,res){
 		.catch((err)=>{logger.error(err);});
 };
 
-// Feedback 
-
-exports.putFeedback = function(req,res){
-	Feedback.findOne({_id: req.params.feedback_id}).exec()
-		.then((feedback)=>{
-			feedback.title = req.body.title  || feedback.title;
-			feedback.description = req.body.description || feedback.description;
-			feedback.published = req.body.published || feedback.published;				
-			feedback.save(()=>{
-				res.status(200).json({message: 'Vote Added'});
-			});			
-		})
-		.catch((err)=>{
-			logger.error(err);
-			res.status(500).json({message:err});
-		});
-	
-};
-
-exports.deleteFeedback = function(req,res){
-	Feedback.remove({_id: req.params.feedback_id}).exec()
-		.then(()=>{
-			res.status(200).json({message:'feedback deleted'});
-		})
-		.catch((err)=>{
-			logger.error(err);
-			res.status(500).json({message:err});
-		});
-	
-};
-
 // Quizzes 
 
 exports.getQuizzes = function(req,res){

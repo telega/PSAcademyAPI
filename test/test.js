@@ -559,9 +559,9 @@ describe('API Backend Routes', ()=>{
 
 		});
 
-// Feedback
 
-		it('Should update the options /feedback/courses PUT', (done) => {
+
+		it('Should update the options /academy/courses PUT', (done) => {
 
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -755,6 +755,32 @@ describe('API Backend Routes', ()=>{
 // Feedback
 
 	describe('Feedback Routes (Admin)', (done)=>{
+
+
+		it('Should return feedback items on /api/feedback GET', (done)=>{
+		
+			createTestUser(theAdminAccount,function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+				
+					request(server)
+						.get('/api/feedback')
+						.set('cookie', cookie)
+
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+						
+							deleteTestUser(testUser._id);
+						
+							done();
+						});
+				});	
+			
+			
+			});
+		
+		});
 
 		it('Should render the feedback admin page on /feedback/courses GET', (done) => {
 		

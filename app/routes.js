@@ -10,6 +10,7 @@ const quizController = require('./controllers/quiz-controller');
 const glossaryController = require('./controllers/glossary-controller');
 const academyController = require('./controllers/academy-controller');
 const searchController = require('./controllers/search-controller');
+const feedbackController = require('./controllers/feedback-controller');
 
 
 module.exports = function(app,passport){
@@ -70,9 +71,12 @@ module.exports = function(app,passport){
 	
 	// Feedback Routes (API)
 
+	apiRouter.route('/feedback')
+		.get(authController.isLoggedIn, authController.isAdmin, feedbackController.getFeedback);
+
 	apiRouter.route('/feedback/:feedback_id')
-		.put(authController.isLoggedIn, authController.isAdmin, adminController.putFeedback)
-		.delete(authController.isLoggedIn, authController.isAdmin,adminController.deleteFeedback);
+		.put(authController.isLoggedIn, authController.isAdmin, feedbackController.putFeedback)
+		.delete(authController.isLoggedIn, authController.isAdmin,feedbackController.deleteFeedback);
 
 	// User Routes
 

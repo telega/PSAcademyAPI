@@ -4,8 +4,6 @@ const logger = require('../logger');
 const search = require('../search');
 
 
-
-
 exports.validatePostCourse = [
 	check('name').exists().withMessage('Must exist and be an Alphanumeric'),
 	function (req,res,next){
