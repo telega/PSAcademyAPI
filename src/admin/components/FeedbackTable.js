@@ -1,13 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import EditCourseButton from './EditCourseButton';
-//import DeleteCourseButton from './DeleteCourseButton';
-//import axios from 'axios';
-//import AddCourseModal from './AddCourseModal'
+import Modal from 'react-bootstrap4-modal';
 
-// needs update(unpublish) and delete
+class DeleteFeedbackModal extends React.Component{
+
+	render(){
+		return(
+			<Modal visible={this.props.show} onClickBackdrop={this.props.hideModal}>
+				<div className="modal-header">
+					<h5 className="modal-title">Delete Feedback</h5>
+					<button type="button" className="close"  aria-label="Close" onClick = {this.props.hideModal}>
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div className="modal-body">
+					<p>Really Delete ? <br/> This cannot be undone. </p>
+				</div>
+				<div className="modal-footer">
+					<button type="button" className="btn btn-secondary" onClick={this.props.hideModal}>Cancel</button>
+					<button type="button" className="btn btn-danger" onClick={()=>this.props.deleteFeedback(this.props.id)}>Delete</button>
+				</div>
+			</Modal>
+		);
+	}
+}
+
+DeleteFeedbackModal.propTypes = {
+	show: PropTypes.bool,
+	hideModal: PropTypes.func,
+	id: PropTypes.string,
+	deleteFeedback: PropTypes.func,
+};
 
 class TableRow extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.showModal = this.showModal.bind(this);
+		this.hideModal = this.hideModal.bind(this);
+
+		this.state = {
+			showModal: false
+		};
+	}
+
+	showModal(){
+		this.setState({showModal:true});
+	}
+	hideModal(){
+		this.setState({showModal:false});
+	}
 
 	render(){
 		return(
@@ -18,7 +60,8 @@ class TableRow extends React.Component{
 				<td>{this.props.published ? 'Published': 'Unpublished'}</td>
 				<td>
 					<button onClick = {()=>this.props.togglePublished(this.props.id, this.props.published)} className = "btn btn-primary">{this.props.published? 'Unpublish' : 'Publish'}</button> &nbsp; 
-					<button onClick = {()=>this.props.deleteFeedback(this.props.id)} className = "btn btn-danger">Delete</button>
+					<button onClick= {this.showModal}  className = "btn btn-danger">Delete</button>
+					<DeleteFeedbackModal  hideModal = {this.hideModal} show = {this.state.showModal} deleteFeedback = {this.props.deleteFeedback} id={this.props.id} />
 				</td>
 			</tr>
 		);
