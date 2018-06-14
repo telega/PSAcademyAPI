@@ -8,6 +8,7 @@ import AdminCourses from './pages/AdminCourses';
 import AdminCourse from './pages/AdminCourse';
 import AdminUnit from './pages/AdminUnit';
 import AdminFeedback from './pages/AdminFeedback';
+import AdminGlossary from './pages/AdminGlossary';
 
 $(document).ready(function(){ // eslint-disable-line no-undef 
 
@@ -54,49 +55,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		break;
 	}
 
-	// $('#feedbackDeleteModal').on('show.bs.modal', function(e){
-	// 	var button = $(e.relatedTarget); 
-	// 	var modal = $(this);
-	// 	modal.find('#feedbackToDeleteName').text(button.data('feedbackName'));
-	// 	modal.find('#feedbackDeleteConfirm').on('click', function(){
-	// 		var url = '/api/feedback/' + button.data('feedbackId');
-	// 		$.ajax({
-	// 			type: 'DELETE',
-	// 			url: url,
-	// 			dataType: 'json',
-	// 			async: true,
-	// 			success: function (){
-	// 				location.reload(true); // eslint-disable-line no-undef 
-	// 			}
-	// 		});
-	// 	});
-	// });
 
-	// $('#feedbackDeleteModal').on('hide.bs.modal', function(){
-	// 	var modal = $(this);
-	// 	modal.find('#feedbackDeleteConfirm').off('click');
-	// });
-
-	// $('#updateStatusModal').on('show.bs.modal', function(e){
-	// 	var button = $(e.relatedTarget);
-	// 	var modal = $(this);
-	// 	modal.find('#toggleStatus').on('click', function(){
-	// 		var url = '/api/feedback/' + button.data('feedbackId');
-	// 		var data = {
-	// 			published: !$(button).data('publish')
-	// 		};
-	// 		$.ajax({
-	// 			type: 'PUT',
-	// 			url: url,
-	// 			dataType: 'json',
-	// 			async: true,
-	// 			data: data,
-	// 			success: function (){
-	// 				location.reload(true);  // eslint-disable-line no-undef       
-	// 			}
-	// 		});
-	// 	});
-	// });
 
 	case 'ADMIN_HOME':
 
@@ -293,53 +252,62 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		$('.trumbowyg').trumbowyg();
 		break;
 
-	case 'ADMIN_GLOSSARY':
-		$('#addGlossaryTerm').submit(function(e){
-			e.preventDefault();
-			var data = {
-				heading: 	$('#termHeading').val(),
-				definition: $('#termDefinition').trumbowyg('html'),
-				moreLink: 	$('#moreLink').val()
-			};
+	case 'ADMIN_GLOSSARY':{
+		ReactDOM.render(
+			<AdminGlossary breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Glossary', url: '/admin/glossary'}]}
+				activeNavItem = {'Glossary'} 
+			/>,
+			document.getElementById('root')// eslint-disable-line no-undef       
+		);
 
-			$.ajax({
-				type: 'POST',
-				url: '/admin/glossary',
-				dataType: 'json',
-				async: true,
-				data: data,
-				success: function (){
-					location.reload(true);        // eslint-disable-line no-undef             
-				}
-			});
-		});
-
-		$('#termDeleteModal').on('show.bs.modal', function(e){
-			var button = $(e.relatedTarget); 
-			var modal = $(this);
-			modal.find('#termToDeleteHEading').text(button.data('termHeading'));
-			modal.find('#termDeleteConfirm').on('click', function(){
-				var url = '/admin/glossary/' + button.data('termId');
-				$.ajax({
-					type: 'DELETE',
-					url: url,
-					dataType: 'json',
-					async: true,
-					success: function (){
-						location.reload(true);// eslint-disable-line no-undef 
-					}
-				});
-			});
-		});
-
-		$('#termDeleteModal').on('hide.bs.modal', function(){
-			var modal = $(this);
-			modal.find('#termDeleteConfirm').off('click');
-		});
-    
-		$('.trumbowyg').trumbowyg();
-	
 		break;
+	}
+	// $('#addGlossaryTerm').submit(function(e){
+	// 	e.preventDefault();
+	// 	var data = {
+	// 		heading: 	$('#termHeading').val(),
+	// 		definition: $('#termDefinition').trumbowyg('html'),
+	// 		moreLink: 	$('#moreLink').val()
+	// 	};
+
+	// 	$.ajax({
+	// 		type: 'POST',
+	// 		url: '/admin/glossary',
+	// 		dataType: 'json',
+	// 		async: true,
+	// 		data: data,
+	// 		success: function (){
+	// 			location.reload(true);        // eslint-disable-line no-undef             
+	// 		}
+	// 	});
+	// });
+
+	// $('#termDeleteModal').on('show.bs.modal', function(e){
+	// 	var button = $(e.relatedTarget); 
+	// 	var modal = $(this);
+	// 	modal.find('#termToDeleteHEading').text(button.data('termHeading'));
+	// 	modal.find('#termDeleteConfirm').on('click', function(){
+	// 		var url = '/admin/glossary/' + button.data('termId');
+	// 		$.ajax({
+	// 			type: 'DELETE',
+	// 			url: url,
+	// 			dataType: 'json',
+	// 			async: true,
+	// 			success: function (){
+	// 				location.reload(true);// eslint-disable-line no-undef 
+	// 			}
+	// 		});
+	// 	});
+	// });
+
+	// $('#termDeleteModal').on('hide.bs.modal', function(){
+	// 	var modal = $(this);
+	// 	modal.find('#termDeleteConfirm').off('click');
+	// });
+    
+	// $('.trumbowyg').trumbowyg();
+	
+	// break;
 
 	case 'ADMIN_QUESTIONS':
 		$('#addResponse').submit(function(e){

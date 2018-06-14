@@ -102,8 +102,18 @@ module.exports = function(app,passport){
 	apiRouter.route('/progress/:user_id/courses/:course_id/units/:unit_id')
 		.get(authController.isLoggedIn, userController.validateGetUnitProgress, userController.getUnitProgress);
 
+
+	// glossary routes (api)
+
+	apiRouter.route('/glossary')
+		.get(authController.isLoggedIn, authController.isAdmin, glossaryController.getGlossary);
+
+	apiRouter.route('/glossary/:term_id')
+		.delete(authController.isLoggedIn, authController.isAdmin, glossaryController.deleteGlossaryTerm);
+
+
 	// admin Routes
-	
+
 	adminRouter.route('/')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getAdminPage);
 
@@ -159,7 +169,6 @@ module.exports = function(app,passport){
 
 	adminRouter.route('/glossary/:term_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossaryTerm)
-		.delete(authController.isLoggedIn, authController.isAdmin, glossaryController.deleteGlossaryTerm)
 		.put(authController.isLoggedIn, authController.isAdmin,  glossaryController.putGlossaryTerm);
 	
 		

@@ -4,6 +4,13 @@ const logger = require('../logger');
 const search = require('../search');
 
 
+exports.getGlossary = function (req, res){
+	GlossaryTerm.find({}).collation({locale:'en', caseLevel: true}).sort({heading:1}).exec()
+		.then((glossaryTerms)=>{
+			res.status(200).json(glossaryTerms);
+		})
+		.catch((err)=>{ logger.error(err); });
+};
 
 exports.validatePostGlossaryTerm = [
 	check('heading').exists().withMessage('Must exist.'),

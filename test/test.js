@@ -695,7 +695,7 @@ describe('API Backend Routes', ()=>{
 			});
 		})
 
-		it('Should delete a single glossary term admin page on /admin/glossary/:term_id DELETE', (done)=>{
+		it('Should delete a single glossary term admin page on /api/glossary/:term_id DELETE', (done)=>{
 			
 			createTestUser(theAdminAccount, function(testUser){
 	
@@ -703,7 +703,7 @@ describe('API Backend Routes', ()=>{
 					
 					createTestGlossaryTerm(function(testGlossaryTerm){
 						request(server)
-							.delete('/admin/glossary/' + testGlossaryTerm._id)
+							.delete('/api/glossary/' + testGlossaryTerm._id)
 							.set('cookie', cookie)
 							.end((err,res)=>{
 								res.should.have.status(200);

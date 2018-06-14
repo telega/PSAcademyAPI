@@ -165,7 +165,7 @@ export default class EditCourseTable extends React.Component{
 	}
 
 	showAddCourseUnitModal(){
-		let showModals = {...this.state.showModals, addCourseUnitModal:true };
+		let showModals = { ...this.state.showModals, addCourseUnitModal:true };
 		this.setState({showModals:showModals})
 	}
 
