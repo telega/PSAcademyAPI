@@ -69,19 +69,11 @@ exports.fuseSearch = function(query){
 				courses.map((course)=>{
 					return {'searchKey':course.name, 'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'id': course._id };
 				}),
-				courses.map((course)=>{
-					if(course.tags.length > 0 ){
-						return course.tags.map((tag)=>{
-							return {'searchKey':tag,'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'tag':tag, 'id': course._id };
-						});
-					} else {
-						return {};
-					}
-				})
+				
 			]);
 		})
-		.then(([glossaryTerms, courses, tags])=>{
-			let data = _.flatten(_.concat(glossaryTerms, courses, tags));
+		.then(([glossaryTerms, courses])=>{
+			let data = _.flatten(_.concat(glossaryTerms, courses));
 			return data;
 		})
 		.then((data)=>{

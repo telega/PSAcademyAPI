@@ -265,7 +265,6 @@ function deleteTestGlossaryTerm(termId){
 describe('API Backend Routes', ()=>{
 
 	
-	
 // Courses	
 
 	describe('Courses', () =>{
@@ -698,7 +697,7 @@ describe('API Backend Routes', ()=>{
 		it('Should delete a single glossary term admin page on /api/glossary/:term_id DELETE', (done)=>{
 			
 			createTestUser(theAdminAccount, function(testUser){
-	
+
 				createLoginCookie(server, theAdminAccount, function(cookie) {
 					
 					createTestGlossaryTerm(function(testGlossaryTerm){
@@ -752,6 +751,56 @@ describe('API Backend Routes', ()=>{
 
 	})
 
+// Tags
+
+	describe('Tag Routes (Admin)', (done)=>{
+
+		it('Should return an object with tags on /api/tags GET', (done)=>{
+			createTestUser(theAdminAccount,function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+				
+					request(server)
+						.get('/api/tags')
+						.set('cookie', cookie)
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+						
+							deleteTestUser(testUser._id);
+						
+							done();
+						});
+				});	
+			});
+		})
+
+		it('Should creat a new tag on /api/tag POST', (done)=>{
+			createTestUser(theAdminAccount,function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+				
+					request(server)
+						.post('/api/tags')
+						.set('cookie', cookie)
+						.send({
+							name:'The Tag'
+						})
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.json;
+						
+							deleteTestUser(testUser._id);
+						
+							done();
+						});
+				});	
+			});
+		})
+
+
+	});
+
 // Feedback
 
 	describe('Feedback Routes (Admin)', (done)=>{
@@ -770,14 +819,11 @@ describe('API Backend Routes', ()=>{
 						.end((err,res)=>{
 							res.should.have.status(200);
 							res.should.be.json;
-						
 							deleteTestUser(testUser._id);
 						
 							done();
 						});
 				});	
-			
-			
 			});
 		
 		});

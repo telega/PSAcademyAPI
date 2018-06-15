@@ -5,8 +5,6 @@ import BreadCrumbs from '../components/BreadCrumbs';
 import axios from 'axios';
 import Modal from 'react-bootstrap4-modal';
 
-
-
 class DeleteTermModal extends React.Component{
 
 	render(){

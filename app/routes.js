@@ -11,7 +11,7 @@ const glossaryController = require('./controllers/glossary-controller');
 const academyController = require('./controllers/academy-controller');
 const searchController = require('./controllers/search-controller');
 const feedbackController = require('./controllers/feedback-controller');
-
+const tagController = require('./controllers/tag-controller');
 
 module.exports = function(app,passport){
 
@@ -111,6 +111,11 @@ module.exports = function(app,passport){
 	apiRouter.route('/glossary/:term_id')
 		.delete(authController.isLoggedIn, authController.isAdmin, glossaryController.deleteGlossaryTerm);
 
+	// tag routes (api)
+
+	apiRouter.route('/tags')
+		.get(authController.isLoggedIn, authController.isAdmin, tagController.getTags)
+		.post(authController.isLoggedIn, authController.isAdmin, tagController.postTag);
 
 	// admin Routes
 

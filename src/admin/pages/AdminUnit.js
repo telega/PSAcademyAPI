@@ -2,6 +2,7 @@ import React from 'react';
 import NavBar from '../components/NavBar';
 import BreadCrumbs from '../components/BreadCrumbs';
 import EditUnitTable from '../Components/EditUnitTable';
+import PropTypes from 'prop-types';
 
 export default class AdminUnit extends React.Component{
 
@@ -18,15 +19,18 @@ export default class AdminUnit extends React.Component{
 						</div>
 					</div>
 				
-				<div className="row">
-					<div className = "col-md-12">
-						<p>This Unit is part of <strong>{this.props.courseTitle}</strong></p>
-						<hr/>
+					<div className="row">
+						<div className = "col-md-12">
+							<p>This Unit is part of <strong>{this.props.courseTitle}</strong></p>
+							<hr/>
+						</div>
 					</div>
-				</div>
 					<div className = "row">
 						<div className = "col-md-12">
-						<EditUnitTable courseId={this.props.courseId} unitId={this.props.unitId} courseTitle = {this.props.courseTitle}/>
+							<EditUnitTable courseId={this.props.courseId} 
+								unitId={this.props.unitId} 
+								courseTitle = {this.props.courseTitle}
+							/>
 						</div>
 					</div>
 				</div>
@@ -36,11 +40,11 @@ export default class AdminUnit extends React.Component{
 }
 
 
-
-// <div class = "row">
-// <div class = "col-md-12">
-// 	<h1><span class="fa fa-graduation-cap" aria-hidden="true"> </span> Unit: {this.props.unitTitle}</h1>
-// 	<hr>
-// <div>
-// </div>
-
+AdminUnit.propTypes = {
+	activeNavItem:PropTypes.string,
+	breadCrumbs: PropTypes.array,
+	unitTitle: PropTypes.string,
+	courseTitle: PropTypes.string,
+	courseId: PropTypes.string,
+	unitId: PropTypes.string,
+};

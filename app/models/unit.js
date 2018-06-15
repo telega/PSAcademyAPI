@@ -2,30 +2,31 @@ const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const Schema   = mongoose.Schema;
 mongoose.Promise = bluebird;
-const Unit = require('./unit');
-const UnitSchema = Unit.schema;
+const Module = require('./module');
+const ModuleSchema = Module.schema;
 
-var CourseSchema = new Schema({
-	name: {type: String, unique: true, required: true},
+var UnitSchema = new Schema({
+	name: {type: String, required: true},
 	description: String,
 	published: {
 		type: Boolean,
 		default: false
 	},
-	type: {
-		type: String,
-		default:'Course'
-	},
 	order: Number,
-	units: [UnitSchema],
-	courseImageUrl:{
+	type:{
+		type: String,
+		default:'Unit'
+	},
+	modules: [ModuleSchema],
+	unitImageUrl:{
 		type: String,
 		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default.jpg'
 	},
-	courseThumbImageUrl:{
+	unitThumbImageUrl:{
 		type: String,
 		default:'https://www.patsnap.com/hubfs/Academy/Images/psa_course_default_thumb.jpg'
 	},
+	tags:[String],
 });
 
-module.exports = mongoose.model('Course', CourseSchema);
+module.exports = mongoose.model('Unit', UnitSchema);
