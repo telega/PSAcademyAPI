@@ -115,7 +115,10 @@ module.exports = function(app,passport){
 
 	apiRouter.route('/tags')
 		.get(authController.isLoggedIn, authController.isAdmin, tagController.getTags)
-		.post(authController.isLoggedIn, authController.isAdmin, tagController.postTag);
+		.post(authController.isLoggedIn, authController.isAdmin,tagController.validatePostTag, tagController.postTag);
+
+	apiRouter.route('/tags/:tag_id')
+		.put(authController.isLoggedIn, authController.isAdmin, tagController.validatePutTag, tagController.putTag);
 
 	// admin Routes
 

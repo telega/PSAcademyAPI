@@ -4,6 +4,7 @@ require('dotenv').config();
 var Course = require('../app/models/course');
 var User = require('../app/models/user');
 var Feedback = require('../app/models/feedback');
+var Tag = require('../app/models/tag');
 var Academy = require('../app/models/academy');
 var GlossaryTerm = require('../app/models/glossary');
 
@@ -140,35 +141,20 @@ function createTestCourse(done){
 }
 
 
-function createTestCourseWithTags(done){
+function createTestTag(done){
 
-	let testModule = {
-		name : 'Test Module',
-		description: 'Test Module'
-	};
-
-	let testUnit = {
-		name : 'Test Unit with Tags',
-		description: 'Test Unit',
-		//tags:['innovation', 'ip strategy'],
-		modules: [testModule]
-	};
-
-	let testCourse = new Course();
-	testCourse.name = 'Test Course With Tags';
-	testCourse.description = 'Test Course';
-	testCourse.published = true;
-	testCourse.units = [testUnit];
-	testCourse.tags = ['innovation'];
-
-
-	testCourse.save(function(err){
+	let testTag = new Tag();
+	testTag.name = 'Test Tag';
+	
+	testTag.save(function(err){
 		if(err){
 			throw err;
 		}
-		done(testCourse);
+		done(testTag);
 	});
 }
+
+
 
 function createBigTestCourse(done){
 
@@ -216,6 +202,14 @@ function createBigTestCourse(done){
 
 function deleteTestCourse(courseId){
 	Course.remove({_id:courseId}, (err)=>{
+		if(err){
+			throw err;
+		}
+	});
+}
+
+function deleteTestTag(tagId){
+	Tag.remove({_id:tagId}, (err)=>{
 		if(err){
 			throw err;
 		}
@@ -491,7 +485,7 @@ describe('API Backend Routes', ()=>{
 		});
 
 		it('Should return search results page /search POST', (done) => {
-			createTestCourseWithTags(function(course){
+			createTestCourse(function(course){
 				request(server)
 					.post('/search')
 					.send({
@@ -775,7 +769,7 @@ describe('API Backend Routes', ()=>{
 			});
 		})
 
-		it('Should creat a new tag on /api/tag POST', (done)=>{
+		it('Should create a new tag on /api/tag POST', (done)=>{
 			createTestUser(theAdminAccount,function(testUser){
 			
 				createLoginCookie(server, theAdminAccount, function(cookie) {
@@ -798,6 +792,179 @@ describe('API Backend Routes', ()=>{
 			});
 		})
 
+		it('Should reject an empty tag on /api/tag POST', (done)=>{
+			createTestUser(theAdminAccount,function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+				
+					request(server)
+						.post('/api/tags')
+						.set('cookie', cookie)
+						.send({})
+						.end((err,res)=>{
+							res.should.have.status(422);
+							res.should.be.json;
+						
+							deleteTestUser(testUser._id);
+						
+							done();
+						});
+				});	
+			});
+		})
+
+		it('Should update tag name on /api/tag PUT', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					
+					createTestTag((tag)=>{
+						request(server)
+							.put('/api/tags/'+ tag._id)
+							.set('cookie', cookie)
+							.send({
+								name:'Updated Tag'
+							})
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.json;
+
+								Tag.findOne({_id: tag._id}).exec()
+									.then((updatedTag)=>{
+										updatedTag.name.should.equal('Updated Tag');
+
+										deleteTestTag(tag._id);
+										deleteTestUser(testUser._id);
+									
+										done();
+									})
+							
+					
+							});
+						})
+				});	
+			});
+		})
+		
+		it('Should add course to tag on /api/tag PUT', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+
+					createTestCourse(function(testCourse){
+					
+							createTestTag((tag)=>{
+							request(server)
+								.put('/api/tags/'+ tag._id)
+								.set('cookie', cookie)
+								.send({
+									name:'Updated Tag',
+									course: testCourse._id
+								})
+								.end((err,res)=>{
+									res.should.have.status(200);
+									res.should.be.json;
+
+									Tag.findOne({_id: tag._id}).exec()
+										.then((updatedTag)=>{
+											updatedTag.name.should.equal('Updated Tag');
+											updatedTag.courses[0].should.exist;
+											updatedTag.courses[0].should.be.an('object');
+
+											deleteTestTag(tag._id);
+											deleteTestCourse(testCourse._id)
+											deleteTestUser(testUser._id);
+										
+											done();
+										})
+									
+									
+								});
+							})
+					});
+				});	
+			});
+		})
+		it('Should add unit to tag on /api/tag PUT with no course specified', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					createBigTestCourse(function(testCourse){
+						let testUnit = testCourse.units[0];
+				
+							createTestTag((tag)=>{
+							request(server)
+								.put('/api/tags/'+ tag._id)
+								.set('cookie', cookie)
+								.send({
+									name:'Updated Tag',
+									unit: testUnit._id
+								})
+								.end((err,res)=>{
+									res.should.have.status(200);
+									res.should.be.json;
+
+									Tag.findOne({_id: tag._id}).exec()
+										.then((updatedTag)=>{
+											updatedTag.name.should.equal('Updated Tag');
+											updatedTag.units[0].should.exist;
+											updatedTag.units[0].should.be.an('object');
+
+											deleteTestTag(tag._id);
+											deleteTestCourse(testCourse._id)
+											deleteTestUser(testUser._id);
+										
+											done();
+										})
+									
+									
+								});
+							})
+					});
+				});	
+			});
+		})
+
+		it('Should add unit and course to tag on /api/tag PUT with specified course', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					createBigTestCourse(function(testCourse){
+						let testUnit = testCourse.units[0];
+				
+							createTestTag((tag)=>{
+							request(server)
+								.put('/api/tags/'+ tag._id)
+								.set('cookie', cookie)
+								.send({
+									name:'Updated Tag',
+									unit: testUnit._id,
+									course: testCourse._id
+								})
+								.end((err,res)=>{
+									res.should.have.status(200);
+									res.should.be.json;
+
+									Tag.findOne({_id: tag._id}).exec()
+										.then((updatedTag)=>{
+											updatedTag.name.should.equal('Updated Tag');
+											updatedTag.units[0].should.exist;
+											updatedTag.units[0].should.be.an('object');
+
+											deleteTestTag(tag._id);
+											deleteTestCourse(testCourse._id)
+											deleteTestUser(testUser._id);
+										
+											done();
+										})
+									
+									
+								});
+							})
+					});
+				});	
+			});
+		})
 
 	});
 

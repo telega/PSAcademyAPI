@@ -8,6 +8,10 @@ const ModuleSchema = Module.schema;
 var UnitSchema = new Schema({
 	name: {type: String, required: true},
 	description: String,
+	shortDescription:{
+		type: String,
+		default: ''
+	},
 	published: {
 		type: Boolean,
 		default: false

@@ -103,15 +103,24 @@ userSchema.methods.checkAcademyProgressItems = function(courses){
 
 	let flatCourses = flattenCourses(courses);
 
-	this.local.academyProgress.forEach(function(progressItem){
+	let academyProgress = this.local.academyProgress.reduce((filtered, progressItem )=>{
 		let academyItem = flatCourses.find(function(e){
 			return e.id.toString() == progressItem.itemId;
 		});
-		progressItem.itemType = academyItem.itemType;
-		progressItem.relatedItem = academyItem.id;
-	});
+		
+		// remove item if course longer exists (eg course has been removed since user completed it)
+		if((typeof(academyItem) != 'undefined')){
+			progressItem.itemType = academyItem.itemType;
+			progressItem.relatedItem = academyItem.id;
+			filtered.push(progressItem);
+		}
+		
+		return filtered;
+	} , []);
 
-	return this.local.academyProgress;
+	return academyProgress;
+
+	
 };
 
 

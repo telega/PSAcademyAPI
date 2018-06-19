@@ -61,7 +61,7 @@ exports.putCourse = function(req,res){
 		course.order = req.body.order || course.order;
 		
 		if(typeof(req.body.published) !== 'undefined'){
-			course.published = req.body.published
+			course.published = req.body.published;
 		}
 		
 		course.courseImageUrl = req.body.courseImageUrl || course.courseImageUrl;
@@ -138,10 +138,11 @@ exports.putCourseUnit = function(req,res){
 		unit.name = req.body.name || unit.name;
 		unit.description = req.body.description || unit.description;
 		unit.order = req.body.order || unit.order;
+		unit.shortDescription = req.body.shortDescription || unit.shortDescription;
 		
 
 		if(typeof(req.body.published) !== 'undefined'){
-			unit.published = req.body.published
+			unit.published = req.body.published;
 		}
 		
 		unit.unitImageUrl = req.body.unitImageUrl || unit.unitImageUrl;

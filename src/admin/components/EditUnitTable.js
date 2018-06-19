@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import EditUnitInfoModal from './EditUnitInfoModal';
-import AddCourseUnitModal from './AddCourseUnitModal';
+import AddCourseUnitModuleModal from './AddCourseUnitModuleModal';
 import ConfirmModal from './ConfirmModal';
 
 class EditButton extends React.Component{
@@ -21,11 +21,11 @@ class EditButton extends React.Component{
 	}
 }
 
-class UnitTableRow extends React.Component{
+class ModuleTableRow extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.deleteUnit = this.deleteUnit.bind(this);
+		this.deleteModule = this.deleteModule.bind(this);
 		this.showConfirmModal = this.showConfirmModal.bind(this);
 		this.hideConfirmModal = this.hideConfirmModal.bind(this);
 
@@ -34,8 +34,8 @@ class UnitTableRow extends React.Component{
 		}
 	}
 
-	deleteUnit(){
-		axios.delete('/api/courses/' + this.props.courseId + '/units/' + this.props.unitId)
+	deleteModule(){
+		axios.delete('/api/courses/' + this.props.courseId + '/units/' + this.props.unitId + '/modules/' + this.props.moduleId)
 		.then(()=>{
 			this.props.update();
 		})
@@ -57,48 +57,48 @@ class UnitTableRow extends React.Component{
 					<td>{this.props.name}</td>
 					<td>{this.props.published ? 'Published' : 'Draft'} </td>
 					<td>
-					<a href = {"/admin/courses/" + this.props.courseId +  "/units/"  + this.props.unitId } className = "btn btn-secondary"> <span className="fa fa-pencil" aria-hidden="true"></span> </a> &nbsp;
+					<a href = {"/admin/courses/" + this.props.courseId +  "/units/"  + this.props.unitId + '/modules/' + this.props.moduleId} className = "btn btn-secondary"> <span className="fa fa-pencil" aria-hidden="true"></span> </a> &nbsp;
 					<button onClick = {this.showConfirmModal} className = "btn btn-danger">Delete</button>
-					<ConfirmModal children={<p>Really delete <strong>{this.props.name} ?</strong></p>} visible = {this.state.showConfirmModal} onOK = {this.deleteUnit} onCancel = {this.hideConfirmModal} />
+					<ConfirmModal children={<p>Really delete <strong>{this.props.name} ?</strong></p>} visible = {this.state.showConfirmModal} onOK = {this.deleteModule} onCancel = {this.hideConfirmModal} />
 					</td>
 				</tr>
 		)
 	}
 }
 
-class UnitTable extends React.Component{
+class ModuleTable extends React.Component{
 	constructor(props){
 		super(props);
 	
-		this.renderUnitTableRows = this.renderUnitTableRows.bind(this);
+		this.renderModuleTableRows = this.renderModuleTableRows.bind(this);
 	}
 
-	renderUnitTableRows(){
-		return(this.props.units.map((unit,i)=>{
-					return	<UnitTableRow key={i} update={this.props.update} order = {unit.order} name = {unit.name} published={unit.published} unitId = {unit._id} courseId = {this.props.courseId}/>
+	renderModuleTableRows(){
+		return(this.props.modules.map((module,i)=>{
+					return	<ModuleTableRow key={i} update={this.props.update} order = {module.order} name = {module.name} published={module.published} unitId = {this.props.unitId} moduleId={module._id} courseId = {this.props.courseId}/>
 				})
 		)
 	}
 
 	render(){
 
-		if(this.props.units.length > 0){
+		if(this.props.modules.length > 0){
 			return(
 
 				<div className = "row">
 				<div className = "col-md-12">
-				<h3>Course Units</h3>
+				<h3>Modules</h3>
 				<table width='100%' className="table table-striped">
 					<thead className = 'thead-default' >
 						<tr>
 							<th>#</th>
-							<th>Unit Name</th>
+							<th>Module Name</th>
 							<th>Status</th>
 							<th>Actions</th>
 						</tr>
 					</thead>    
 					<tbody>
-						{this.renderUnitTableRows()}
+						{this.renderModuleTableRows()}
 					</tbody>
 					</table>
 				</div>
@@ -111,6 +111,7 @@ class UnitTable extends React.Component{
 		
 	}
 }
+
 
 class PublishToggleRow extends React.Component{
 
@@ -138,7 +139,7 @@ class PublishToggleRow extends React.Component{
 
 }
 
-export default class EditCourseTable extends React.Component{
+export default class EditUnitTable extends React.Component{
 	constructor(props){
 		super(props)
 
@@ -146,8 +147,8 @@ export default class EditCourseTable extends React.Component{
 		this.showEditModal = this.showEditModal.bind(this);
 		this.hideEditModal = this.hideEditModal.bind(this);
 		this.togglePublished = this.togglePublished.bind(this);
-		this.showAddCourseUnitModal = this.showAddCourseUnitModal.bind(this);
-		this.hideAddCourseUnitModal = this.hideAddCourseUnitModal.bind(this);
+		this.showAddCourseUnitModuleModal = this.showAddCourseUnitModuleModal.bind(this);
+		this.hideAddCourseUnitModuleModal = this.hideAddCourseUnitModuleModal.bind(this);
 
 		this.state = {
 			unit: {
@@ -156,6 +157,7 @@ export default class EditCourseTable extends React.Component{
 			showModals:{
 				name:false,
 				description:false,
+				shortDescription:false,
 				order:false,
 				unitImageUrl:false,
 				unitThumbImageUrl:false,
@@ -164,13 +166,13 @@ export default class EditCourseTable extends React.Component{
 		}
 	}
 
-	showAddCourseUnitModal(){
-		let showModals = {...this.state.showModals, addCourseUnitModal:true };
+	showAddCourseUnitModuleModal(){
+		let showModals = {...this.state.showModals, addCourseUnitModuleModal:true };
 		this.setState({showModals:showModals})
 	}
 
-	hideAddCourseUnitModal(){
-		let showModals = {...this.state.showModals, addCourseUnitModal:false };
+	hideAddCourseUnitModuleModal(){
+		let showModals = {...this.state.showModals, addCourseUnitModuleModal:false };
 		this.setState({showModals:showModals})
 	}
 
@@ -236,6 +238,12 @@ export default class EditCourseTable extends React.Component{
                     <td><EditUnitInfoModal update = {this.updateUnitInfo} courseId = {this.props.courseId} unitId = {this.state.unit._id} fieldType={'textarea'} title = {this.state.unit.description} handleClose={this.hideEditModal} fieldTitle={'Unit Description'} fieldName = {'description'} show = {this.state.showModals.description}/>
 						<EditButton name = {'description'} handleClick = {this.showEditModal} /></td>
                 </tr>
+				<tr>
+                    <td><strong>Short Description</strong></td>
+                    <td>{this.state.unit.shortDescription}</td>
+                    <td><EditUnitInfoModal update = {this.updateUnitInfo} courseId = {this.props.courseId} unitId = {this.state.unit._id} fieldType={'textarea'} title = {this.state.unit.shortDescription} handleClose={this.hideEditModal} fieldTitle={'Short Description'} fieldName = {'shortDescription'} show = {this.state.showModals.shortDescription}/>
+						<EditButton name = {'shortDescription'} handleClick = {this.showEditModal} /></td>
+                </tr>
                 <tr>
                     <td><strong>Order</strong></td>
                     <td>{this.state.unit.order}</td>
@@ -265,12 +273,12 @@ export default class EditCourseTable extends React.Component{
 				</div>
 			</div>
 
-			{/*<UnitTable units = {this.state.unit.modals} courseId = {this.props.courseId} unitId = {this.props.unitId} update = {this.updateUnitInfo}/>*/}
+			<ModuleTable modules = {this.state.unit.modules} courseId = {this.props.courseId} unitId = {this.props.unitId} update = {this.updateUnitInfo}/>
 
 			<div className = "row">
         		<div className="col-md-12">
-					<button className = 'btn btn-primary ' onClick = {this.showAddCourseUnitModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Unit</button>
-					<AddCourseUnitModal courseId = {this.props.courseId} unitId = {this.props.unitId} show = {this.state.showModals.addCourseUnitModuleModal} handleClose = {this.hideAddCourseUnitModal} update={this.updateUnitInfo} />
+					<button className = 'btn btn-primary ' onClick = {this.showAddCourseUnitModuleModal}> <span className="fa fa-plus" aria-hidden="true"></span> Add a New Module</button>
+					<AddCourseUnitModuleModal courseId = {this.props.courseId} unitId = {this.props.unitId} show = {this.state.showModals.addCourseUnitModuleModal} handleClose = {this.hideAddCourseUnitModuleModal} update={this.updateUnitInfo} />
        			 </div>
     		</div>
 			
