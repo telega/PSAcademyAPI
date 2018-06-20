@@ -1090,6 +1090,42 @@ describe('User Routes', ()=>{
 
 	describe('General Page Rendering', ()=>{
 
+		it('Should render the Homepage / GET', (done)=>{
+
+					request(server)
+						.get('/')
+						.end((err,res)=>{
+							res.should.have.status(200);
+							res.should.be.html;
+							done();
+			
+			});
+		});
+
+		it('Should render the Login Page /login GET', (done)=>{
+
+			request(server)
+				.get('/login')
+				.end((err,res)=>{
+					res.should.have.status(200);
+					res.should.be.html;
+					done();
+	
+			});
+		});
+
+			it('Should render the Sign Up Page /login GET', (done)=>{
+
+				request(server)
+					.get('/signup')
+					.end((err,res)=>{
+						res.should.have.status(200);
+						res.should.be.html;
+						done();
+		
+				});
+			});
+
 		it('Courses /courses GET', (done)=>{
 
 			createTestUser( theUserAccount, function(testUser){

@@ -29,12 +29,15 @@
                   <%  
                   let filteredItems = items.filter(i => i.id == course._id);
                   if(filteredItems.length > 0){ %>
-                <div class="card">
+                <div class="card border">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=course.name%></h4>
                     <p class="card-text"><%=course.description%> <br> 
-                    <% let courseProgress = Math.round(filteredItems[0].progress);%>
+                    
+				  </div>
+				  	<div class="card-footer border-0 bg-white">
+						<% let courseProgress = Math.round(filteredItems[0].progress);%>
                       <% if(courseProgress >= 100){ %>
 
                         <div class="mb-4 text-light moduleProgress completed">                 
@@ -43,19 +46,22 @@
 
                       <% } else {%>
                         <strong>You have completed <%=courseProgress%>% of this course.</strong></p>
-                    <%}%>
-                    <a href="/courses/<%=course._id%>" class="btn btn-secondary" >Resume Course</a>
-                  </div>
+					<%}%>
+						<a href="/courses/<%=course._id%>" class="btn btn-secondary" >Resume Course</a>
+					</div>
                 </div>
 
                   <%}else{%>
-                <div class="card">
+                <div class="card border">
                   <img src="<%=course.courseThumbImageUrl%>" alt="<%=course.name%>" class="card-img-top">
                   <div class="card-body">
                     <h4 class="card-title"><%=course.name%></h4>
                     <p class="card-text"><%=course.description%></p>
+				  </div>
+				  <div class="card-footer border-0 bg-white">
+					
                     <button href="/courses/<%=course._id%>" class="btn btn-primary addCourseToUser" data-user-id="<%=user._id%>" data-course-id="<%=course._id%>"  role="button">Take the Course</button>
-                  </div>
+				</div>
                 </div>
             <% }}
             }); %>

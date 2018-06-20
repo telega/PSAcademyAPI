@@ -190,9 +190,10 @@ module.exports = function(app,passport){
 
 	//  Non API routers
 	router.route('/signup')
+		.get(academyController.getSignup)
 		.post(passport.authenticate('local-signup',{
 			successRedirect: '/',
-			failureRedirect: '/',
+			failureRedirect: '/signup',
 			failureFlash: true
 		}));
 

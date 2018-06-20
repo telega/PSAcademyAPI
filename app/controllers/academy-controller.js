@@ -308,6 +308,29 @@ exports.getLogin = function(req,res){
 	res.status(200).render('academy/login.ejs', { message: req.flash('loginMessage') });
 };
 
+exports.getSignup = function(req,res){
+
+	Academy.findOne({}, function(err,academyOptions){  
+		if(err){
+			logger.error(err);
+		}
+
+		if(!academyOptions){
+			academyOptions = new Academy();
+
+			academyOptions.save(function(err){
+				if(err){
+					logger.error(err);
+				}
+				res.status(200).render('academy/signup.ejs', { options:academyOptions, message: req.flash('loginMessage') });
+			});
+		} else {
+			res.status(200).render('academy/signup.ejs', {  options:academyOptions, message: req.flash('loginMessage') });
+		}
+	});
+
+};
+
 
 // exports.getProfile = function(req,res){
 

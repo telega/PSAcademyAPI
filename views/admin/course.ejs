@@ -3,7 +3,6 @@
 
 <div class="container">
 
-
     <div class = "row">
         <div class = "col-md-12">
             <h1><span class="fa fa-graduation-cap" aria-hidden="true"> </span> Course: <%=course.name%></h1>
@@ -45,7 +44,7 @@
                     <td><strong>Course Images</strong></td>
                     <td>
                       <table class="table" >
-                        <thead >
+                        <thead class='thead-default' >
                           <th>Main</th>
                           <th>Thumbnail</th>
                         </thead>
@@ -89,7 +88,7 @@
         <div class = "col-md-12">
         <h3>Course Units</h3>
         <table width='100%' class="table table-striped">
-            <thead>
+            <thead class='thead-default'>
                 <th>#</th>
                 <th>Unit Name</th>
                 <th>Status</th>
@@ -108,7 +107,7 @@
                     </td>
                     <td>
                     <a href = "/admin/courses/<%=course._id%>/units/<%= unit._id %>" data-unit-id = "<%= unit._id %>" class = "btn btn-secondary">Edit</a>
-                    <button  data-unit-id = "<%=unit._id %>" data-unit-name = "<%= unit.name %>" data-course-id="<%=course._id%>" data-toggle="modal" data-target="#unitDeleteModal" class = "btn btn-danger deleteUnit">Delete</button>
+                    <button data-unit-id = "<%=unit._id %>" data-unit-name = "<%= unit.name %>" data-course-id="<%=course._id%>" data-toggle="modal" data-target="#unitDeleteModal" class = "btn btn-danger deleteUnit">Delete</button>
                     </td>
                 </tr>
 
