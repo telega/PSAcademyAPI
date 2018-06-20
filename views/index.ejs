@@ -103,16 +103,20 @@
 						<div class="card-body">
 						  <h4 class="card-title"><%=counter%> <%=unit.name%></h4>
 						  <p class="card-text"><%=unit.shortDescription%> <br> 
-						  
-						  
 						</div>
 						<div class="card-footer bg-light border-0">
-							<p><%=unitLength%> weeks</p>
+							<p><%=unitLength%>&nbsp;
+								<%if(unitLength > 1){ %>
+									weeks
+								<%} else {%>
+									week
+								<%}%>
+							</p>
 							<a href="/login" class="btn btn-primary" >Get started</a>
 						</div>
 					</div>
 
-				<% 			counter++; 
+				<% 	counter++; 
 	
 				if(counter%3 == 0){ %>
 					</div> </div></div>
@@ -156,9 +160,11 @@
 		<div class="row mb-4">
 				<div class = "col-md-12">
 					<div class="text-center">
-						<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//academy.patsnap.com"><img src="/public/facebook.png"></a>
-						<a href="https://twitter.com/home?status=https%3A//academy.patsnap.com"><img src="/public/twitter.png"></a>
-						<a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//academy.patsnap.com&title=Academy%20by%20PatSnap&summary=Free%20online%20video%20courses%20so%20individuals%20and%20organizations%20can%20broaden%20knowledge%20of%20intellectual%20property%20(IP)%20to%20drive%20ideas,%20creativity%20and%20commercial%20success.&source="><img src="/public/linkedin.png"></a>
+						<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//academy.patsnap.com"><img height="48" width="48" src="/public/facebook.png"></a>
+						&nbsp;
+						<a href="https://twitter.com/home?status=https%3A//academy.patsnap.com"><img height="48" width="48" src="/public/twitter.png"></a>
+						&nbsp;
+						<a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//academy.patsnap.com&title=Academy%20by%20PatSnap&summary=Free%20online%20video%20courses%20so%20individuals%20and%20organizations%20can%20broaden%20knowledge%20of%20intellectual%20property%20(IP)%20to%20drive%20ideas,%20creativity%20and%20commercial%20success.&source="><img height="48" width="48" src="/public/linkedin.png"></a>
 					</div>
 				</div>
 		</div>
@@ -174,22 +180,15 @@
 	
 	<div class="row mb-4">
 			<div class="col-md-4">
-				<h4>Free access to training from specialists in the field</h4>
-				<p>Quisque dictum in augue ut porttitor. Phasellus feugiat iaculis laoreet.
-					 Nulla fringilla scelerisque ipsum vel dapibus. Integer consectetur tempor mauris vitae tincidunt. 
-					 Sed pulvinar, magna sit amet ullamcorper tempor, metus sem pretium quam, a facilisis ex risus sed nisl is sed lorem. Nullam eros nunc, rutrum dictum porttitor vitae, auctor id dolor.</p>
+				<h4>Free Access</h4>
+				<p>Enjoy free access to training from specialists in the field. Our courses include guest lecturers from universities, consultancies and experts in all areas of intellectual property.</p>	</div>
+			<div class="col-md-4">
+				<h4>Your own profile</h4>
+				<p>Track your progress and keep tabs on where you’re up to on the courses you’re taking. Identify new areas where you can advance your understanding.</p>
 			</div>
 			<div class="col-md-4">
-				<h4>Free access to training from specialists in the field</h4>
-				<p>Quisque dictum in augue ut porttitor. Phasellus feugiat iaculis laoreet.
-					 Nulla fringilla scelerisque ipsum vel dapibus. Integer consectetur tempor mauris vitae tincidunt. 
-					 Sed pulvinar, magna sit amet ullamcorper tempor, metus sem pretium quam, a facilisis ex risus sed nisl is sed lorem. Nullam eros nunc, rutrum dictum porttitor vitae, auctor id dolor.</p>
-			</div>
-			<div class="col-md-4">
-				<h4>Free access to training from specialists in the field</h4>
-				<p>Quisque dictum in augue ut porttitor. Phasellus feugiat iaculis laoreet.
-						 Nulla fringilla scelerisque ipsum vel dapibus. Integer consectetur tempor mauris vitae tincidunt. 
-						 Sed pulvinar, magna sit amet ullamcorper tempor, metus sem pretium quam, a facilisis ex risus sed nisl is sed lorem. Nullam eros nunc, rutrum dictum porttitor vitae, auctor id dolor.</p>
+				<h4>Test your knowledge</h4>
+				<p>Find out how much you’ve learned from our series of bite size videos and challenge yourself with our interactive tests and quizzes.</p>
 			</div>
 		</div>
 	</div>
