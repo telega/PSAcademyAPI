@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Academy Admin | <%=page.title%></title>
+    <link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
+
+	<link rel="stylesheet" href="/public/bootstrap.css" crossorigin="anonymous"> <!-- load bootstrap css -->    
+
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+ 	<link href="/public/trumbowyg.min.css" rel="stylesheet">
+
+    
+<style>
+  body{
+    padding-top:65px;
+    min-height:100%;
+    padding-bottom:20px;
+  }
+</style>
+</head>
+<body data-page-ui-type="<%=page.pageUIType%>" data-course-title="<%=course.name%>" data-course-id="<%=course._id%>" data-unit-id="<%=unit._id%>" data-unit-title="<%=unit.name%>" >
+
+
+	<div id='root'></div>
+
+
+<script src = "/public/admin.js"></script>
+
+
+</body>
+</html>
+

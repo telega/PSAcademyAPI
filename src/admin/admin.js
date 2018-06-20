@@ -1,14 +1,14 @@
 import 'bootstrap';
 const $ = require( 'jquery' ); // make eslint happy
 import 'trumbowyg';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import AdminHome from './pages/AdminHome';
-import AdminCourses from './pages/AdminCourses';
-import AdminCourse from './pages/AdminCourse';
-import AdminUnit from './pages/AdminUnit';
-import AdminFeedback from './pages/AdminFeedback';
-import AdminGlossary from './pages/AdminGlossary';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import AdminHome from './pages/AdminHome';
+// import AdminCourses from './pages/AdminCourses';
+// import AdminCourse from './pages/AdminCourse';
+// import AdminUnit from './pages/AdminUnit';
+// import AdminFeedback from './pages/AdminFeedback';
+// import AdminGlossary from './pages/AdminGlossary';
 
 $(document).ready(function(){ // eslint-disable-line no-undef 
 
@@ -23,34 +23,250 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		
 	case 'ADMIN_COURSES':
 
-		ReactDOM.render(
-			<AdminCourses breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}]} activeNavItem = {'Courses'} />,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		); 
+		// ReactDOM.render(
+		// 	<AdminCourses breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}]} activeNavItem = {'Courses'} />,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// ); 
 
+		$('#addCourse').submit(function(e){
+			e.preventDefault();
+			var data = {};
+			data.name = $('#courseName').val();
+			data.description = $('#courseDescription').val();
+			data.order = $('#courseOrder').val()||99;
+			$.ajax({
+				type: 'POST',
+				url: '/api/courses',
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);  // eslint-disable-line no-undef                 
+				}
+			});
+		});
+
+		$('#courseDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#courseToDeleteName').text(button.data('courseName'));
+			modal.find('#courseDeleteConfirm').on('click', function(){
+				var url = '/api/courses/' + button.data('courseId');
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true); // eslint-disable-line no-undef   
+					}
+				});
+			});
+		});
+
+		$('#courseDeleteModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#courseDeleteConfirm').off('click');
+		});
 
 		break;
 
 	case 'ADMIN_COURSE':{
-		let id = $('body').data('courseId');
-		let title = $('body').data('courseTitle');
+		// let id = $('body').data('courseId');
+		// let title = $('body').data('courseTitle');
 
-		ReactDOM.render(
-			<AdminCourse breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}, 	{title:title, url: '/admin/courses/' + id },
-			]} activeNavItem = {'Courses'} courseTitle = {title} _id={id} />,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		); 
+		// ReactDOM.render(
+		// 	<AdminCourse breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}, 	{title:title, url: '/admin/courses/' + id },
+		// 	]} activeNavItem = {'Courses'} courseTitle = {title} _id={id} />,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// ); 
+
+		$('#unitDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#unitToDeleteName').text(button.data('unitName'));
+			modal.find('#unitDeleteConfirm').on('click', function(e){
+				e.preventDefault();
+				var url = '/api/courses/' + button.data('courseId') + '/units/' + button.data('unitId');
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true); // eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#updateName').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId');
+			var	data = {
+				name: $('#newTitle').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true); // eslint-disable-line no-undef                    
+				}
+			});
+		});
+
+		$('#updateDescription').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId');
+			var data = {
+				description: $('#newDescription').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                 
+				}
+			});
+		});		
+		$('#updateCourseImages').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId');
+			var data = {
+				courseImageUrl: $('#newMainImageURL').val(),
+				courseThumbImageUrl: $('#newThumbImageURL').val()
+			};
+			
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true); // eslint-disable-line no-undef    
+				}
+			});
+		});
+
+		$('#updateOrder').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId');
+			var data = {
+				order: $('#newOrder').val()
+			};
+
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef               
+				}
+			});
+		});
+    
+		$('#updateStatus').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId');
+			var data = {
+				published: !$(this).data('publish')
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                
+				}
+			});
+		});
+
+		$('#addUnit').submit(function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units';
+			var data = {
+				name: 			$('#unitName').val(),
+				description:	$('#unitDescription').val(),
+				order:			$('#unitOrder').val() || 99
+			};
+
+			$.ajax({
+				type: 'POST',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef            
+				}
+			});
+		});
 
 		break;
 	}
 
 	case 'ADMIN_FEEDBACK':{
-		ReactDOM.render(
-			<AdminFeedback breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Feedback', url: '/admin/feedback'}]}
-				activeNavItem = {'Feedback'} 
-			/>,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		);
+		// ReactDOM.render(
+		// 	<AdminFeedback breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Feedback', url: '/admin/feedback'}]}
+		// 		activeNavItem = {'Feedback'} 
+		// 	/>,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// );
+
+		$('#feedbackDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#feedbackToDeleteName').text(button.data('feedbackName'));
+			modal.find('#feedbackDeleteConfirm').on('click', function(){
+				var url = '/api/feedback/' + button.data('feedbackId');
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true); // eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#feedbackDeleteModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#feedbackDeleteConfirm').off('click');
+		});
+
+		$('#updateStatusModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget);
+			var modal = $(this);
+			modal.find('#toggleStatus').on('click', function(){
+				var url = '/api/feedback/' + button.data('feedbackId');
+				var data = {
+					published: !$(button).data('publish')
+				};
+				$.ajax({
+					type: 'PUT',
+					url: url,
+					dataType: 'json',
+					async: true,
+					data: data,
+					success: function (){
+						location.reload(true);  // eslint-disable-line no-undef       
+					}
+				});
+			});
+		});
 
 		break;
 	}
@@ -59,10 +275,10 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 
 	case 'ADMIN_HOME':
 
-		ReactDOM.render(
-			<AdminHome />,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		); 
+		// ReactDOM.render(
+		// 	<AdminHome />,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// ); 
 
 		break;
 	case 'ADMIN_USER':
@@ -82,7 +298,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 				async: true,
 				data: data,
 				success: function (){
-					location.reload(true);      // eslint-disable-line no-undef               
+					location.reload(true); // eslint-disable-line no-undef               
 				}
 			});
 		});
@@ -101,7 +317,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 				async: true,
 				data: data,
 				success: function (){
-					location.reload(true);             // eslint-disable-line no-undef        
+					location.reload(true); // eslint-disable-line no-undef        
 				}
 			});
 		});
@@ -253,59 +469,61 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		break;
 
 	case 'ADMIN_GLOSSARY':{
-		ReactDOM.render(
-			<AdminGlossary breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Glossary', url: '/admin/glossary'}]}
-				activeNavItem = {'Glossary'} 
-			/>,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		);
+		// ReactDOM.render(
+		// 	<AdminGlossary breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Glossary', url: '/admin/glossary'}]}
+		// 		activeNavItem = {'Glossary'} 
+		// 	/>,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// );
+
+		$('#addGlossaryTerm').submit(function(e){
+			e.preventDefault();
+			var data = {
+				heading: 	$('#termHeading').val(),
+				definition: $('#termDefinition').trumbowyg('html'),
+				moreLink: 	$('#moreLink').val()
+			};
+
+			$.ajax({
+				type: 'POST',
+				url: '/admin/glossary',
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);        // eslint-disable-line no-undef             
+				}
+			});
+		});
+
+		$('#termDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#termToDeleteHEading').text(button.data('termHeading'));
+			modal.find('#termDeleteConfirm').on('click', function(){
+				var url = '/admin/glossary/' + button.data('termId');
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true);// eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#termDeleteModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#termDeleteConfirm').off('click');
+		});
+    
+		$('.trumbowyg').trumbowyg();
+	
 
 		break;
 	}
-	// $('#addGlossaryTerm').submit(function(e){
-	// 	e.preventDefault();
-	// 	var data = {
-	// 		heading: 	$('#termHeading').val(),
-	// 		definition: $('#termDefinition').trumbowyg('html'),
-	// 		moreLink: 	$('#moreLink').val()
-	// 	};
-
-	// 	$.ajax({
-	// 		type: 'POST',
-	// 		url: '/admin/glossary',
-	// 		dataType: 'json',
-	// 		async: true,
-	// 		data: data,
-	// 		success: function (){
-	// 			location.reload(true);        // eslint-disable-line no-undef             
-	// 		}
-	// 	});
-	// });
-
-	// $('#termDeleteModal').on('show.bs.modal', function(e){
-	// 	var button = $(e.relatedTarget); 
-	// 	var modal = $(this);
-	// 	modal.find('#termToDeleteHEading').text(button.data('termHeading'));
-	// 	modal.find('#termDeleteConfirm').on('click', function(){
-	// 		var url = '/admin/glossary/' + button.data('termId');
-	// 		$.ajax({
-	// 			type: 'DELETE',
-	// 			url: url,
-	// 			dataType: 'json',
-	// 			async: true,
-	// 			success: function (){
-	// 				location.reload(true);// eslint-disable-line no-undef 
-	// 			}
-	// 		});
-	// 	});
-	// });
-
-	// $('#termDeleteModal').on('hide.bs.modal', function(){
-	// 	var modal = $(this);
-	// 	modal.find('#termDeleteConfirm').off('click');
-	// });
-    
-	// $('.trumbowyg').trumbowyg();
 	
 	// break;
 
@@ -761,16 +979,172 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 
 	case 'ADMIN_UNIT':{
 
-		let courseId = $('body').data('courseId');
-		let courseTitle = $('body').data('courseTitle');
-		let unitId = $('body').data('unitId');
-		let unitTitle = $('body').data('unitTitle');
+		// let courseId = $('body').data('courseId');
+		// let courseTitle = $('body').data('courseTitle');
+		// let unitId = $('body').data('unitId');
+		// let unitTitle = $('body').data('unitTitle');
 
-		ReactDOM.render(
-			<AdminUnit breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}, {title:courseTitle, url: '/admin/courses/' + courseId }, {title:unitTitle, url: '/admin/courses/' + courseId +'/units/' + unitId},
-			]} activeNavItem = {'Courses'} courseTitle = {courseTitle} courseId={courseId} unitTitle = {unitTitle} unitId = {unitId} />,
-			document.getElementById('root')// eslint-disable-line no-undef       
-		); 
+		// ReactDOM.render(
+		// 	<AdminUnit breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Courses', url: '/admin/courses'}, {title:courseTitle, url: '/admin/courses/' + courseId }, {title:unitTitle, url: '/admin/courses/' + courseId +'/units/' + unitId},
+		// 	]} activeNavItem = {'Courses'} courseTitle = {courseTitle} courseId={courseId} unitTitle = {unitTitle} unitId = {unitId} />,
+		// 	document.getElementById('root')// eslint-disable-line no-undef       
+		// ); 
+
+		$('#moduleDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#moduleToDeleteName').text(button.data('moduleName'));
+			modal.find('#moduleDeleteConfirm').on('click', function(){
+				var url = '/api/courses/' + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
+				console.log(url);
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true);// eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#moduleDeleteModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#moduleDeleteConfirm').off('click');
+		});
+
+		$('#updateName').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				name: $('#newTitle').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);   // eslint-disable-line no-undef                  
+				}
+			});
+		});
+
+		$('#updateDescription').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				description: $('#newDescription').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                
+				}
+			});
+		});
+
+		$('#updateShortDescription').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				shortDescription: $('#newShortDescription').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                
+				}
+			});
+		});
+
+		$('#updateUnitImages').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				unitImageUrl: $('#newMainImageURL').val(),
+				unitThumbImageUrl: $('#newThumbImageURL').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                 
+				}
+			});
+		});
+
+
+		$('#updateOrder').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				order: $('#newOrder').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);  // eslint-disable-line no-undef                   
+				}
+			});
+		});
+    
+		$('#updateStatus').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId');
+			var data = {
+				published: !$(this).data('publish')
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);   // eslint-disable-line no-undef                  
+				}
+			});
+		});
+
+		$('#addModule').submit(function(e){
+			//var modal = $('#moduleAddModal');
+			e.preventDefault();
+			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId') + '/modules' ;
+			var data = {};
+			data.name = $('#moduleName').val();
+			data.description = $('#moduleDescription').val();
+			data.order = $('#moduleOrder').val() || 99;
+			data.type= $('input[name=optionsModuleTypes]:checked','#addModule').val();
+			$.ajax({
+				type: 'POST',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true); // eslint-disable-line no-undef                    
+				}
+			});
+		});
+
 
 		break;
 	}
