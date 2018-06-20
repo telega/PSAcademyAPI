@@ -1,0 +1,199 @@
+/*!
+ * Bootstrap v4.0.0-beta (https://getbootstrap.com)
+ * Copyright 2011-2017 The Bootstrap Authors
+ * Copyright 2011-2017 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700');
+
+@import "functions";
+@import "variables";
+@import "mixins";
+@import "print";
+@import "reboot";
+@import "type";
+@import "images";
+@import "code";
+@import "grid";
+@import "tables";
+@import "forms";
+@import "buttons";
+@import "transitions";
+@import "dropdown";
+@import "button-group";
+@import "input-group";
+@import "custom-forms";
+@import "nav";
+@import "navbar";
+@import "card";
+@import "breadcrumb";
+@import "pagination";
+@import "badge";
+@import "jumbotron";
+@import "alert";
+@import "progress";
+@import "media";
+@import "list-group";
+@import "close";
+@import "modal";
+@import "tooltip";
+@import "popover";
+@import "carousel";
+@import "utilities";
+
+html,body{
+    height:100%;
+}
+
+.btn-primary:hover{
+	background-color:$psMediumGreen;
+	border-color:$psMediumGreen;
+}
+
+.btn-secondary{
+	background-color:transparent;
+	color:$psMediumGray;
+}
+
+.gterms h3{
+	padding-top:65px;
+}
+
+
+.main-content{
+    min-height:100%;
+}
+
+.footer img{
+    max-width:220px;
+}
+
+.footer ul{
+	list-style-type:none;
+	padding-left:0px;
+    font-weight:300;
+}
+
+.footer h5 a{
+	color:$psLightGreen !important;
+    font-weight:300
+}
+
+ul.social li {
+    display: inline;
+    padding-left: 8px;
+}
+
+.cta img{
+    max-width:100% !important;
+    height: auto !important;
+}
+
+.academyLogo{
+    padding:4px;
+}
+
+.moduleProgress{
+    background-color:$psDarkGreen;
+    display:none;
+    padding:0px 4px;
+}
+
+.moduleProgress span{
+    float:right;
+    line-height:24px;
+    font-size: 60px;
+    color: #aebd38;
+}
+
+.completed{
+    display:block;
+}
+
+/* BASE QUIZ STYLES */
+/* These styles ensure that the necessary elements are hidden for toggling */
+
+/* DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING!! */
+
+.startQuiz,
+.nextQuestion,
+.backToQuestion,
+.questions li.question,
+.questions li.question .responses,
+.questions li.question .responses .correct,
+.questions li.question .responses .incorrect,
+.quizResults {
+    display: none;
+}
+
+/* If response messages are disabled or only shown on quiz completion,
+   nextQuestion button IS checkAnswer button - so it must be displayed */
+.nextQuestion.checkAnswer {
+    display: inline-block;
+}
+
+ol.questions,
+ul.answers,
+ul.responses,
+ol.questions li,
+ul.answers li,
+ul.responses li {
+    list-style-type: none;
+}
+
+/* Accessibility */
+.quizName span:first-child {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/* Custom Quiz Styling */
+
+#slickQuiz{ 
+    padding:8px;
+    background-color:$psLightGray;
+}
+
+#slickQuiz .button {
+  color: #fff;
+  margin-top:12px;
+  background-color: $psMediumBlue;
+  border-color: $psMediumBlue; }
+ #slickQuiz .button:hover {
+    color: #fff;
+    background-color: $psMediumGreen;
+    border-color: $psMediumGreen; }
+#slickQuiz .button:focus, #slickQuiz .button.focus {
+    box-shadow: 0 0 0 3px rgba(0, 165, 196, 0.5); 
+}
+
+#slickQuiz ol.questions{
+    padding-left:0px;
+}
+
+.quizHeader{
+    margin-bottom:12px;
+    color:#27688f;
+}
+
+.questionCount{
+    margin-bottom:12px !important;
+}
+
+.responses li.incorrect{
+    color:red;
+}
+
+ul.answers li{
+    margin-bottom:10px;
+}
+
+ul.answers label{
+    display:inline ;
+}

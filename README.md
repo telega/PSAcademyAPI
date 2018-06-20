@@ -11,6 +11,9 @@ Learn about IP, patents, and innovation.
 
 ## Quickstart
 
+#### Get files
+Copy this repo and install the dependencies witn `npm install`. 
+
 #### Configure environment
 
 The server expects a `.env` file to load various config vars. You must create this file or export the vars yourself (or configure them in your cloud service). 
@@ -77,7 +80,20 @@ The server uses [Passport](http://www.passportjs.org/) for authentication. Only 
 #### Search
 Limited search of glossary and courses is provided by FuseJS (http://fusejs.io/). A JSON file is created on server launch which is sent to the front end this purpose. 
 
-### React
+### Frontend
+#### CSS/SASS
+
+The frontend uses [Bootstrap 4](https://getbootstrap.com/), which is customised with [SASS](https://sass-lang.com/). 
+
+SASS components are sotored in `/bootstrap/scss`. Because the front end uses webpack, when working on the stylesheets, it is easiest to copy the compiled CSS into the `/assets` directory, then have webpack copy them to `/public` eg: 
+`sass --watch /bootstrap/scss/:assets`
+when 
+`npm run build-dev` is running.
+
+#### Interaction
+Interaction is mostly jQuery with the [SlickQuiz](https://github.com/jewlofthelotus/SlickQuiz) plugin being used for course Quizzes. 
+
+#### React
 A [React](https://reactjs.org/) frontend is a work in progress. React components are available in the `/src` directory.  To use the react frontend:
 
 * Swap the view templates with the react version (`*.ejs.react`) by renaming them to `*.ejs`. 

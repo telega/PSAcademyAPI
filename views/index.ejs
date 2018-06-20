@@ -98,13 +98,14 @@
 					
 					%>
 					
-					<div class="card">
+					<div class="card border">
 						<img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top" >
 						<div class="card-body">
-						  <h4 class="card-title"><%=counter%> <%=unit.name%></h4>
+						  <h4 class="card-title"><%=unit.name%></h4>
+						  <h5 class="card-title"><%=course.name%> </h5>
 						  <p class="card-text"><%=unit.shortDescription%> <br> 
 						</div>
-						<div class="card-footer bg-light border-0">
+						<div class="card-footer border-0 bg-white">
 							<p><%=unitLength%>&nbsp;
 								<%if(unitLength > 1){ %>
 									weeks
