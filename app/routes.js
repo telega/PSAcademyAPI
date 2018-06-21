@@ -28,11 +28,6 @@ module.exports = function(app,passport){
 		.put(authController.isLoggedIn, authController.isAdmin, courseController.putCourse)
 		.delete(authController.isLoggedIn, authController.isAdmin, courseController.deleteCourse);
 
-	// apiRouter.route('/courses/:course_id/tags')
-	// 	.get()
-	// 	.put()
-	// 	.delete();
-		
 	apiRouter.route('/courses/:course_id/units')
 		.get(courseController.getCourseUnits)
 		.post(authController.isLoggedIn, authController.isAdmin, courseController.postCourseUnit);
@@ -118,7 +113,8 @@ module.exports = function(app,passport){
 		.post(authController.isLoggedIn, authController.isAdmin,tagController.validatePostTag, tagController.postTag);
 
 	apiRouter.route('/tags/:tag_id')
-		.put(authController.isLoggedIn, authController.isAdmin, tagController.validatePutTag, tagController.putTag);
+		.put(authController.isLoggedIn, authController.isAdmin, tagController.validatePutTag, tagController.putTag)
+		.delete(authController.isLoggedIn, authController.isAdmin, tagController.deleteTag);
 
 	// admin Routes
 
@@ -174,6 +170,11 @@ module.exports = function(app,passport){
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossary)
 		.post(authController.isLoggedIn, authController.isAdmin, glossaryController.validatePostGlossaryTerm, glossaryController.postGlossaryTerm);
 
+	// Tag Routes (Admin)
+	adminRouter.route('/tags')
+		.get(authController.isLoggedIn, authController.isAdmin, adminController.getTags);
+	//.post(authController.isLoggedIn, authController.isAdmin, glossaryController.validatePostGlossaryTerm, glossaryController.postGlossaryTerm);
+
 
 	adminRouter.route('/glossary/:term_id')
 		.get(authController.isLoggedIn, authController.isAdmin, adminController.getGlossaryTerm)
@@ -223,6 +224,12 @@ module.exports = function(app,passport){
 
 	router.route('/feedback/:feedback_id')
 		.put(authController.isLoggedIn, academyController.validatePutFeedback, academyController.putFeedback);
+
+	router.route('/tags')
+		.get(authController.isLoggedIn, academyController.getTags );
+
+	router.route('/tags/:tag_id')
+		.get(authController.isLoggedIn, academyController.getTag);
 
 	router.route('/courses')
 		.get(authController.isLoggedIn, academyController.getCourses);

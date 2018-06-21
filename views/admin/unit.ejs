@@ -89,7 +89,7 @@
         <div class = "col-md-12">
         <h3>Unit Modules</h3>
         <table width='100%' class="table table-striped">
-            <thead>
+            <thead class="thead-default">
                 <th>#</th>
                 <th>Module Name</th>
                 <th>Type</th>
@@ -117,7 +117,40 @@
         <div class ="col-md-2">
             <button data-toggle="modal" data-target="#moduleAddModal" class = "btn btn-primary deleteCourse"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Module</button>
         </div>
-    </div>
+	</div>
+
+	<br>
+	<% if(activeTags.length > 0 ){ %>
+		<div class = "row">
+			<div class = "col-md-12">
+			<h3>Tags</h3>
+			<table width='100%' class="table table-striped">
+				<thead class="thead-default">
+					<th>Tag</th>
+					<th>Actions</th>
+				</thead>    
+				<tbody>
+				<% activeTags.forEach(function(tag){ %>
+					<tr>
+						<td><%=tag.name %></td>
+						<td>
+						<button data-tag-id = "<%=tag._id %>" data-unit-id= "<%=unit._id%>" data-tag-name = "<%= tag.name %>" data-course-id="<%=course._id%>" data-toggle="modal" data-target="#tagRemoveModal" class = "btn btn-danger deleteTag">Remove</button>
+						</td>
+					</tr>
+	
+				<% }); %>
+				</tbody>
+				</table>
+			</div>
+		</div>
+		<% } %>
+		<div class = "row">
+			<div class ="col-md-2">
+				<button data-toggle="modal" data-target="#tagAddModal" class = "btn btn-primary deleteCourse"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Tag</button>
+			</div>
+		</div>
+	
+
 </div>
 
 <!-- Modals -->
@@ -339,5 +372,58 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="tagAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header" >
+		  <h5 class="modal-title" id="exampleModalLabel">Add Tag</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  <form id = "addTag" data-course-id="<%=course._id%>" data-unit-id="<%=unit._id%>">
+			  <div class="form-group">
+				<label for="tagSelect">Add Tag</label>
+				<select id="tagSelect" class="form-control">
+					<% tags.forEach(function(tag){ %>
+						<option value = "<%=tag._id%>"><%=tag.name%></option>
+					<%}) %>
+				</select>
+			  </div>
+			  
+			  <button type="submit" class="btn btn-success">Add Tag</button>
+		  </form>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
+<div class="modal fade" id="tagRemoveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  <p>You are about to remove this tag from this unit. </p>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+		  <button type="button" class="btn btn-danger" id="tagRemoveConfirm">Remove Tag</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
 
 <%- include partials/footer.ejs%>

@@ -925,6 +925,52 @@ describe('API Backend Routes', ()=>{
 			});
 		})
 
+		it('Should remove unit from tag on /api/tag PUT ', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					createBigTestCourse(function(testCourse){
+						let testUnit = testCourse.units[0];
+				
+							createTestTag((tag)=>{
+							request(server)
+								.put('/api/tags/'+ tag._id)
+								.set('cookie', cookie)
+								.send({
+									unit: testUnit._id,
+								})
+								.end((err,res)=>{
+									
+									// TODO write a better helper for tag creation 
+
+									request(server)
+										.put('/api/tags/'+ tag._id)
+										.set('cookie', cookie)
+										.send({
+											unit: testUnit._id,
+											remove:true
+										})
+										.end((err,res)=>{ 
+											Tag.findOne({_id: tag._id}).exec()
+												.then((updatedTag)=>{
+												updatedTag.units.length.should.equal(0);
+
+												deleteTestTag(tag._id);
+												deleteTestCourse(testCourse._id)
+												deleteTestUser(testUser._id);
+										
+												done();
+											})
+
+										})
+									
+								});
+							})
+					});
+				});	
+			});
+		})
+
 		it('Should add unit and course to tag on /api/tag PUT with specified course', (done)=>{
 			createTestUser(theAdminAccount, function(testUser){
 			
@@ -962,6 +1008,27 @@ describe('API Backend Routes', ()=>{
 								});
 							})
 					});
+				});	
+			});
+		})
+
+		it('Should render the tag admin page /admin/tags GET', (done)=>{
+			createTestUser(theAdminAccount, function(testUser){
+			
+				createLoginCookie(server, theAdminAccount, function(cookie) {
+					
+					createTestTag((tag)=>{
+						request(server)
+							.get('/admin/tags')
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.html;
+									deleteTestTag(tag._id);
+									deleteTestUser(testUser._id);
+									done();
+							});
+						})
 				});	
 			});
 		})

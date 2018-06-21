@@ -1,0 +1,94 @@
+<%- include partials/header.ejs %>
+<body>
+
+<div class="container">
+    
+    <div class = "row">
+        <div class = "col-md-12">
+            <h1><span class="fa fa-tags" aria-hidden="true"> </span> Tags</h1>
+            <hr>
+        <div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
+            <h2>Total Tags: <%=tags.length%> </h2>
+        </div>
+    </div>
+    <div class = "row">
+        <div class="col-md-12">
+            <table width='100%' class="table table-striped">
+            <thead class="thead-default">
+                <th>Tags</th>
+                <th>Actions</th>
+            </thead>    
+            <tbody>
+            <% tags.forEach(function(tag){ %>
+                <tr>
+                    <td><%= tag.name%></td>
+                    <td>
+                        <a  class = "btn btn-secondary" href="/admin/glossary/<%=tag._id%>" >Edit</a>     
+                        <button  data-tag-id = "<%= tag._id %>" data-tag-name="<%=tag.name%>" data-toggle="modal" data-target="#tagDeleteModal" class = "btn btn-danger deleteTag">Delete</button>            
+                    </td>
+                </tr>
+            <% }); %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <div class = "row">
+        <div class ="col-md-2">
+            <button data-toggle="modal" data-target="#tagAddModal" class = "btn btn-primary"><span class="fa fa-plus" aria-hidden="true"></span> Add New Tag</button>
+        </div>
+    </div>
+</div>  
+
+<!-- Modals -->
+
+<div class="modal fade" id="tagAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add a New Glossary Tag</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "addTag">
+            <div class="form-group">
+              <label for="tagName">Tag Name*</label>
+              <input required type="text" class="form-control" id="tagName" placeholder="Tag">
+            </div>
+            
+            <button type="submit" class="btn btn-success">Add Tag</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tagDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="tagToDeleteHeadign"></p>
+        <strong>You are about to Delete this Tag. This cannot be undone.</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="tagDeleteConfirm">Delete Tag</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include partials/footer.ejs%>

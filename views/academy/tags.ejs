@@ -3,7 +3,7 @@
 
 <div class="container main-content">
     <div class = "jumbotron">
-        <h1 class='text-white display-4'>Search Academy by PatSnap</h1>
+        <h1 class='text-white display-4'><span class="fa fa-tags" aria-hidden="true"></span> Tags</h1>
 	</div>
 	<div class="row">
 		<div class='col-md-12 mb-2'>
@@ -23,39 +23,28 @@
 					</div>
 				</div>
 			</form>
-			<div id = 'search-error' class="alert alert-danger" role="alert" style="display:none;">Sorry, no items match your search. Try <a class="alert-link" href = "/courses">Browsing All Courses</a> or <a class="alert-link" href = "/tags">Browsing All Tags</a></div>
+			<div id = 'search-error' class="alert alert-danger" role="alert" style="display:none;">Sorry, no items match your search. Try <a class="alert-link" href = "/courses">Browsing All Courses</a></div>
 		</div>
 	</div>
     
 	<div class = "row">
 		<div class="col-md-12 mt-2">
-			<h2>Search Results</h2>
-			<% if(searchResults==null){ %>
-				<div class = "row">
-					<div class="col-md-12 mt-2">
-				<p>No results. Try <a href="/courses">Browsing All Courses</a></p>
-				</div>
-				</div>
-			<%} else { %>
-				<div class = "row">
-					<div class="col-md-12 mt-2">
-				<p>Results: <%=searchResults.length%></p>
-				</div>
-				</div>
-				<% searchResults.forEach(function(result,i){ %>
-					<div class = "row">
-						<div class="col-md-12 mt-2">
-					<h5><%=i+1 %>. <a href="<%=result.link%>"><%-result.title%></a> | <small><%=result.type%></small></h5>
-					</div>
-					</div>
-            <%})}%>
+			<h2> All Tags</h2>
+			
+		</div>
+	</div>
+
+	<div class = "row">
+		<div class="col-md-12 mt-2">
+			<% tags.forEach(function(tag){ %>
+				<a href= "/tags/<%=tag._id%>" class="btn btn-primary ml-2 mr-2 mt-2 mb-2"><%=tag.name%></a>
+			<%});%>
 		</div>
 	</div>
 
 </div>
     
 <%- include partials/footer.ejs %>
-
 
 <script src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>

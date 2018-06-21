@@ -499,7 +499,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		$('#termDeleteModal').on('show.bs.modal', function(e){
 			var button = $(e.relatedTarget); 
 			var modal = $(this);
-			modal.find('#termToDeleteHEading').text(button.data('termHeading'));
+			modal.find('#termToDeleteHeading').text(button.data('termHeading'));
 			modal.find('#termDeleteConfirm').on('click', function(){
 				var url = '/admin/glossary/' + button.data('termId');
 				$.ajax({
@@ -525,7 +525,55 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		break;
 	}
 	
-	// break;
+
+	case 'ADMIN_TAGS':{
+		
+		$('#addTag').submit(function(e){
+			e.preventDefault();
+			var data = {
+				name: 	$('#tagName').val(),
+			};
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/tags',
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);        // eslint-disable-line no-undef             
+				}
+			});
+		});
+
+		$('#tagDeleteModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#tagToDeleteHeading').text(button.data('tagName'));
+			modal.find('#tagDeleteConfirm').on('click', function(){
+				var url = '/api/tags/' + button.data('tagId');
+				$.ajax({
+					type: 'DELETE',
+					url: url,
+					dataType: 'json',
+					async: true,
+					success: function (){
+						location.reload(true);// eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#tagDeleteModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#tagDeleteConfirm').off('click');
+		});
+    
+		$('.trumbowyg').trumbowyg();
+	
+
+		break;
+	}
 
 	case 'ADMIN_QUESTIONS':
 		$('#addResponse').submit(function(e){
@@ -996,7 +1044,6 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 			modal.find('#moduleToDeleteName').text(button.data('moduleName'));
 			modal.find('#moduleDeleteConfirm').on('click', function(){
 				var url = '/api/courses/' + button.data('courseId') + '/units/' + button.data('unitId') + '/modules/' + button.data('moduleId');
-				console.log(url);
 				$.ajax({
 					type: 'DELETE',
 					url: url,
@@ -1143,6 +1190,54 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 					location.reload(true); // eslint-disable-line no-undef                    
 				}
 			});
+		});
+
+		$('#addTag').submit(function(e){
+			//var modal = $('#moduleAddModal');
+			e.preventDefault();
+
+			let tagId =  $('#tagSelect option:selected').val();
+			var url = '/api/tags/' + tagId;
+			var data = {};
+			data.course =  $(this).data('courseId');
+			data.unit = $(this).data('unitId');
+			
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true); // eslint-disable-line no-undef                    
+				}
+			});
+		});
+
+		$('#tagRemoveModal').on('show.bs.modal', function(e){
+			var button = $(e.relatedTarget); 
+			var modal = $(this);
+			modal.find('#tagRemoveConfirm').on('click', function(){
+				var url = '/api/tags/' + button.data('tagId');
+				var data = {};
+				data.unit = button.data('unitId');
+				data.remove = true;
+				$.ajax({
+					type: 'PUT',
+					url: url,
+					dataType: 'json',
+					data: data,
+					async: true,
+					success: function (){
+						location.reload(true);// eslint-disable-line no-undef 
+					}
+				});
+			});
+		});
+
+		$('#tagRemoveModal').on('hide.bs.modal', function(){
+			var modal = $(this);
+			modal.find('#tagRemoveConfirm').off('click');
 		});
 
 

@@ -4,9 +4,11 @@ var User = require('../models/user');
 var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
 var GlossaryTerm = require('../models/glossary');
+var Tag = require('../models/tag');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 const gravatar = require('gravatar');
+const _ = require('lodash');
 
 //var mongoose = require('mongoose');
 
@@ -95,7 +97,6 @@ exports.getFeedback = function(req,res){
 		});
 };
 
-
 exports.validatePostFeedback = [
 	check('title').exists().withMessage('Must exist.'),
 	check('description').exists().withMessage('Must exist.'),
@@ -108,7 +109,6 @@ exports.validatePostFeedback = [
 		}
 	}
 ];
-
 
 exports.postFeedback = function(req,res){
 
@@ -607,7 +607,7 @@ exports.getCourseUnit = function(req,res){
 				{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
 				{title:'Courses', url: '/courses'},
 				{title:course.name, url: '/courses/'+ course._id},
-				{title:unit.name, url: '/courses/' + course._id + /units/ + unit._id}
+				{title:unit.name, url: '/courses/' + course._id + '/units/' + unit._id}
 			],
 			activeNavItem: 'Courses',
 			jumbotronImageUrl: unit.unitImageUrl
@@ -617,6 +617,99 @@ exports.getCourseUnit = function(req,res){
 		let	avatarUrl = getAvatarUrl(req);
 		res.render('academy/unit.ejs', {user: req.user, course: course, unit: unit, unitProgress: unitProgress, pageInfo: pageInfo, items: items, avatarUrl:avatarUrl});
 	});
+};
+
+exports.getTag = function(req,res){
+	// TODO this seems expensive should refactor. 
+	Tag.findById(req.params.tag_id).exec()
+		.then((tag)=>{
+
+			let courseIds = tag.units.map((u)=>{
+				return u.parentCourse;
+			}); 
+
+			courseIds = _.uniq(courseIds);
+			
+			let unitIds = tag.units.map((u)=>{
+				return u.unit;
+			});
+
+			unitIds = _.uniq(unitIds);
+
+			return Promise.all( [Course.find({_id:{$in:courseIds}}).exec(), unitIds, tag ]);
+				
+		})
+		.then(([courses, unitIds, tag])=>{
+			
+
+			let mappedCourses = courses.map((course)=>{
+				let filteredUnits = course.units.filter((unit)=>{
+	
+					return _.findIndex(unitIds, unit._id) != -1;
+				});
+				course.units = filteredUnits;
+				return course;
+			});
+			
+			return [mappedCourses, tag]
+		})
+		.then(([mappedCourses,tag])=>{
+
+			let results = mappedCourses.map((course)=>{
+				let id = course._id;
+				let units = course.units.map((unit)=>{
+					let id = unit._id;
+					let name = unit.name;
+					let shortDescription = unit.shortDescription;
+					return { id, name, shortDescription };
+				});
+				
+				return { id, units};
+			});
+
+			let pageInfo = {
+				title: tag.name,
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'Tags', url: '/tags/'},
+					{title:tag.name, url: '/tag/'+ tag._id},
+				],
+				activeNavItem: 'Tags',
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Webinars/Guest%20speaker%20webinars%20/Roshan/Introduction%20to%20Markush/1519_Introduction-to-searching-using-Markush-structures-from-Patents_Header.jpg' 
+
+			};	
+
+
+
+			let	avatarUrl = getAvatarUrl(req);
+			res.render('academy/tag.ejs', {user: req.user, results:results,  avatarUrl:avatarUrl, pageInfo: pageInfo, tag:tag});
+
+		})
+		.catch( (err) => { logger.error(err); });
+
+};
+
+exports.getTags = function(req,res){
+	Tag.find({}).sort({name:1}).exec()
+		.then((tags)=>{
+
+			let pageInfo = {
+				title: 'Tags',
+				breadcrumbs: [
+					{title:'<span class="fa fa-home" aria-hidden="true"></span>', url: '/'},
+					{title:'Tags', url: '/tags/'},
+				],
+				activeNavItem: 'Tags',
+				jumbotronImageUrl:'https://www.patsnap.com/hubfs/Webinars/Guest%20speaker%20webinars%20/Roshan/Introduction%20to%20Markush/1519_Introduction-to-searching-using-Markush-structures-from-Patents_Header.jpg' 
+
+			};	
+
+			let	avatarUrl = getAvatarUrl(req);
+			res.render('academy/tags.ejs', {user: req.user, tags: tags,  avatarUrl:avatarUrl, pageInfo: pageInfo});
+
+		})
+		.catch( (err) => { logger.error(err); });
+
 };
 
 

@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 const GlossaryTerm = require('./models/glossary');
 const Courses = require('./models/course');
+const Tag = require('./models/tag');
 
 const Fuse = require('fuse.js');
 
@@ -13,22 +14,28 @@ exports.buildSearchJSON = function(){
 
 	Promise.all([
 		GlossaryTerm.find({}),
-		Courses.find({})
+		Courses.find({}),
+		Tag.find({})
 	])
-		.then(([glossaryTerms, courses])=>{
+		.then(([glossaryTerms, courses, tags])=>{
+
 			return Promise.resolve([
 				glossaryTerms.map((term)=>{
 					return {'display':term.heading, 'link': '/glossary#' + term.anchorLink };
 				}),
 				courses.map((course)=>{
 					return {'display': course.name, 'link': '/courses/' + course._id };
+				}),
+				tags.map((tag)=>{
+					return {'display': tag.name, 'link': '/tags/' + tag._id};
 				})
 			]);
 		})
-		.then(([glossaryTerms,courses])=>{
+		.then(([glossaryTerms,courses, tags])=>{
 			let data ={
 				'glossary': glossaryTerms,
-				'courses': courses
+				'courses': courses,
+				'tags': tags,
 			};
 
 
@@ -59,9 +66,10 @@ exports.fuseSearch = function(query){
 
 	return Promise.all([
 		GlossaryTerm.find({}),
-		Courses.find({})
+		Courses.find({}),
+		Tag.find({})
 	])
-		.then(([glossaryTerms, courses])=>{
+		.then(([glossaryTerms, courses, tags])=>{
 			return Promise.resolve([
 				glossaryTerms.map((term)=>{
 					return {'searchKey':term.heading, 'title':term.heading,'type':'glossary', 'link': '/glossary#' + term.anchorLink, 'id': term._id };
@@ -69,11 +77,14 @@ exports.fuseSearch = function(query){
 				courses.map((course)=>{
 					return {'searchKey':course.name, 'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'id': course._id };
 				}),
+				tags.map((tag)=>{
+					return {'searchKey':tag.name, 'title': tag.name,'type':'tag', 'link': '/tags/' + tag._id, 'id': tag._id };
+				}),
 				
 			]);
 		})
-		.then(([glossaryTerms, courses])=>{
-			let data = _.flatten(_.concat(glossaryTerms, courses));
+		.then(([glossaryTerms, courses, tags])=>{
+			let data = _.flatten(_.concat(glossaryTerms, courses, tags));
 			return data;
 		})
 		.then((data)=>{

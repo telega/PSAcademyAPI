@@ -57,6 +57,27 @@ exports.putTag = function(req,res){
 		.then((tag)=>{
 			tag.name = req.body.name  || tag.name;
 
+			if(req.body.remove == 'true'){
+				if(req.body.unit){
+					let units = tag.units.filter((unit)=>{
+						return unit.unit != req.body.unit;
+					});
+					tag.units = units;
+				}
+
+				if(req.body.course){
+					let courses = tag.courses.filter((course)=>{
+						return course.course != req.body.course;
+					});
+					
+					tag.courses = courses;
+				}
+
+				return tag.save(()=>{
+					res.status(200).json({message: 'tag updated'});
+				});	
+			}
+
 			// prefer if client sends both courseID and unitID 
 			if(req.body.unit && req.body.course){	
 				tag.units.push({

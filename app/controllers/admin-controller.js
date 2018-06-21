@@ -4,8 +4,12 @@ var Quiz = require('../models/quiz');
 var Academy = require('../models/academy');
 var Feedback = require('../models/feedback');
 var GlossaryTerm = require('../models/glossary');
+var Tag = require('../models/tag');
+var mongoose = require('mongoose');
+const _ = require('lodash');
 const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
+
 
 
 // General
@@ -150,18 +154,25 @@ exports.getUnit = function(req,res){
 	Course.findById(req.params.course_id).exec()
 		.then((course)=>{
 			let unit = course.units.id(req.params.unit_id);
-			let pageInfo = {
-				title: unit.name,
-				breadcrumbs: [
-					{title:'Admin', url: '/admin'},
-					{title:'Courses', url: '/admin/courses'},
-					{title:course.name, url: '/admin/courses/' + course._id },
-					{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
-				],
-				activeNavItem: 'Courses',
-				pageUIType: 'ADMIN_UNIT'
-			};
-			res.render('admin/unit.ejs', {user: req.user, course: course, unit: unit, page:pageInfo});
+
+			Tag.find({}).exec()
+				.then((tags)=>{
+					let activeTags = tags.filter((tag)=>{
+						return _.findIndex(tag.units, {'unit': mongoose.Types.ObjectId(req.params.unit_id)}) != -1;
+					});
+					let pageInfo = {
+						title: unit.name,
+						breadcrumbs: [
+							{title:'Admin', url: '/admin'},
+							{title:'Courses', url: '/admin/courses'},
+							{title:course.name, url: '/admin/courses/' + course._id },
+							{title:unit.name, url: '/admin/courses/' + course._id + '/units/' + unit._id },
+						],
+						activeNavItem: 'Courses',
+						pageUIType: 'ADMIN_UNIT'
+					};
+					res.render('admin/unit.ejs', {user: req.user, course: course, unit: unit, page:pageInfo, activeTags: activeTags, tags: tags});
+				});
 		})
 		.catch((err)=>{logger.error(err);});
 };
@@ -278,6 +289,25 @@ exports.getGlossaryTerm = function (req,res){
 				pageUIType: 'ADMIN_GLOSSARY_TERM'
 			};
 			res.status(200).render('admin/glossaryTerm.ejs', {user: req.user, term: term, page: pageInfo});
+		})
+		.catch((err)=>{ logger.error(err); });
+};
+
+// Tags
+
+exports.getTags = function (req,res){
+	Tag.find({}).collation({locale:'en', caseLevel: true}).sort({name:1}).exec()
+		.then((tags)=>{
+			let pageInfo = {
+				title: 'Tags',
+				breadcrumbs: [
+					{title:'Admin', url: '/admin'},
+					{title:'Tags', url: '/admin/tags'}			
+				],
+				activeNavItem: 'Tags',
+				pageUIType: 'ADMIN_TAGS'
+			};
+			res.status(200).render('admin/tags.ejs', {user: req.user, tags: tags, page: pageInfo});
 		})
 		.catch((err)=>{ logger.error(err); });
 };
