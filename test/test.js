@@ -939,8 +939,7 @@ describe('API Backend Routes', ()=>{
 								.send({
 									unit: testUnit._id,
 								})
-								.end((err,res)=>{
-									
+								.end((err,res)=>{									
 									// TODO write a better helper for tag creation 
 
 									request(server)
@@ -948,11 +947,12 @@ describe('API Backend Routes', ()=>{
 										.set('cookie', cookie)
 										.send({
 											unit: testUnit._id,
-											remove:true
+											remove: 'true' // why is this a string ? 
 										})
 										.end((err,res)=>{ 
 											Tag.findOne({_id: tag._id}).exec()
 												.then((updatedTag)=>{
+
 												updatedTag.units.length.should.equal(0);
 
 												deleteTestTag(tag._id);
@@ -1802,6 +1802,53 @@ describe('User Routes', ()=>{
 
 	});
 
+	//tags
+
+	describe('Tag Route (User)', ()=>{
+		it('Should render the tag listing page /tags GET', (done)=>{
+			createTestUser(theUserAccount, function(testUser){
+			
+				createLoginCookie(server, theUserAccount, function(cookie) {
+					
+					createTestTag((tag)=>{
+						request(server)
+							.get('/tags')
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.html;
+								deleteTestTag(tag._id);
+								deleteTestUser(testUser._id);
+								done();
+							});
+						})
+				});	
+			});
+		})
+
+		it('Should render the tag links page /tags/:tag_id GET', (done)=>{
+			createTestUser(theUserAccount, function(testUser){
+			
+				createLoginCookie(server, theUserAccount, function(cookie) {
+					
+					createTestTag((tag)=>{
+						request(server)
+							.get('/tags/' + tag._id)
+							.set('cookie', cookie)
+							.end((err,res)=>{
+								res.should.have.status(200);
+								res.should.be.html;
+								deleteTestTag(tag._id);
+								deleteTestUser(testUser._id);
+								done();
+							});
+						})
+				});	
+			});
+		})
+	})
+
+	//feedback 
 	
 	describe('Feedback Route', ()=>{
 		
