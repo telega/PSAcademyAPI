@@ -234,7 +234,7 @@ exports.getHomepage = function(req,res){
 				.then(()=>{
 					let	avatarUrl = getAvatarUrl(req);
 					Academy.findOne({}, function(err,academyOptions){  
-						res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions, userCount: userCount, avatarUrl: avatarUrl});	
+						res.render('academy/academy.ejs', {pageInfo:pageInfo,items:items, user: req.user, options:academyOptions, userCount: userCount, avatarUrl: avatarUrl, courses:courses});	
 					});
 
 				})

@@ -18,10 +18,17 @@
 <div class="container main-content">
     <div class = "jumbotron">
         <h1 class='text-white display-4'>Academy by PatSnap</h1>
-        <h2 class='text-white'> Welcome <%=user.local.profile.firstName%> </h2>
+		<h2 class='text-white'> Welcome <%=user.local.profile.firstName%> </h2>
+		<h6 class='text-white'><span class = 'fa fa-star'></span> You have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h6> 
+        <h6 class='text-white'><span class="fa fa-trophy"></span> You are currently ranked <%if(user.local.academyRank == 0) {%> 
+          <%=suffix(userCount)%>
+          <%} else {%>
+          <%=suffix(user.local.academyRank)%>
+          <%}%> 
+         out of <%=userCount%> Academy Users.</h6> 
 	</div>
-	<div class="row">
-		<div class='col-md-12 mb-2'>
+	<div class="row ">
+		<div class='col-md-10 mb-2 ml-auto mr-auto'>
 			<form id="academy_search" name="academy_sesarch">
 				<div class="typeahead__container">
 					<div class="typeahead__field">
@@ -41,70 +48,148 @@
 			<div id = 'search-error' class="alert alert-danger" role="alert" style="display:none;">Sorry, no items match your search. Try <a class="alert-link" href = "/courses">Browsing All Courses</a></div>
 		</div>
 	</div>
-    <div class = "row">
-      <div class="col-md-6 mt-2">
-        <p class="lead">Welcome to Academy by PatSnap. To get started, click <a href='/courses'>Browse All Courses</a> and you will be on your way to learning about the worlds of intellectual property and innovation. </p>
-        <h3>Learn</h3>
-        <p><a href = "/courses" class = "btn btn-primary" ><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Browse All Courses</a></p>
-        <h6> <span class = 'fa fa-star'></span> You have earned <%=user.local.academyScore%> Academy Point<%if(user.local.academyScore != 1){%>s<%}%>. </h6> 
-        <h6> <span class="fa fa-trophy"></span> You are currently ranked <%if(user.local.academyRank == 0) {%> 
-          <%=suffix(userCount)%>
-          <%} else {%>
-          <%=suffix(user.local.academyRank)%>
-          <%}%> 
-         out of <%=userCount%> Academy Users.</h6> 
-      </div>
-      <div class="col-md-5 ml-auto mt-2">
-        <div class="card">
-          <div class="card-header">Academy News</div>
-            <div class="card-body">
-              <h4 class="card-title"><%=options.academyNewsHeadline%></h4>
-              <div class='card-text'><%-options.academyNewsText%></div>
-            </div>
-        </div>
-      </div>
+	<div class="row mt-2 mb-1">
+		<div class="col-md-12">
+				<h3>Start Learning</h3>
+				
+		</div>
+	</div>
+	<div class = "row">
+		<div class="col-md-8 mt-2 ">
+				
+				<div class="row">
+						<div class="col-md-12">
+
+				<div class="card-deck mb-4">
+
+						<% 	let counter = 0;
+			
+							let filteredCourses = courses.filter((course)=>{
+								return course.published === true;
+							})
+							filteredCourses.reverse();
+
+						 filteredCourses.forEach((course)=>{
+							 let filteredUnits = course.units.filter((unit)=>{
+								 return unit.published === true;
+							 })
+
+							 filteredUnits.reverse();
+							 filteredUnits.forEach(function(unit){ 
+								
+								let unitLength = Math.round(unit.modules.length/3)
+								if(unitLength === 0){
+									unitLength = 1;
+								}
+								
+								%>
+								
+								<div class="card border">
+									<img src="<%=unit.unitThumbImageUrl%>" alt="<%=unit.name%>" class="card-img-top" >
+									<div class="card-body">
+									  <h4 class="card-title"><%=unit.name%></h4>
+									  <h5 class="card-title"><%=course.name%> </h5>
+									  <p class="card-text"><%=unit.shortDescription%> <br> 
+									</div>
+									<div class="card-footer border-0 bg-white">
+										<p><%=unitLength%>&nbsp;
+											<%if(unitLength > 1){ %>
+												weeks
+											<%} else {%>
+												week
+											<%}%>
+										</p>
+										<a href="/login" class="btn btn-primary" >Start Now</a>
+									</div>
+								</div>
+			
+							<% 	counter++; 
+				
+							if(counter%2 == 0){ %>
+								</div> </div></div>
+								<div class="row">
+										<div class="col-md-12">
+								<div class="card-deck mb-4">
+				
+							<%
+								}
+							})
+						})
+						if(counter%2 != 0){ %>
+							<div class="card bg-white"></div>
+							
+						<%} %>
+						
+						</div>
 
 
-    </div>
-     <div class = "row">
-      <div class="col-md-6 mt-5">
-      <h3><%=user.local.profile.firstName%>&apos;s Courses</h3>
-      
-      <%if(items.length){%>
-      <table class="table table-striped">
-                <thead class="thead-default">
-                    <th>Course Name </th>
-                    <th>Progress </th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    <% items.forEach(function(item){ %>
-                    <tr>
-                        <td> <%=item.name%></td>
-                        <td> <%=Math.round(item.progress)%> % </td>
-                        <td> <a href = "/courses/<%=item.id%>" class = "btn btn-secondary">Resume Course</a></td>
-                    </tr>
-                    <%});%>
-                </tbody>
-            </table>
-            <%} else {%>
-            <p>You don't have any courses yet. <a href = "/courses">Get started here.</a></p>
-            <%}%>
-      </div>
+				<p class = 'text-center'><a href = "/courses" class = "btn btn-primary" ><span class="fa fa-graduation-cap active" aria-hidden="true"></span> Browse All Courses</a></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mt-2 bg-light pt-3 pb-3">
+			<div class="row">
+				<div class = "col-md-12">
+			
+					<h4><%=user.local.profile.firstName%>&apos;s Courses</h4>
 
-      <div class="col-md-5 ml-auto mt-5">
-        <div class="card">
-          <div class="card-header">More from PatSnap</div>
-            <div class="card-body">
-             <ul id = "feed" class=""></ul>
-            </div>
-        </div>
-        <div class="cta embed-responsive">
-          <%-options.academyHomeCta%>
-        </div>
-      </div>
-    </div>
+					<%if(items.length){%>
+					<table class="table table-striped table-sm">
+							  <thead class="thead-default">
+								  <th>Course Name </th>
+								  <th>Progress </th>
+								  <th></th>
+							  </thead>
+							  <tbody>
+								  <% items.forEach(function(item){ %>
+								  <tr>
+									  <td> <%=item.name%></td>
+									  <td> <%=Math.round(item.progress)%> % </td>
+									  <td> <a href = "/courses/<%=item.id%>" class = "btn btn-secondary">Resume </a></td>
+								  </tr>
+								  <%});%>
+							  </tbody>
+						  </table>
+						  <%} else {%>
+						  <p>You don't have any courses yet. <a href = "/courses">Get started here.</a></p>
+						  <%}%>
+				</div>
+				</div>
+				<div class='row'>
+					<div class="col-md-12 mt-2">
+							<div class="card border">
+							<div class="card-header">Academy News</div>
+							 <div class="card-body">
+							<h4 class="card-title"><%=options.academyNewsHeadline%></h4>
+							<div class='card-text'><%-options.academyNewsText%></div>
+								</div>
+							</div>
+					</div>
+				</div>
+				<div class = "row">
+					<div class="col-md-12 mt-2">
+							<div class="card border">
+							  <div class="card-header">More from PatSnap</div>
+								<div class="card-body">
+								 <ul id = "feed" class=""></ul>
+								</div>
+							</div>
+							<div class="cta embed-responsive">
+							  <%-options.academyHomeCta%>
+							</div>
+					</div>
+				</div>
+					
+			</div>
+		</div>
+	</div>
+
+
+
 </div>
+     
+
+    
 <%- include partials/footer.ejs %>
 
 
