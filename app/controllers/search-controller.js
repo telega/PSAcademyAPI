@@ -15,7 +15,7 @@ function getAvatarUrl(req){
 }
 
 exports.sendSearchJSON =  function(req,res){
-	res.setHeader('Cache-Control', 'public, max-age=3600000');
+	res.setHeader('Cache-Control', 'public, max-age=300');
 	res.type('json');
 	res.status(200);
 	res.sendFile(path.join(__dirname, '../../search', 'search.json'));
