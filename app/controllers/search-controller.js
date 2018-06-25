@@ -1,9 +1,5 @@
-//const GlossaryTerm = require('../models/glossary');
-//const Courses = require('../models/course');
-//const { check, validationResult } = require('express-validator/check');
 const logger = require('../logger');
 const path = require('path');
-//const buildSearch = require('../search');
 const gravatar = require('gravatar');
 const search = require('../search');
 

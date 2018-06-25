@@ -3,7 +3,7 @@ const Tag = require('../models/tag');
 const logger = require('../logger');
 const { check, validationResult } = require('express-validator/check');
 const mongoose = require('mongoose');
-//const _ = require(lodash);
+const search = require('../search');
 
 exports.getTags = function(req,res){
 	Tag.find({}).exec()
@@ -34,6 +34,7 @@ exports.postTag = function(req,res){
 		if(err){
 			logger.error(err);
 		}
+		search.buildSearchJSON();
 		res.status(200).json({message: 'Tag Added'});
 	});
 };
@@ -134,6 +135,7 @@ exports.putTag = function(req,res){
 exports.deleteTag = function(req,res){
 	Tag.remove({_id: req.params.tag_id}).exec()
 		.then(()=>{
+			search.buildSearchJSON();
 			res.status(200).json({message:'Tag Deleted'});
 		})
 		.catch((err)=>{
