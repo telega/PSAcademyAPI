@@ -578,7 +578,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 	case 'ADMIN_QUESTIONS':
 		$('#addResponse').submit(function(e){
      
-			//var modal = $('#addResponseModal');
+			var modal = $('#addResponseModal');
 			e.preventDefault();
   
 			var url = '/api/quizzes/' + $(this).data('quizId') + '/questions/' + $(this).data('questionId');
@@ -809,7 +809,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 			var button = $(e.relatedTarget); 
 			var modal = $(this);
 			modal.find('#questionDeleteConfirm').on('click', function(){
-				var url = '//api/quizzes/' + button.data('quizId') + '/questions/' + button.data('questionId');
+				var url = '/api/quizzes/' + button.data('quizId') + '/questions/' + button.data('questionId');
 				$.ajax({
 					type: 'DELETE',
 					url: url,
@@ -1002,14 +1002,14 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 			var url = '/api/courses/' + $(this).data('courseId') + '/units/' + $(this).data('unitId') + '/modules/' + $(this).data('moduleId');
 			var data = {};
 
-			var resources = JSON.parse(JSON.stringify(r));
 			
 			var newResource = {
 				title: $('#resourceName').val(),
 				url: $('#resourceUrl').val()
 			};
 			var r = $(this).data('resources') ;
-			
+			// this is ugly
+			var resources = JSON.parse(JSON.stringify(r));
 			resources.push(newResource);
 			data.resources = JSON.stringify(resources);
 			$.ajax({
@@ -1270,6 +1270,6 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 
 		break;
 	default:
-		console.log('hi');
+		//console.log('hi');
 	}
 });
