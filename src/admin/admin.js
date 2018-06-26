@@ -642,7 +642,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
   
 		$('#updateCorrectResponse').on('click', function(e){
 			e.preventDefault();
-			var url = '/api/quizzes/' + $(this).data('quizId') + /questions/ + $(this).data('questionId');
+			var url = '/api/quizzes/' + $(this).data('quizId') + '/questions/' + $(this).data('questionId');
 		
 			var data = {
 				correct: $('#newCorrectResponse').val()
@@ -659,9 +659,30 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 			});
 		});
 		
+
+		$('#updateQuestion').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/quizzes/' + $(this).data('quizId') + '/questions/' + $(this).data('questionId');
+		
+			var data = {
+				q: $('#newQuestion').val()
+			};
+			$.ajax({
+				type: 'PUT',
+				url: url,
+				dataType: 'json',
+				async: true,
+				data: data,
+				success: function (){
+					location.reload(true);    // eslint-disable-line no-undef                 
+				}
+			});
+		});
+
+
 		$('#updateIncorrectResponse').on('click', function(e){
 			e.preventDefault();
-			var url = '/api/quizzes/' + $(this).data('quizId') + /questions/ + $(this).data('questionId');		
+			var url = '/api/quizzes/' + $(this).data('quizId') + '/questions/' + $(this).data('questionId');		
 			var data = {
 				incorrect: $('#newIncorrectResponse').val()
 			};
