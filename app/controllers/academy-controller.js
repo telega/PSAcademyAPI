@@ -651,7 +651,7 @@ exports.getTag = function(req,res){
 				return course;
 			});
 			
-			return [mappedCourses, tag]
+			return [mappedCourses, tag];
 		})
 		.then(([mappedCourses,tag])=>{
 
