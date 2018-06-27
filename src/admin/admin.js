@@ -578,7 +578,7 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 	case 'ADMIN_QUESTIONS':
 		$('#addResponse').submit(function(e){
      
-			var modal = $('#addResponseModal');
+			//var modal = $('#addResponseModal');
 			e.preventDefault();
   
 			var url = '/api/quizzes/' + $(this).data('quizId') + '/questions/' + $(this).data('questionId');
