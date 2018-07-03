@@ -216,6 +216,25 @@ $(document).ready(function(){ // eslint-disable-line no-undef
 		break;
 	}
 
+	case 'ADMIN_LEADERBOARD':{
+
+		$('#userRefreshConfirm').on('click', function(e){
+			e.preventDefault();
+			var url = '/api/users/refresh';
+			$.ajax({
+				type: 'GET',
+				url: url,
+				dataType: 'json',
+				async: true,
+				success: function (){
+					location.reload(true);
+				}
+			});
+      
+		});
+		break;
+	}
+
 	case 'ADMIN_FEEDBACK':{
 		// ReactDOM.render(
 		// 	<AdminFeedback breadCrumbs = {[{title:'Admin', url: '/admin'}, {title:'Feedback', url: '/admin/feedback'}]}

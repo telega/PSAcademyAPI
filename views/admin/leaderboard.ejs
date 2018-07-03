@@ -71,28 +71,6 @@
 
 <!-- scripts -->
 <%- include partials/footer.ejs%>
-<script>
 
-$(document).ready(function(){
-
-    $('#userRefreshConfirm').on('click', function(e){
-            e.preventDefault();
-            var url = "/api/users/refresh";
-            $.ajax({
-                  type: "GET",
-                  url: url,
-                  dataType: 'json',
-                  async: true,
-                  success: function (){
-                        location.reload(true);
-                    }
-            })
-
-      
-    });
-
-    
-})
-</script>
 </body>
 </html>
