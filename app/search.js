@@ -33,8 +33,8 @@ exports.buildSearchJSON = function(){
 		})
 		.then(([glossaryTerms,courses, tags])=>{
 			let data ={
-				'glossary': glossaryTerms,
 				'courses': courses,
+				'glossary': glossaryTerms,
 				'tags': tags,
 			};
 
@@ -71,11 +71,11 @@ exports.fuseSearch = function(query){
 	])
 		.then(([glossaryTerms, courses, tags])=>{
 			return Promise.resolve([
-				glossaryTerms.map((term)=>{
-					return {'searchKey':term.heading, 'title':term.heading,'type':'glossary', 'link': '/glossary#' + term.anchorLink, 'id': term._id };
-				}),
 				courses.map((course)=>{
 					return {'searchKey':course.name, 'title': course.name,'type':'course', 'link': '/courses/' + course._id, 'id': course._id };
+				}),
+				glossaryTerms.map((term)=>{
+					return {'searchKey':term.heading, 'title':term.heading,'type':'glossary', 'link': '/glossary#' + term.anchorLink, 'id': term._id };
 				}),
 				tags.map((tag)=>{
 					return {'searchKey':tag.name, 'title': tag.name,'type':'tag', 'link': '/tags/' + tag._id, 'id': tag._id };
