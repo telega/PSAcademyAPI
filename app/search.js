@@ -84,7 +84,7 @@ exports.fuseSearch = function(query){
 			]);
 		})
 		.then(([glossaryTerms, courses, tags])=>{
-			let data = _.flatten(_.concat(glossaryTerms, courses, tags));
+			let data = _.flatten(_.concat( courses, glossaryTerms, tags));
 			return data;
 		})
 		.then((data)=>{
