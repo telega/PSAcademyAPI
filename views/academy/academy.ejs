@@ -240,7 +240,6 @@ function post(path, parameters) {
 }
 
 
-
 	$.typeahead({
     input: '.js-typeahead-search',
     minLength: 1,
@@ -251,25 +250,24 @@ function post(path, parameters) {
     },
     template: "{{display}} <small style='color:#999;'>{{group}}</small>",
     source: {
+		courses: {
+            ajax: {
+                url: "/api/search",
+                path: "data.courses"
+            }
+		},
         glossary: {
             ajax: {
                 url: "/api/search",
                 path: "data.glossary"
             }
         },
-        courses: {
-            ajax: {
-                url: "/api/search",
-                path: "data.courses"
-            }
-		},
 		tags: {
             ajax: {
                 url: "/api/search",
                 path: "data.tags"
             }
-        },
-        
+        }
     },
     callback: {
         onNavigateAfter: function (node, lis, a, item, query, event) {
